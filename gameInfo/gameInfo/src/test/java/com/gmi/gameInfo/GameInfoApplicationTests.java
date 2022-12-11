@@ -1,10 +1,10 @@
-package com.gameinfo.gmi;
+package com.gmi.gameInfo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GmiApplicationTests {
+class GameInfoApplicationTests {
 
 	@Test
 	void contextLoads() {
