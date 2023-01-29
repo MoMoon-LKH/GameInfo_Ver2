@@ -18,6 +18,11 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+
+# ignore properties file
+application-dev.yml
+application-prod.yml
+
 .idea
 *.iws
 *.iml
