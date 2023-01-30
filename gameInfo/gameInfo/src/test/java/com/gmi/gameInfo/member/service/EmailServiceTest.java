@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.member.service;
 
+import com.gmi.gameInfo.member.domain.AuthEmail;
 import com.gmi.gameInfo.member.repository.EmailRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,28 +12,33 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@ActiveProfiles("dev")
 public class EmailServiceTest {
 
-    @InjectMocks
+    @Autowired
     private EmailService emailService;
-
-    @Mock
-    private EmailRepository emailRepository;
 
     @Test
     @DisplayName("이메일 인증번호 발송 테스트")
     void sendAuthNumEmail() {
     
         //given
-
+        AuthEmail authEmail = new AuthEmail("rlgh28@naver.com", emailService.getAuthNum());
 
         //when
-        
+        boolean boolEmail = emailService.sendAuthNumberEmail(authEmail);
+
         //then
+        assertTrue(boolEmail);
     }
 
     @Test
@@ -49,4 +55,5 @@ public class EmailServiceTest {
         assertEquals(6, authNum.length());
         assertInstanceOf(Integer.class, Integer.valueOf(authNum));
     }
+
 }
