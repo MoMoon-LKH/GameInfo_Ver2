@@ -1,6 +1,8 @@
 package com.gmi.gameInfo.member.service;
 
 import com.gmi.gameInfo.member.domain.AuthEmail;
+import com.gmi.gameInfo.member.exception.DifferentAuthEmailNumberException;
+import com.gmi.gameInfo.member.exception.NotFoundAuthEmailException;
 import com.gmi.gameInfo.member.exception.SendEmailFailException;
 import com.gmi.gameInfo.member.repository.EmailRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 
@@ -29,6 +32,22 @@ public class EmailService {
 
     @Value("${spring.mail.port}")
     private int port;
+
+
+    @Transactional
+    public AuthEmail save(AuthEmail email) {
+        return emailRepository.save(email);
+    }
+
+    public AuthEmail findOneById(Long id) {
+        Optional<AuthEmail> authEmail = emailRepository.findById(id);
+
+        if(authEmail.isEmpty()){
+            throw new NotFoundAuthEmailException();
+        }
+
+        return authEmail.get();
+    }
 
     @Transactional
     public AuthEmail sendAndSaveAuthEmail(AuthEmail authEmail) {
@@ -91,4 +110,16 @@ public class EmailService {
 
         return authNum.toString();
     }
+
+
+    public boolean confirmAuthNum(AuthEmail authEmail, String authNum) {
+
+        if (!authEmail.getAuthNum().equals(authNum)) {
+            throw new DifferentAuthEmailNumberException();
+        }
+
+        return true;
+    }
+
+
 }
