@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.member.service;
 
 import com.gmi.gameInfo.member.domain.AuthEmail;
+import com.gmi.gameInfo.member.exception.SendEmailFailException;
 import com.gmi.gameInfo.member.repository.EmailRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,17 @@ public class EmailService {
     private int port;
 
     @Transactional
+    public AuthEmail sendAndSaveAuthEmail(AuthEmail authEmail) {
+
+        boolean boolSendEmail = sendAuthNumberEmail(authEmail);
+
+        if(!boolSendEmail) {
+            throw new SendEmailFailException();
+        }
+
+        return emailRepository.save(authEmail);
+    }
+
     public boolean sendAuthNumberEmail(AuthEmail authEmail) {
 
         Properties prop = new Properties();

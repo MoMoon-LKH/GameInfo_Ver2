@@ -1,24 +1,14 @@
 package com.gmi.gameInfo.member.service;
 
 import com.gmi.gameInfo.member.domain.AuthEmail;
-import com.gmi.gameInfo.member.repository.EmailRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @ActiveProfiles("dev")
@@ -28,11 +18,12 @@ public class EmailServiceTest {
     private EmailService emailService;
 
     @Test
+    @Rollback
     @DisplayName("이메일 인증번호 발송 테스트")
     void sendAuthNumEmail() {
     
         //given
-        AuthEmail authEmail = new AuthEmail("rlgh28@naver.com", emailService.getAuthNum());
+        AuthEmail authEmail = AuthEmail.createAuthEmail("rlgh28@naver.com", emailService.getAuthNum());
 
         //when
         boolean boolEmail = emailService.sendAuthNumberEmail(authEmail);
@@ -54,6 +45,22 @@ public class EmailServiceTest {
         //then
         assertEquals(6, authNum.length());
         assertInstanceOf(Integer.class, Integer.valueOf(authNum));
+    }
+
+    @Test
+    @Rollback
+    @DisplayName("이메일 전송 및 redis 저장 테스트")
+    void sendAndSaveAuthEmail() {
+        //given
+        AuthEmail email = AuthEmail.createAuthEmail("rlgh28@naver.com", emailService.getAuthNum());
+
+        //when
+        AuthEmail sendEmail = emailService.sendAndSaveAuthEmail(email);
+
+        //then
+        assertEquals( email.getEmail(), sendEmail.getEmail());
+        assertEquals(email.getAuthNum(), sendEmail.getAuthNum());
+
     }
 
 }

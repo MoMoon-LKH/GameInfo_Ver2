@@ -2,8 +2,6 @@ package com.gmi.gameInfo.member.repository;
 
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
-import com.gmi.gameInfo.member.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 

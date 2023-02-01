@@ -22,10 +22,14 @@ public class AuthEmail {
     private String authNum;
     private LocalDateTime createTime;
 
-    public AuthEmail(String email, String authNum) {
+    private AuthEmail(String email, String authNum) {
         this.email = email;
         this.authNum = authNum;
         this.createTime = LocalDateTime.now();
+    }
+
+    public static AuthEmail createAuthEmail(String email, String authNum) {
+        return new AuthEmail(email, authNum);
     }
 
 }
