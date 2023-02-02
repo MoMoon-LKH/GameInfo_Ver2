@@ -5,18 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Member {
 
     @Id
@@ -64,7 +61,7 @@ public class Member {
         this.roleType = RoleType.USER;
     }
 
-    public static Member registerMember(RegisterDto registerDto) {
+    public static Member createMember(RegisterDto registerDto) {
         return new Member(registerDto);
     }
 }

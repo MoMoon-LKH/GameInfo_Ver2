@@ -64,7 +64,7 @@ public class Member {
         this.roleType = RoleType.USER;
     }
 
-    public static Member registerMember(RegisterDto registerDto) {
+    public static Member createMember(RegisterDto registerDto) {
         return new Member(registerDto);
     }
 }
