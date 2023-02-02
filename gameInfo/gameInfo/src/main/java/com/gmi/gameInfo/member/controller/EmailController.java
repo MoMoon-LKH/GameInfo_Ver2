@@ -2,7 +2,6 @@ package com.gmi.gameInfo.member.controller;
 
 import com.gmi.gameInfo.member.domain.AuthEmail;
 import com.gmi.gameInfo.member.service.EmailService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

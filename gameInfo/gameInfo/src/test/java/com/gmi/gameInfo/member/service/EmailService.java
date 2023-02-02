@@ -39,6 +39,11 @@ public class EmailService {
         return emailRepository.save(email);
     }
 
+    @Transactional
+    public void deleteById(Long id) {
+        emailRepository.deleteById(id);
+    }
+
     public AuthEmail findOneById(Long id) {
         Optional<AuthEmail> authEmail = emailRepository.findById(id);
 
