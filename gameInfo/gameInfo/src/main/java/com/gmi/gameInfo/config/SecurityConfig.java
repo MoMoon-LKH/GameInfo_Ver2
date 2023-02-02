@@ -26,6 +26,7 @@ public class SecurityConfig{
                 .httpBasic().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers("/api/email/**").permitAll()
                 .anyRequest().authenticated();
 
 

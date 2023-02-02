@@ -3,6 +3,7 @@ package com.gmi.gameInfo.member.service;
 import com.gmi.gameInfo.member.domain.AuthEmail;
 import com.gmi.gameInfo.member.exception.DifferentAuthEmailNumberException;
 import com.gmi.gameInfo.member.exception.NotFoundAuthEmailException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -48,7 +50,7 @@ public class EmailServiceTest {
 
         //then
         assertEquals(6, authNum.length());
-        assertInstanceOf(Integer.class, Integer.valueOf(authNum));
+        assertThat(authNum).containsOnlyDigits();
     }
 
     @Test
