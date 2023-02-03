@@ -3,6 +3,7 @@ package com.gmi.gameInfo.member.service;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
 import com.gmi.gameInfo.member.exception.DuplicateMemberException;
+import com.gmi.gameInfo.member.exception.NotFoundMemberException;
 import com.gmi.gameInfo.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -91,10 +93,9 @@ public class MemberServiceTest {
         registerDto.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         Member member = Member.createMember(registerDto);
 
-        given(memberRepository.findDuplicateMemberBYDto(registerDto)).willReturn(Optional.of(member));
+        given(memberRepository.findDuplicateMemberByDto(registerDto)).willThrow(DuplicateMemberException.class);
 
         //when
-
 
         //then
         assertThrows(DuplicateMemberException.class, () -> {
@@ -108,10 +109,15 @@ public class MemberServiceTest {
     void notFoundMember() {
 
         //given
+        given(memberRepository.findById(any(Long.class))).willThrow(NotFoundMemberException.class);
 
         //when
 
+
         //then
+        assertThrows(NotFoundMemberException.class, () -> {
+            memberService.findById(0L);
+        });
     }
 
 
@@ -120,9 +126,24 @@ public class MemberServiceTest {
     void findOneById() {
 
         //given
+        RegisterDto registerDto = RegisterDto.builder()
+                .loginId("test")
+                .password("test")
+                .name("test")
+                .nickname("nickname")
+                .email("email@naver.com")
+                .phoneNo("01323232323")
+                .birthday(Date.valueOf(LocalDate.of(1996, 6, 19)))
+                .boolCertifiedEmail(true)
+                .build();
+
+        registerDto.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        Member member = Member.createMember(registerDto);
 
         //when
+        given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(member));
 
         //then
+        assertNotNull(memberService.findById(1L));
     }
 }

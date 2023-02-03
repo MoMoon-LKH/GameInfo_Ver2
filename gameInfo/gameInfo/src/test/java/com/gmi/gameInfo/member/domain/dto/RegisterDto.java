@@ -1,13 +1,17 @@
 package com.gmi.gameInfo.member.domain.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 import java.util.Date;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegisterDto {
 
     @NotBlank(message = "로그인 아이디를 입력해주세요")

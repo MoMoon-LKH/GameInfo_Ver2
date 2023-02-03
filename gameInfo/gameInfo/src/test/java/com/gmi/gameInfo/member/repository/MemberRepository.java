@@ -15,7 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT m From Member m " +
             "WHERE (m.name = :#{#dto.name} AND m.birthday = :#{#dto.birthday}) " +
             "OR m.email = :#{#dto.email}")
-    Optional<Member> findDuplicateMemberBYDto(@Param("dto") RegisterDto registerDto);
+    Optional<Member> findDuplicateMemberByDto(@Param("dto") RegisterDto registerDto);
 
     Optional<Member> findMemberByEmail(@Param("email") String email);
 }

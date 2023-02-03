@@ -44,7 +44,7 @@ public class EmailControllerTest {
     String email = "rlgh28@naver.com";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(new EmailController(emailService))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();

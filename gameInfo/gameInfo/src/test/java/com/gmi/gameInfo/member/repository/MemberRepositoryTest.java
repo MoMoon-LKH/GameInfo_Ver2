@@ -41,7 +41,7 @@ public class MemberRepositoryTest {
 
         //given
         Calendar cal = Calendar.getInstance();
-        cal.set(1996,6,19);
+        cal.set(1996, Calendar.JULY,19);
 
         RegisterDto registerDto = RegisterDto.builder()
                 .loginId("test")
@@ -86,7 +86,7 @@ public class MemberRepositoryTest {
         Optional<Member> findMember = memberRepository.findById(member.getId());
 
         //then
-        assertEquals(findMember.get(), member);
+        assertEquals(findMember.orElseGet(null), member);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class MemberRepositoryTest {
         memberRepository.save(member);
 
         //when
-        Optional<Member> dupMember = memberRepository.findDuplicateMemberBYDto(registerDto);
+        Optional<Member> dupMember = memberRepository.findDuplicateMemberByDto(registerDto);
 
         //then
         assertNotNull(dupMember.orElseGet(null));
