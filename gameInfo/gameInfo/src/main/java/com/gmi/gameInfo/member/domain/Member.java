@@ -39,7 +39,7 @@ public class Member {
     @Column(length = 11)
     private String phoneNo;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50, nullable = false, unique = true)
     private String email;
 
     @Temporal(TemporalType.TIMESTAMP)

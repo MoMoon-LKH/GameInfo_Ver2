@@ -1,8 +1,12 @@
 package com.gmi.gameInfo.member.service;
 
 import com.gmi.gameInfo.member.domain.AuthEmail;
+import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.member.domain.dto.RegisterDto;
 import com.gmi.gameInfo.member.exception.DifferentAuthEmailNumberException;
+import com.gmi.gameInfo.member.exception.DuplicateEmailException;
 import com.gmi.gameInfo.member.exception.NotFoundAuthEmailException;
+import com.gmi.gameInfo.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,6 +30,12 @@ public class EmailServiceTest {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Test
     @Rollback
@@ -68,6 +82,36 @@ public class EmailServiceTest {
         assertEquals(email.getAuthNum(), sendEmail.getAuthNum());
 
     }
+    
+    @Test
+    @Rollback
+    @DisplayName("이메일 전송 전 회원 이메일 중복 조회 실패 시")
+    void duplicateEmail(){
+
+        //given
+        Calendar cal = Calendar.getInstance();
+        cal.set(1996,6,19);
+
+        RegisterDto registerDto = RegisterDto.builder()
+                .loginId("test")
+                .password(passwordEncoder.encode("123456"))
+                .name("테스트")
+                .nickname("테스트 닉네임")
+                .birthday(new Date(cal.getTimeInMillis()))
+                .phoneNo("01012345678")
+                .email("rlgh28@naver.com").build();
+        Member member = Member.createMember(registerDto);
+        memberRepository.save(member);
+
+        //when
+        AuthEmail email = AuthEmail.createAuthEmail("rlgh28@naver.com", emailService.getAuthNum());
+
+        //then
+        assertThrows(DuplicateEmailException.class, () -> {
+            emailService.sendAndSaveAuthEmail(email);
+        });
+
+    }
 
     @Test
     @Rollback
@@ -102,7 +146,7 @@ public class EmailServiceTest {
 
     @Test
     @Rollback
-    @DisplayName("이메일 검증 확인 실패")
+    @DisplayName("이메일 검증번호 확인 실패")
     void differentAuthNum() {
 
         //given

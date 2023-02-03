@@ -1,10 +1,13 @@
 package com.gmi.gameInfo.member.service;
 
 import com.gmi.gameInfo.member.domain.AuthEmail;
+import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.exception.DifferentAuthEmailNumberException;
+import com.gmi.gameInfo.member.exception.DuplicateEmailException;
 import com.gmi.gameInfo.member.exception.NotFoundAuthEmailException;
 import com.gmi.gameInfo.member.exception.SendEmailFailException;
 import com.gmi.gameInfo.member.repository.EmailRepository;
+import com.gmi.gameInfo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,8 @@ import java.util.Random;
 public class EmailService {
 
     private final EmailRepository emailRepository;
+
+    private final MemberRepository memberRepository;
 
     @Value("${spring.mail.username}")
     private String email;
@@ -57,6 +62,7 @@ public class EmailService {
     @Transactional
     public AuthEmail sendAndSaveAuthEmail(AuthEmail authEmail) {
 
+        checkDuplicateEmail(authEmail.getEmail());
         boolean boolSendEmail = sendAuthNumberEmail(authEmail);
 
         if(!boolSendEmail) {
@@ -121,6 +127,16 @@ public class EmailService {
 
         if (!authEmail.getAuthNum().equals(authNum)) {
             throw new DifferentAuthEmailNumberException();
+        }
+
+        return true;
+    }
+
+    public boolean checkDuplicateEmail(String email) {
+        Optional<Member> member = memberRepository.findMemberByEmail(email);
+
+        if (member.isPresent()) {
+            throw new DuplicateEmailException();
         }
 
         return true;
