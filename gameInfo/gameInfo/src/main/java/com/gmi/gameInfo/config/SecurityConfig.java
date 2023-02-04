@@ -1,5 +1,8 @@
 package com.gmi.gameInfo.config;
 
+import com.gmi.gameInfo.jwt.JwtSecurityConfig;
+import com.gmi.gameInfo.jwt.TokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.SecurityBuilder;
@@ -14,8 +17,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig{
 
+    private final TokenProvider tokenProvider;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,7 +43,10 @@ public class SecurityConfig{
                 .antMatchers("/api/email/**").permitAll()
                 .antMatchers("/api/members/register").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+
+                .and()
+                .apply(new JwtSecurityConfig(tokenProvider));
 
        return http.build();
     }

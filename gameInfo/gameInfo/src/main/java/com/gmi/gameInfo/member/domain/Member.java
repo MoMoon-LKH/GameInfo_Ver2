@@ -48,6 +48,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
+    @OneToOne
+    @JoinColumn(name = "token_id")
+    private MemberToken memberToken;
 
     private Member(RegisterDto registerDto) {
         this.loginId = registerDto.getLoginId();
