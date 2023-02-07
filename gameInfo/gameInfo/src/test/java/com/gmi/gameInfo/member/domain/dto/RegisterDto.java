@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.member.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class RegisterDto {
     private String nickname;
 
     @NotNull(message = "생년월일을 입력해주세요")
+    @JsonFormat(pattern = "yyyyMMdd")
     @Past(message = "잘못된 날짜입니다. 다시 확인해주세요")
     private Date birthday;
 

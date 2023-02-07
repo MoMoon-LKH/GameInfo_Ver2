@@ -18,4 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findDuplicateMemberByDto(@Param("dto") RegisterDto registerDto);
 
     Optional<Member> findMemberByEmail(@Param("email") String email);
+
+    Optional<Member> findMemberByLoginId(@Param("loginId") String loginId);
 }

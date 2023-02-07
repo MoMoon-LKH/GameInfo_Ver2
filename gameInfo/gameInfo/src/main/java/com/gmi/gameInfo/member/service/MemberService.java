@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -28,9 +30,12 @@ public class MemberService {
     @Transactional
     public Member registerMember(RegisterDto registerDto) {
 
-        memberRepository
-                .findDuplicateMemberByDto(registerDto)
-                .orElseThrow(DuplicateMemberException::new);
+        Optional<Member> dupMember = memberRepository
+                .findDuplicateMemberByDto(registerDto);
+
+        if (dupMember.isPresent()) {
+            throw  new DuplicateMemberException();
+        }
 
         return memberRepository.save(Member.createMember(registerDto));
     }

@@ -37,6 +37,7 @@ public class MemberServiceTest {
     @InjectMocks
     MemberService memberService;
 
+
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
