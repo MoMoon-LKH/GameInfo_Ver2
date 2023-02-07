@@ -1,10 +1,12 @@
 package com.gmi.gameInfo.member.service;
 
 import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
 import com.gmi.gameInfo.member.exception.DuplicateMemberException;
 import com.gmi.gameInfo.member.exception.NotFoundMemberException;
 import com.gmi.gameInfo.member.repository.MemberRepository;
+import com.gmi.gameInfo.member.repository.MemberTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +18,7 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-
+    private final MemberTokenRepository memberTokenRepository;
 
     @Transactional
     public Member save(Member member) {
@@ -38,5 +40,23 @@ public class MemberService {
         }
 
         return memberRepository.save(Member.createMember(registerDto));
+    }
+
+    @Transactional
+    public void saveRefreshToken(String loginId, MemberToken memberToken) {
+
+        Member member = memberRepository
+                .findMemberByLoginId(loginId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        if (member.getMemberToken() != null) {
+
+            member.getMemberToken().updateLoginRefreshToken(memberToken.getRefreshToken());
+
+        } else {
+
+            memberTokenRepository.save(memberToken);
+            member.updateTokenId(memberToken);
+        }
     }
 }

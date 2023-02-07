@@ -67,4 +67,8 @@ public class Member {
     public static Member createMember(RegisterDto registerDto) {
         return new Member(registerDto);
     }
+
+    public void updateTokenId(MemberToken memberToken) {
+        this.memberToken = memberToken;
+    }
 }

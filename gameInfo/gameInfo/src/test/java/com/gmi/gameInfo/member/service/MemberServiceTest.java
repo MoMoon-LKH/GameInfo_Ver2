@@ -1,10 +1,12 @@
 package com.gmi.gameInfo.member.service;
 
 import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
 import com.gmi.gameInfo.member.exception.DuplicateMemberException;
 import com.gmi.gameInfo.member.exception.NotFoundMemberException;
 import com.gmi.gameInfo.member.repository.MemberRepository;
+import com.gmi.gameInfo.member.repository.MemberTokenRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +35,9 @@ public class MemberServiceTest {
 
     @Mock
     MemberRepository memberRepository;
+
+    @Mock
+    MemberTokenRepository memberTokenRepository;
 
     @InjectMocks
     MemberService memberService;
@@ -146,5 +151,39 @@ public class MemberServiceTest {
 
         //then
         assertNotNull(memberService.findById(1L));
+    }
+    
+    @Test
+    @DisplayName("로그인 시 토큰 등록")
+    void loginMemberToken() {
+    
+        //given
+        MemberToken memberToken = MemberToken.builder()
+                .refreshToken("test")
+                .createDate(new java.util.Date())
+                .build();
+
+        RegisterDto registerDto = RegisterDto.builder()
+                .loginId("test")
+                .password("test")
+                .name("test")
+                .nickname("nickname")
+                .email("email@naver.com")
+                .phoneNo("01323232323")
+                .birthday(Date.valueOf(LocalDate.of(1996, 6, 19)))
+                .boolCertifiedEmail(true)
+                .build();
+
+        registerDto.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        Member member = Member.createMember(registerDto);
+
+        given(memberTokenRepository.save(memberToken)).willReturn(memberToken);
+        given(memberRepository.findMemberByLoginId(any(String.class))).willReturn(Optional.of(member));
+
+        //when
+        memberService.saveRefreshToken(member.getLoginId(), memberToken);
+
+        //then
+        assertEquals("test", member.getMemberToken().getRefreshToken());
     }
 }

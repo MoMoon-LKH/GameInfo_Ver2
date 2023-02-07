@@ -29,4 +29,9 @@ public class MemberToken {
         this.refreshToken = refreshToken;
     }
 
+    public void updateLoginRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+        this.createDate = new Date();
+    }
+
 }

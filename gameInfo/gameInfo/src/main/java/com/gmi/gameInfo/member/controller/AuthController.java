@@ -2,7 +2,9 @@ package com.gmi.gameInfo.member.controller;
 
 
 import com.gmi.gameInfo.jwt.TokenProvider;
+import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.domain.dto.LoginDto;
+import com.gmi.gameInfo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +30,7 @@ public class AuthController {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final MemberService memberService;
 
     @Value("${jwt.refresh-validity-date}")
     private int refreshDays;
@@ -45,6 +49,8 @@ public class AuthController {
 
         String access = tokenProvider.createAccessToken(authentication);
         String refresh = tokenProvider.createRefreshToken(authentication);
+
+        saveMemberToken(loginDto.getLoginId(), refresh);
 
         String accessToken = addTokenFrontString(access);
         response.setHeader("Authorization", accessToken);
@@ -71,5 +77,13 @@ public class AuthController {
         cookie.setMaxAge(60 * 60 * 24 * refreshDays);
 
         return cookie;
+    }
+
+    public void saveMemberToken(String loginId, String refreshToken) {
+        MemberToken memberToken = MemberToken.builder()
+                .refreshToken(refreshToken)
+                .createDate(new Date()).build();
+
+        memberService.saveRefreshToken(loginId, memberToken);
     }
 }
