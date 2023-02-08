@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.member.domain;
 
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
+import com.gmi.gameInfo.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -51,6 +53,9 @@ public class Member {
     @OneToOne
     @JoinColumn(name = "token_id")
     private MemberToken memberToken;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Post> posts;
 
     private Member(RegisterDto registerDto) {
         this.loginId = registerDto.getLoginId();
