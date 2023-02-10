@@ -29,6 +29,9 @@ public class MemberService {
         return memberRepository.findById(id).orElseThrow(NotFoundMemberException::new);
     }
 
+    public Member findByLoginId(String loginId) {
+        return memberRepository.findMemberByLoginId(loginId).orElseThrow(NotFoundMemberException::new);
+    }
     @Transactional
     public Member registerMember(RegisterDto registerDto) {
 

@@ -38,14 +38,20 @@ public class Post {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public Post(PostDto postDto) {
+    public Post(PostDto postDto, Member member) {
         this.title = postDto.getTitle();
         this.content = postDto.getContent();
         this.createDate = new Date();
+        this.member = member;
     }
 
-    public static Post createPostByDto(PostDto postDto) {
-        return new Post(postDto);
+    public static Post createPostByDto(PostDto postDto, Member member) {
+        return new Post(postDto, member);
     }
 
+    public void updatePost(PostDto updateDto) {
+        this.title = updateDto.getTitle();
+        this.content = updateDto.getContent();
+        this.updateDate = new Date();
+    }
 }

@@ -43,6 +43,7 @@ public class SecurityConfig{
                 .antMatchers("/api/email/**").permitAll()
                 .antMatchers("/api/members/register").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/post/{id}").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
