@@ -5,6 +5,7 @@ import com.gmi.gameInfo.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.SecurityBuilder;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,7 +44,7 @@ public class SecurityConfig{
                 .antMatchers("/api/email/**").permitAll()
                 .antMatchers("/api/members/register").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/post/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/post/{id}").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

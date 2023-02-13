@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.member.repository;
 
+import com.gmi.gameInfo.config.TestConfig;
 import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.exception.NotFoundRefreshTokenException;
 import org.junit.jupiter.api.Assertions;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@Import(TestConfig.class)
 public class MemberTokenRepositoryTest {
     
     @Autowired

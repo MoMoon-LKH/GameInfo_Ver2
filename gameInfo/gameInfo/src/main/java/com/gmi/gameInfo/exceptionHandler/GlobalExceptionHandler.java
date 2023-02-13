@@ -3,6 +3,7 @@ package com.gmi.gameInfo.exceptionHandler;
 import com.gmi.gameInfo.member.exception.*;
 import com.gmi.gameInfo.post.exception.FailDeletePostException;
 import com.gmi.gameInfo.post.exception.NotFoundPostException;
+import com.gmi.gameInfo.post.exception.NotPostOwnerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -88,6 +89,16 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(e.getMessage()).build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
+
+    @ExceptionHandler(NotPostOwnerException.class)
+    protected ResponseEntity<?> handleNotPostOwnerException(NotPostOwnerException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .message(e.getMessage()).build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
 }

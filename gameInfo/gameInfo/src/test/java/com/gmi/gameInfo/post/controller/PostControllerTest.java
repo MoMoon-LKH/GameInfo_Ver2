@@ -7,25 +7,30 @@ import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
 import com.gmi.gameInfo.post.service.PostService;
+import com.gmi.gameInfo.post.service.PostServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.xml.transform.Result;
+import java.util.Date;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PostController.class)
 @ActiveProfiles("dev")
@@ -83,7 +88,7 @@ public class PostControllerTest {
                         .with(csrf())
                 )
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(post.getId()));
     }
 
@@ -112,6 +117,97 @@ public class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(vo.getTitle()))
                 .andExpect(jsonPath("$.content").value(vo.getContent()));
+
+    }
+    
+    
+    @Test
+    @WithMockUser
+    @DisplayName("게시글 업데이트")
+    void updatePost() throws Exception {
+    
+        //given
+        PostDto postDto = PostDto.builder()
+                .title("update")
+                .content("updateC").build();
+
+        Member member = createTestMember();
+        Post post = createTestPost(member);
+        Post updatePost = createTestPost(member);
+
+        given(memberService.findByLoginId(any())).willReturn(member);
+        given(postService.findById(post.getId())).willReturn(post);
+        doNothing().when(postService).updatePost(post, postDto);
+        updatePost.updatePost(postDto);
+        given(postService.findPostVoById(post.getId())).willReturn(convertPostVo(updatePost));
+
+        //when
+        ResultActions result = mockMvc.perform(patch("/api/post/" + 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(postDto))
+                .with(csrf())
+        );
+        
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(postDto.getTitle()))
+                .andExpect(jsonPath("$.content").value(postDto.getContent()));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("게시글 삭제")
+    void deletePost() throws Exception {
+
+        //given
+        Member member = createTestMember();
+        Post post = createTestPost(member);
+
+        given(memberService.findByLoginId(anyString())).willReturn(member);
+        given(postService.findById(anyLong())).willReturn(post);
+        given(postService.checkPostOwner(any(Post.class), any(Member.class))).willReturn(true);
+        given(postService.deleteOneById(post)).willReturn(true);
+
+        //when
+        ResultActions result = mockMvc.perform(delete("/api/post/" + 1L)
+                .with(csrf()));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+
+
+    }
+
+    private Member createTestMember() {
+        return Member.builder()
+                .id(1L)
+                .loginId("test")
+                .build();
+    }
+
+    private Post createTestPost(Member member) {
+        return Post.builder()
+                .id(1L)
+                .title("test")
+                .content("testContent")
+                .member(member)
+                .createDate(new Date())
+                .build();
+    }
+
+    private PostVo convertPostVo(Post post) {
+        return PostVo.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .memberId(post.getMember().getId())
+                .nickname(post.getMember().getNickname())
+                .build();
 
     }
 }

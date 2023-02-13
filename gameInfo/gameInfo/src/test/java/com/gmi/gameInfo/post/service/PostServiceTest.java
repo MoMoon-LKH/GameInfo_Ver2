@@ -5,6 +5,7 @@ import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
 import com.gmi.gameInfo.post.exception.FailDeletePostException;
+import com.gmi.gameInfo.post.exception.NotPostOwnerException;
 import com.gmi.gameInfo.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -155,12 +156,60 @@ public class PostServiceTest {
         assertEquals(post.getMemberId(), postVo.getMemberId());
     }
 
+    @Test
+    @DisplayName("게시글 본인 확인 - 성공")
+    void failCheckPostOwner() {
+
+        //given
+        Member member = createMember();
+        Post post = Post.builder()
+                .id(1L)
+                .title("test")
+                .content("content")
+                .member(member).build();
+
+        //when
+        boolean bool = postService.checkPostOwner(post, member);
+
+        //then
+        assertTrue(bool);
+    }
+
+    @Test
+    @DisplayName("게시글 본인확인 - 아닐 시")
+    void checkPostOwner() {
+    
+        //given
+        Member member = createMember();
+        Post post = Post.builder()
+                .id(1L)
+                .title("test")
+                .content("content")
+                .member(member).build();
+        Member other = Member.builder()
+                .id(2L)
+                .loginId("test2")
+                .name("테스트2")
+                .nickname("테스트 2")
+                .phoneNo("01023232323")
+                .email("test@asdegvf.com").build();
+    
+        //when
+        
+        //then
+        assertThrows(NotPostOwnerException.class, () -> {
+            postService.checkPostOwner(post, other);
+        });
+    }
+
     private Member createMember() {
         return Member.builder()
+                .id(1L)
                 .loginId("test")
                 .name("테스트")
                 .nickname("테스트 닉네임")
                 .phoneNo("01012345678")
                 .email("test@asdf.com").build();
     }
+
 }
