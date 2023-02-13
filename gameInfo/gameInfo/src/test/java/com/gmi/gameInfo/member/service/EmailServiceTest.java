@@ -8,9 +8,7 @@ import com.gmi.gameInfo.member.exception.DuplicateEmailException;
 import com.gmi.gameInfo.member.exception.NotFoundAuthEmailException;
 import com.gmi.gameInfo.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("dev")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EmailServiceTest {
 
     @Autowired
@@ -37,6 +36,7 @@ public class EmailServiceTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Order(1)
     @Test
     @Rollback
     @DisplayName("이메일 인증번호 발송 테스트")
@@ -52,6 +52,7 @@ public class EmailServiceTest {
         assertTrue(boolEmail);
     }
 
+    @Order(2)
     @Test
     @DisplayName("인증번호 6자리 생성")
     void createAuthNum() {
@@ -69,6 +70,7 @@ public class EmailServiceTest {
 
     @Test
     @Rollback
+    @Order(3)
     @DisplayName("이메일 전송 및 redis 저장 테스트")
     void sendAndSaveAuthEmail() {
         //given
@@ -82,6 +84,7 @@ public class EmailServiceTest {
         assertEquals(email.getAuthNum(), sendEmail.getAuthNum());
 
     }
+
     
     @Test
     @Rollback
@@ -112,6 +115,7 @@ public class EmailServiceTest {
         });
 
     }
+
 
     @Test
     @Rollback
@@ -156,5 +160,26 @@ public class EmailServiceTest {
         assertThrows(DifferentAuthEmailNumberException.class, () -> {
             emailService.confirmAuthNum(email, "test");
         });
+    }
+
+
+    @Test
+    @Rollback
+    @DisplayName("이메일 재전송 시")
+    void EmailServiceTest() {
+
+        //given
+        AuthEmail email = AuthEmail.createAuthEmail("rlgh28@naver.com", emailService.getAuthNum());
+        AuthEmail sendEmail = emailService.sendAndSaveAuthEmail(email);
+
+        AuthEmail resend = AuthEmail.createAuthEmail("rlgh28@naver.com", emailService.getAuthNum());
+
+        //when
+        AuthEmail resendEmail = emailService.sendAndSaveAuthEmail(resend);
+
+        //then
+        assertEquals(resendEmail.getAuthNum(), resend.getAuthNum());
+        assertEquals(emailService.findByEmail(sendEmail.getEmail()).getAuthNum(), resendEmail.getAuthNum());
+
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -51,6 +52,7 @@ public class EmailControllerTest {
     }
 
     @Test
+    @Rollback
     @DisplayName("인증메일 api")
     void sendEmail() throws Exception{
     
@@ -68,6 +70,7 @@ public class EmailControllerTest {
     }
 
     @Test
+    @Rollback
     @DisplayName("인증메일 api - 메일전송 실패시")
     void notSendEmail() throws Exception {
 
@@ -84,6 +87,7 @@ public class EmailControllerTest {
     }
     
     @Test
+    @Rollback
     @DisplayName("인증번호 확인 - 일치")
     void confirmAuthEmail() throws Exception {
     
@@ -108,6 +112,7 @@ public class EmailControllerTest {
     }
     
     @Test
+    @Rollback
     @DisplayName("인증번호 불일치 - 불일치")
     void notConfirmAuthEmail() throws Exception {
 

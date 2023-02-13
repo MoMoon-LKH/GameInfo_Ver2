@@ -50,19 +50,25 @@ public class EmailService {
     }
 
     public AuthEmail findOneById(Long id) {
-        Optional<AuthEmail> authEmail = emailRepository.findById(id);
+        return emailRepository.findById(id)
+                .orElseThrow(NotFoundAuthEmailException::new);
+    }
 
-        if(authEmail.isEmpty()){
-            throw new NotFoundAuthEmailException();
-        }
-
-        return authEmail.get();
+    public AuthEmail findByEmail(String email) {
+        return emailRepository.findAuthEmailByEmail(email)
+                .orElseThrow(NotFoundAuthEmailException::new);
     }
 
     @Transactional
     public AuthEmail sendAndSaveAuthEmail(AuthEmail authEmail) {
 
         checkDuplicateEmail(authEmail.getEmail());
+        Optional<AuthEmail> existEmail = emailRepository.findAuthEmailByEmail(authEmail.getEmail());
+
+        if (existEmail.isPresent()) {
+            emailRepository.delete(existEmail.get());
+        }
+
         boolean boolSendEmail = sendAuthNumberEmail(authEmail);
 
         if(!boolSendEmail) {

@@ -1,10 +1,8 @@
 package com.gmi.gameInfo.member.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -14,10 +12,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @RedisHash(value = "email", timeToLive = 300)
+@ToString
 public class AuthEmail {
 
     @Id
     private Long id;
+
+    @Indexed
     private String email;
     private String authNum;
     private LocalDateTime createTime;

@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.member.repository;
 
 import com.gmi.gameInfo.member.domain.AuthEmail;
+import com.gmi.gameInfo.member.exception.NotFoundAuthEmailException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,16 +55,44 @@ public class EmailRepositoryTest {
         assertEquals(email.getEmail(), saveEmail.get().getEmail());
         assertEquals(email.getAuthNum(), saveEmail.get().getAuthNum());
     }
-    
+
     @Test
-    @DisplayName("이메일 조회 실패")
-    void notFoundAuthEmail() {
-    
+    @Rollback
+    @DisplayName("이메일 조회 - email")
+    void findAuthEmailByEmail() {
+
         //given
         AuthEmail email = AuthEmail.createAuthEmail("test@test.com", "123456");
+        emailRepository.save(email);
 
         //when
-        
+        AuthEmail saveEmail = emailRepository
+                .findAuthEmailByEmail(email.getEmail()).orElseThrow(NotFoundAuthEmailException::new);
+
         //then
+        System.out.println(saveEmail.toString());
+        assertEquals(email.getEmail(), saveEmail.getEmail());
+        assertEquals(email.getAuthNum(), saveEmail.getAuthNum());
+
     }
+
+
+    @Test
+    @Rollback
+    @DisplayName("해당 이메일 삭제")
+    void deleteAllByEmail() {
+
+        //given
+        AuthEmail email = AuthEmail.createAuthEmail("test@testj.com", "123456");
+        emailRepository.save(email);
+
+        //when
+        emailRepository.deleteById(email.getId());
+
+        //then
+        assertThrows(NotFoundAuthEmailException.class, () -> {
+            emailRepository.findAuthEmailByEmail(email.getEmail()).orElseThrow(NotFoundAuthEmailException::new);
+        });
+    }
+
 }
