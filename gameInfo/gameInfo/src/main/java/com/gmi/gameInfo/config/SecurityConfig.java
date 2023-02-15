@@ -45,6 +45,7 @@ public class SecurityConfig{
                 .antMatchers("/api/members/register").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/post/{id}").permitAll()
+                .antMatchers("/api/docs", "/v2/api-docs").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
@@ -59,9 +60,14 @@ public class SecurityConfig{
     public WebSecurityCustomizer webSecurityCustomizer() {
 
         return web -> {
-
+            web.ignoring().antMatchers(
+                    "/swagger-ui/**",
+                    "/api/docs",
+                    "/swagger-resources/**",
+                    "/webjars/**");
         };
     }
+
 
 
 

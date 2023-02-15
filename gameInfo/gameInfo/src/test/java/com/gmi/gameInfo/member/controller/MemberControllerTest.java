@@ -76,7 +76,7 @@ public class MemberControllerTest {
                     .content(objectMapper.writeValueAsString(registerDto))
                     .contentType(MediaType.APPLICATION_JSON)
             )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("테스트"))
                 .andDo(print());

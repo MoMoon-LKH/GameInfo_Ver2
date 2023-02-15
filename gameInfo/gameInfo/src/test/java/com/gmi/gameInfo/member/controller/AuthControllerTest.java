@@ -108,6 +108,7 @@ public class AuthControllerTest {
         mvc.perform(post("/api/auth/login")
                         .content(objectMapper.writeValueAsString(loginDto))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         )
                 .andDo(print())
                 .andExpect(status().isOk());

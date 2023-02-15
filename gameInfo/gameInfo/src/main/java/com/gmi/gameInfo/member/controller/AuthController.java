@@ -5,6 +5,10 @@ import com.gmi.gameInfo.jwt.TokenProvider;
 import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.domain.dto.LoginDto;
 import com.gmi.gameInfo.member.service.MemberService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ResponseHeader;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.print.DocFlavor;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -23,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Api(tags = "Auth Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -35,6 +41,11 @@ public class AuthController {
     @Value("${jwt.refresh-validity-date}")
     private int refreshDays;
 
+    @Operation(summary = "로그인", description = "회원 로그인 API")
+    @ApiResponse(code = 200, message = "Login Success",
+            responseHeaders = {
+                @ResponseHeader(name = "Authorization", description = "JWT Token", response = String.class)
+            })
     @PostMapping("/login")
     public ResponseEntity<?> authorize(
             @Valid @RequestBody LoginDto loginDto,
@@ -64,11 +75,11 @@ public class AuthController {
     }
 
 
-    public String addTokenFrontString(String token) {
+    private String addTokenFrontString(String token) {
         return "Bearer " + token;
     }
 
-    public Cookie createRefreshCookie(String refresh) {
+    private Cookie createRefreshCookie(String refresh) {
 
         Cookie cookie = new Cookie("gameInfo", refresh);
         cookie.setSecure(true);
@@ -79,7 +90,7 @@ public class AuthController {
         return cookie;
     }
 
-    public void saveMemberToken(String loginId, String refreshToken) {
+    private void saveMemberToken(String loginId, String refreshToken) {
         MemberToken memberToken = MemberToken.builder()
                 .refreshToken(refreshToken)
                 .createDate(new Date()).build();
