@@ -21,7 +21,11 @@ import springfox.documentation.spring.web.plugins.Docket;
 import com.fasterxml.classmate.TypeResolver;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+
+import static io.lettuce.core.internal.LettuceSets.newHashSet;
+
 
 @Configuration
 public class SwaggerConfig {
@@ -49,6 +53,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .securityContexts(Arrays.asList(securityContext()))
                 .securitySchemes(Arrays.asList(apiKey()))
+                .protocols(newHashSet("http", "https"))
                 .additionalModels(
                         typeResolver.resolve(ErrorResponse.class),
                         typeResolver.resolve(MemberDto.class),

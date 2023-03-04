@@ -85,6 +85,7 @@ public class EmailService {
         prop.put("mail.smtp.port", port);
         prop.put("mail.smtp.auth", "true");
         prop.put("mail.smtp.starttls.enable", "true");
+        prop.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
 
         try {
             Session session = Session.getInstance(prop, new Authenticator() {
