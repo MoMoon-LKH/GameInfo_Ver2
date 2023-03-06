@@ -2,20 +2,16 @@ package com.gmi.gameInfo.member.controller;
 
 import com.gmi.gameInfo.exceptionHandler.ErrorResponse;
 import com.gmi.gameInfo.member.domain.AuthEmail;
+import com.gmi.gameInfo.member.domain.dto.EmailDto;
 import com.gmi.gameInfo.member.service.EmailService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.Example;
-import io.swagger.annotations.ExampleProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,10 +34,9 @@ public class EmailController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @PostMapping("/authenticate")
     public ResponseEntity<?> sendAuthEmail(
-            @Parameter(name = "email", description = "인증메일 전송할 이메일 주소", in = ParameterIn.DEFAULT, required = true)
-            @RequestParam String email) {
+            @RequestBody EmailDto emailDto) {
 
-        AuthEmail authEmail = AuthEmail.createAuthEmail(email, emailService.getAuthNum());
+        AuthEmail authEmail = AuthEmail.createAuthEmail(emailDto.getEmail(), emailService.getAuthNum());
         emailService.sendAndSaveAuthEmail(authEmail);
 
         Map<String, Object> map = new HashMap<>();
@@ -59,7 +54,7 @@ public class EmailController {
     @GetMapping("/verify-number/{id}")
     public ResponseEntity<?> verifyAuthenticateNumber(
             @Parameter(name = "id", description = "인증번호메일 id", in = ParameterIn.PATH, required = true)
-            @PathVariable Long id,
+            @PathVariable String id,
             @Parameter(name = "authNum", description = "인증번호", required = true)
             @RequestParam String authNum) {
 

@@ -186,4 +186,20 @@ public class MemberServiceTest {
         //then
         assertEquals("test", member.getMemberToken().getRefreshToken());
     }
+    
+    @Test
+    @DisplayName("로그인 아이디 - 중복조회 여부")
+    void DuplicateLoginId() {
+    
+        //given
+        String loginId = "test";
+        given(memberRepository.countByLoginId(loginId)).willReturn(1);
+    
+        //when
+        boolean dupleBool = memberService.duplicateLoginId(loginId);
+
+        
+        //then
+        assertTrue(dupleBool);
+    }
 }

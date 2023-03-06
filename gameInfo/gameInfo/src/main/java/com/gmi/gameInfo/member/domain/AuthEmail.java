@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class AuthEmail {
 
     @Id
-    private Long id;
+    private String id;
 
     @Indexed
     private String email;

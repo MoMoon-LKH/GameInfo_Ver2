@@ -45,11 +45,11 @@ public class EmailService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         emailRepository.deleteById(id);
     }
 
-    public AuthEmail findOneById(Long id) {
+    public AuthEmail findOneById(String id) {
         return emailRepository.findById(id)
                 .orElseThrow(NotFoundAuthEmailException::new);
     }

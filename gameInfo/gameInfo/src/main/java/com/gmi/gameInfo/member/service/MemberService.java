@@ -32,6 +32,13 @@ public class MemberService {
     public Member findByLoginId(String loginId) {
         return memberRepository.findMemberByLoginId(loginId).orElseThrow(NotFoundMemberException::new);
     }
+
+    public boolean duplicateLoginId(String loginId) {
+        int count = memberRepository.countByLoginId(loginId);
+
+        return count > 0;
+    }
+
     @Transactional
     public Member registerMember(RegisterDto registerDto) {
 

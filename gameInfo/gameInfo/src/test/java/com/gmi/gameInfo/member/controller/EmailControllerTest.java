@@ -3,6 +3,7 @@ package com.gmi.gameInfo.member.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.exceptionHandler.GlobalExceptionHandler;
 import com.gmi.gameInfo.member.domain.AuthEmail;
+import com.gmi.gameInfo.member.domain.dto.EmailDto;
 import com.gmi.gameInfo.member.exception.DifferentAuthEmailNumberException;
 import com.gmi.gameInfo.member.exception.SendEmailFailException;
 import com.gmi.gameInfo.member.service.EmailService;
@@ -44,6 +45,9 @@ public class EmailControllerTest {
     private EmailService emailService;
     String email = "rlgh28@naver.com";
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(new EmailController(emailService))
@@ -59,10 +63,14 @@ public class EmailControllerTest {
         //given
         AuthEmail authEmail = AuthEmail.createAuthEmail(email , emailService.getAuthNum());
         given(emailService.sendAndSaveAuthEmail(authEmail)).willReturn(authEmail);
+        EmailDto emailDto = EmailDto.builder()
+                .email(email)
+                .build();
 
         //when
         mockMvc.perform(post("/api/email/authenticate")
-                        .param("email", email))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(emailDto)))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -75,11 +83,15 @@ public class EmailControllerTest {
     void notSendEmail() throws Exception {
 
         //given
+        EmailDto emailDto = EmailDto.builder()
+                .email(email)
+                .build();
         given(emailService.sendAndSaveAuthEmail(any())).willThrow(SendEmailFailException.class);
 
         //when
         mockMvc.perform(post("/api/email/authenticate")
-                        .param("email", email))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(emailDto)))
                 .andExpect(status().isInternalServerError())
                 .andDo(print());
 
@@ -93,9 +105,13 @@ public class EmailControllerTest {
     
         //given
         String authNum = "123456";
+        EmailDto emailDto = EmailDto.builder()
+                .email(email)
+                .authNum("123456")
+                .build();
 
         AuthEmail authEmail = AuthEmail.builder()
-                .id(1L)
+                .id("1")
                 .email(email)
                 .authNum(authNum).build();
 
@@ -119,10 +135,13 @@ public class EmailControllerTest {
         //given
 
         String email = "rlgh28@naver.com";
-        String authNum = "123456";
-
+        String authNum = "123123";
+        EmailDto emailDto = EmailDto.builder()
+                .email(email)
+                .authNum("123456")
+                .build();
         AuthEmail authEmail = AuthEmail.builder()
-                .id(1L)
+                .id("1")
                 .email(email)
                 .authNum(authNum).build();
         given(emailService.findOneById(authEmail.getId())).willReturn(authEmail);
@@ -132,7 +151,7 @@ public class EmailControllerTest {
 
         //then
         mockMvc.perform(get("/api/email/verify-number/" + authEmail.getId())
-                        .param("authNum", "123123"))
+                        .param("authNum", authNum))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 

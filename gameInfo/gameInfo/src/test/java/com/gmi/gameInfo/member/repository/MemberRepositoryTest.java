@@ -145,4 +145,72 @@ public class MemberRepositoryTest {
         //then
         assertEquals(member, dupMember.orElseGet(null));
     }
+
+    @Test
+    @Rollback
+    @DisplayName("로그인 아이디 조회")
+    void findByLoginId() {
+
+        //given
+        Calendar cal = Calendar.getInstance();
+        cal.set(1996,6,19);
+
+        RegisterDto registerDto = RegisterDto.builder()
+                .loginId("test")
+                .password(passwordEncoder.encode("123456"))
+                .name("테스트")
+                .nickname("테스트 닉네임")
+                .birthday(new Date(cal.getTimeInMillis()))
+                .phoneNo("01012345678")
+                .email("test@asdf.com").build();
+        Member member = Member.createMember(registerDto);
+        memberRepository.save(member);
+
+        //when
+        Optional<Member> dupMember = memberRepository.findMemberByLoginId(registerDto.getLoginId());
+
+        //then
+        assertEquals(member, dupMember.orElseGet(null));
+    }
+
+    @Test
+    @Rollback
+    @DisplayName("로그인 아이디 - 조회 여부 O")
+    void countByLoginId() {
+
+        //given
+        Calendar cal = Calendar.getInstance();
+        cal.set(1996,6,19);
+
+        RegisterDto registerDto = RegisterDto.builder()
+                .loginId("test")
+                .password(passwordEncoder.encode("123456"))
+                .name("테스트")
+                .nickname("테스트 닉네임")
+                .birthday(new Date(cal.getTimeInMillis()))
+                .phoneNo("01012345678")
+                .email("test@asdf.com").build();
+        Member member = Member.createMember(registerDto);
+        memberRepository.save(member);
+
+        //when
+        int count = memberRepository.countByLoginId(registerDto.getLoginId());
+
+        //then
+        assertEquals(1, count);
+    }
+
+    @Test
+    @Rollback
+    @DisplayName("로그인 아이디 - 조회 여부 X")
+    void countZeroByLoginId() {
+
+        //given
+
+        //when
+        int count = memberRepository.countByLoginId("test");
+
+        //then
+        assertEquals(0, count);
+    }
 }

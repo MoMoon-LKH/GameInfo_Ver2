@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface EmailRepository extends CrudRepository<AuthEmail, Long> {
+public interface EmailRepository extends CrudRepository<AuthEmail, String> {
 
     Optional<AuthEmail> findAuthEmailByEmail(@Param("email") String email);
 

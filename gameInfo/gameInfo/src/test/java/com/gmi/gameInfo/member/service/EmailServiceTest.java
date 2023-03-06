@@ -144,7 +144,7 @@ public class EmailServiceTest {
 
         //when
         assertThrows(NotFoundAuthEmailException.class, () -> {
-            emailService.findOneById(0L);
+            emailService.findOneById("");
         });
     }
 
