@@ -43,7 +43,7 @@ public class SecurityConfig{
                 .antMatchers("/").permitAll()
                 .antMatchers("/api/email/**").permitAll()
                 .antMatchers("/api/members/register", "/api/members/duplicate-loginId").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/auth/login").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/post/{id}").permitAll()
                 .antMatchers("/api/docs", "/v2/api-docs").permitAll()
                 .anyRequest().authenticated()

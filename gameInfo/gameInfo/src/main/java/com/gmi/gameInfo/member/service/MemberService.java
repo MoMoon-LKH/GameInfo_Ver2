@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -55,18 +56,25 @@ public class MemberService {
     @Transactional
     public void saveRefreshToken(String loginId, MemberToken memberToken) {
 
-        Member member = memberRepository
-                .findMemberByLoginId(loginId)
+        Member member = memberRepository.findMemberByLoginId(loginId)
                 .orElseThrow(NotFoundMemberException::new);
 
         if (member.getMemberToken() != null) {
-
             member.getMemberToken().updateLoginRefreshToken(memberToken.getRefreshToken());
-
         } else {
-
             memberTokenRepository.save(memberToken);
-            member.updateTokenId(memberToken);
+            member.updateMemberToken(memberToken);
         }
+    }
+
+    @Transactional
+    public void deleteMemberToken(String loginId) {
+
+        Member member = memberRepository.findMemberByLoginId(loginId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        MemberToken token = member.getMemberToken();
+        member.updateMemberToken(null);
+        memberTokenRepository.delete(token);
     }
 }

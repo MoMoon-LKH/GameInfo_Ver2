@@ -10,12 +10,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberTokenServiceTest {
@@ -28,6 +30,7 @@ public class MemberTokenServiceTest {
 
 
     @Test
+    @Rollback
     @DisplayName("MemberToken 저장")
     void saveRefreshToken() {
 
@@ -43,6 +46,26 @@ public class MemberTokenServiceTest {
 
         //then
         assertEquals(save.getRefreshToken(), memberToken.getRefreshToken());
+
+    }
+
+    @Test
+    @Rollback
+    @DisplayName("MemberToken 삭제")
+    void deleteMemberToken() {
+
+        //given
+        MemberToken memberToken = MemberToken.builder()
+                .refreshToken("test")
+                .createDate(new Date())
+                .build();
+
+        //when
+        doNothing().when(memberTokenRepository).delete(memberToken);
+        memberTokenService.delete(memberToken);
+
+        //then
+        verify(memberTokenRepository, times(1)).delete(any(MemberToken.class));
 
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.jwt.TokenProvider;
 import com.gmi.gameInfo.jwt.service.CustomUserDetailService;
 import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.domain.dto.LoginDto;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
 import com.gmi.gameInfo.member.service.MemberService;
@@ -21,8 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
@@ -48,6 +51,9 @@ public class AuthControllerTest {
     private MemberService memberService;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     @Test
     @Rollback
@@ -84,7 +90,6 @@ public class AuthControllerTest {
 
     @Test
     @Rollback
-    @Disabled
     @DisplayName("로그인 - 성공")
     void login() throws Exception{
         //given
@@ -92,7 +97,7 @@ public class AuthControllerTest {
         cal.set(1996,6,19);
         RegisterDto registerDto = RegisterDto.builder()
                 .loginId("test123")
-                .password("123456")
+                .password(passwordEncoder.encode("123456"))
                 .name("테스트")
                 .nickname("테스트 닉네임")
                 .birthday(new Date(cal.getTimeInMillis()))
@@ -115,6 +120,41 @@ public class AuthControllerTest {
         );
 
         //result
+        actions
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @Rollback
+    @WithMockUser(username = "test123", password = "123456", roles = {"USER"})
+    @DisplayName("로그아웃 - 성공")
+    void logoutSuccess() throws Exception {
+        //given
+        Calendar cal = Calendar.getInstance();
+        cal.set(1996,6,19);
+        RegisterDto registerDto = RegisterDto.builder()
+                .loginId("test123")
+                .password(passwordEncoder.encode("123456"))
+                .name("테스트")
+                .nickname("테스트 닉네임")
+                .birthday(new Date(cal.getTimeInMillis()))
+                .phoneNo("01012345678")
+                .email("test@asdfs.com")
+                .boolCertifiedEmail(true).build();
+
+        Member member = memberService.registerMember(registerDto);
+        MemberToken memberToken = MemberToken.builder()
+                .refreshToken("refresh")
+                .createDate(new Date())
+                .build();
+        memberService.saveRefreshToken(member.getLoginId(), memberToken);
+
+        //when
+        ResultActions actions = mvc.perform(post("/api/auth/logout"));
+
+
+        //then
         actions
                 .andDo(print())
                 .andExpect(status().isOk());

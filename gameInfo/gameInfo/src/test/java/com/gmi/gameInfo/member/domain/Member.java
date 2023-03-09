@@ -76,7 +76,7 @@ public class Member {
         return new Member(registerDto);
     }
 
-    public void updateTokenId(MemberToken memberToken) {
+    public void updateMemberToken(MemberToken memberToken) {
         this.memberToken = memberToken;
     }
 }

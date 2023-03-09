@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Rollback;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -178,7 +180,7 @@ public class MemberServiceTest {
         Member member = Member.createMember(registerDto);
 
         given(memberTokenRepository.save(memberToken)).willReturn(memberToken);
-        given(memberRepository.findMemberByLoginId(any(String.class))).willReturn(Optional.of(member));
+        given(memberRepository.findMemberByLoginId(any())).willReturn(Optional.of(member));
 
         //when
         memberService.saveRefreshToken(member.getLoginId(), memberToken);
@@ -201,5 +203,41 @@ public class MemberServiceTest {
         
         //then
         assertTrue(dupleBool);
+    }
+
+    @Test
+    @Rollback
+    @DisplayName("해당 회원의 토큰 삭제")
+    void deleteMemberToken() {
+
+        //given
+        MemberToken memberToken = MemberToken.builder()
+                .refreshToken("test")
+                .createDate(new java.util.Date())
+                .build();
+
+        RegisterDto registerDto = RegisterDto.builder()
+                .loginId("test")
+                .password("test")
+                .name("test")
+                .nickname("nickname")
+                .email("email@naver.com")
+                .phoneNo("01323232323")
+                .birthday(Date.valueOf(LocalDate.of(1996, 6, 19)))
+                .boolCertifiedEmail(true)
+                .build();
+
+        registerDto.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        Member member = Member.createMember(registerDto);
+        member.updateMemberToken(memberToken);
+
+        given(memberRepository.findMemberByLoginId(any())).willReturn(Optional.of(member));
+        doNothing().when(memberTokenRepository).delete(memberToken);
+
+        //when
+        memberService.deleteMemberToken(member.getLoginId());
+
+        //then
+        assertNull(member.getMemberToken());
     }
 }
