@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,6 +47,25 @@ public class MemberTokenServiceTest {
 
         //then
         assertEquals(save.getRefreshToken(), memberToken.getRefreshToken());
+
+    }
+
+    @Test
+    @Rollback
+    @DisplayName("MemberToken 업데이트")
+    void updateRefreshToken() {
+
+        //given
+        MemberToken memberToken = MemberToken.builder()
+                .refreshToken("test")
+                .createDate(new Date())
+                .build();
+
+        //when
+        memberTokenService.updateRefreshToken(memberToken, "update");
+
+        //then
+        assertEquals("update", memberToken.getRefreshToken());
 
     }
 

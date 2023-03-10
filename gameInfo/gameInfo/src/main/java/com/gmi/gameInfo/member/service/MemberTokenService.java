@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberTokenService {
 
@@ -20,6 +21,11 @@ public class MemberTokenService {
     @Transactional
     public void delete(MemberToken memberToken) {
         memberTokenRepository.delete(memberToken);
+    }
+
+    @Transactional
+    public void updateRefreshToken(MemberToken memberToken, String refresh) {
+        memberToken.updateRefreshToken(refresh);
     }
 
 }

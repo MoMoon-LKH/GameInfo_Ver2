@@ -13,6 +13,7 @@ import com.gmi.gameInfo.member.service.MemberTokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ResponseHeader;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,10 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -73,7 +71,7 @@ public class AuthController {
 
 
         String access = tokenProvider.createAccessToken(authentication);
-        String refresh = tokenProvider.createRefreshToken(authentication);
+        String refresh = tokenProvider.createRefreshToken(authentication, 0);
 
 
         saveMemberToken(loginDto.getLoginId(), refresh);
@@ -111,6 +109,41 @@ public class AuthController {
 
         LoginResponseDto loginResponse = LoginResponseDto.builder()
                 .message("로그아웃 되었습니다")
+                .build();
+
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    @Operation(summary = "토큰 재발급", description = "access 및 refresh 토큰 재발급")
+    @ApiResponse(responseCode = "200", description = "Reissue Success",
+        content = @Content(schema = @Schema(implementation = LoginResponseDto.class)),
+        headers = {
+                @Header(name = "Authorization", description = "JWT Token", schema = @Schema(implementation = String.class))
+        }
+    )
+    @PostMapping("/reissue-token")
+    public ResponseEntity<?> reissueToken(
+            @Parameter(name = "memberId", description = "회원 일련번호", required = true)
+            @RequestParam Long memberId,
+            @CookieValue(value = "gameInfo") Cookie cookie,
+            HttpServletResponse response
+    ) {
+
+        Member member = memberService.findById(memberId);
+        String prevRefresh = cookie.getValue();
+        Authentication authentication = tokenProvider.getRefreshAuthentication(prevRefresh);
+
+        String access = addTokenFrontString(tokenProvider.createAccessToken(authentication));
+        String refresh = tokenProvider.createRefreshToken(authentication, cookie.getMaxAge());
+
+        response.setHeader("Authorization", access);
+        response.addCookie(createRefreshCookie(refresh, cookie.getMaxAge()));
+
+
+        LoginResponseDto loginResponse = LoginResponseDto.builder()
+                .message("정상적으로 발행되었습니다")
+                .member(new MemberSimpleDto(member))
+                .accessToken(access)
                 .build();
 
         return ResponseEntity.ok(loginResponse);

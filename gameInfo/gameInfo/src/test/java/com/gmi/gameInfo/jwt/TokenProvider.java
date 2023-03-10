@@ -65,13 +65,18 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
-    public String createRefreshToken(Authentication authentication) {
+    public String createRefreshToken(Authentication authentication, int maxAge) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(", "));
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, refreshValidityDate);
+
+        if(maxAge > 0) {
+            cal.add(Calendar.DATE, maxAge * 1000);
+        } else {
+            cal.add(Calendar.DATE, refreshValidityDate);
+        }
         Date validDate = new Date(cal.getTimeInMillis());
 
         return Jwts.builder()

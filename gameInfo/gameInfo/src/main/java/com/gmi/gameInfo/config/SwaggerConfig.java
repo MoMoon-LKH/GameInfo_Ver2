@@ -1,30 +1,29 @@
 package com.gmi.gameInfo.config;
 
 import com.gmi.gameInfo.exceptionHandler.ErrorResponse;
+import com.gmi.gameInfo.member.domain.dto.LoginResponseDto;
 import com.gmi.gameInfo.member.domain.dto.MemberDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.schema.AlternateTypeRule;
-import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import com.fasterxml.classmate.TypeResolver;
 
+import javax.servlet.http.Cookie;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import static io.lettuce.core.internal.LettuceSets.newHashSet;
+import static io.swagger.v3.oas.models.security.SecurityScheme.*;
 
 
 @Configuration
@@ -52,19 +51,24 @@ public class SwaggerConfig {
                 .build()
                 .apiInfo(apiInfo())
                 .securityContexts(Arrays.asList(securityContext()))
-                .securitySchemes(Arrays.asList(apiKey()))
-                .protocols(newHashSet("http", "https"))
+                .securitySchemes(apiKeys())
+                .protocols(newHashSet( "https"))
                 .additionalModels(
                         typeResolver.resolve(ErrorResponse.class),
                         typeResolver.resolve(MemberDto.class),
-                        typeResolver.resolve(PostVo.class)
+                        typeResolver.resolve(PostVo.class),
+                        typeResolver.resolve(LoginResponseDto.class)
                 )
                 .ignoredParameterTypes(AuthenticationPrincipal.class);
     }
 
-    private ApiKey apiKey() {
-        return new ApiKey("JWT", "Authorization", "header");
+    private List<SecurityScheme> apiKeys() {
+        List<SecurityScheme> list = new ArrayList<>();
+        list.add(new ApiKey("JWT", "Authorization", "header"));
+
+        return list;
     }
+
 
     private SecurityContext securityContext() {
         return SecurityContext.builder().securityReferences(defaultAuth()).build();

@@ -43,6 +43,7 @@ public class MemberTokenRepositoryTest {
     }
     
     @Test
+    @Rollback
     @Transactional
     @DisplayName("토큰정보 업데이트")
     void updateToken() throws Exception {
@@ -64,6 +65,7 @@ public class MemberTokenRepositoryTest {
     }
     
     @Test
+    @Rollback
     @DisplayName("토큰정보가 삭제")
     void deleteToken() {
     
