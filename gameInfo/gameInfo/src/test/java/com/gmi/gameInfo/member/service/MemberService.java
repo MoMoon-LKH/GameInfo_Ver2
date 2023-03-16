@@ -3,7 +3,9 @@ package com.gmi.gameInfo.member.service;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
+import com.gmi.gameInfo.member.exception.DuplicateEmailException;
 import com.gmi.gameInfo.member.exception.DuplicateMemberException;
+import com.gmi.gameInfo.member.exception.DuplicateMemberIdException;
 import com.gmi.gameInfo.member.exception.NotFoundMemberException;
 import com.gmi.gameInfo.member.repository.MemberRepository;
 import com.gmi.gameInfo.member.repository.MemberTokenRepository;
@@ -37,8 +39,21 @@ public class MemberService {
     public boolean duplicateLoginId(String loginId) {
         int count = memberRepository.countByLoginId(loginId);
 
-        return count > 0;
+        if (count <= 0) {
+            throw new DuplicateMemberIdException();
+        }
+        return true;
     }
+
+    public boolean duplicateEmail(String email) {
+        int count = memberRepository.countByEmail(email);
+
+        if (count <= 0) {
+            throw new DuplicateEmailException();
+        }
+        return true;
+    }
+
 
     @Transactional
     public Member registerMember(RegisterDto registerDto) {
@@ -76,5 +91,6 @@ public class MemberService {
         MemberToken token = member.getMemberToken();
         member.updateMemberToken(null);
         memberTokenRepository.delete(token);
+
     }
 }

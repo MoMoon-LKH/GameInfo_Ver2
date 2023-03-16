@@ -136,9 +136,10 @@ public class AuthController {
         String access = addTokenFrontString(tokenProvider.createAccessToken(authentication));
         String refresh = tokenProvider.createRefreshToken(authentication, cookie.getMaxAge());
 
+        memberTokenService.updateRefreshToken(member.getMemberToken(), refresh);
+
         response.setHeader("Authorization", access);
         response.addCookie(createRefreshCookie(refresh, cookie.getMaxAge()));
-
 
         LoginResponseDto loginResponse = LoginResponseDto.builder()
                 .message("정상적으로 발행되었습니다")

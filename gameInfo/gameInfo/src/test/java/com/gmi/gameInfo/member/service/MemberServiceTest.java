@@ -3,7 +3,9 @@ package com.gmi.gameInfo.member.service;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
+import com.gmi.gameInfo.member.exception.DuplicateEmailException;
 import com.gmi.gameInfo.member.exception.DuplicateMemberException;
+import com.gmi.gameInfo.member.exception.DuplicateMemberIdException;
 import com.gmi.gameInfo.member.exception.NotFoundMemberException;
 import com.gmi.gameInfo.member.repository.MemberRepository;
 import com.gmi.gameInfo.member.repository.MemberTokenRepository;
@@ -190,8 +192,8 @@ public class MemberServiceTest {
     }
     
     @Test
-    @DisplayName("로그인 아이디 - 중복조회 여부")
-    void DuplicateLoginId() {
+    @DisplayName("로그인 아이디 - 중복 X")
+    void notDuplicateLoginId() {
     
         //given
         String loginId = "test";
@@ -203,6 +205,53 @@ public class MemberServiceTest {
         
         //then
         assertTrue(dupleBool);
+    }
+
+    @Test
+    @DisplayName("")
+    void duplicateLoginId() {
+
+        //given
+        String loginId = "test";
+        given(memberRepository.countByLoginId(loginId)).willReturn(0);
+
+        //when
+
+        //then
+        assertThrows(DuplicateMemberIdException.class, () -> {
+           memberService.duplicateLoginId(loginId);
+        });
+    }
+
+    @Test
+    @DisplayName("이메일 중복 확인 - 중복 X")
+    void notDuplicateEmail() {
+
+        //given
+        String email = "test@test.com";
+        given(memberRepository.countByEmail(email)).willReturn(1);
+
+        //when
+        boolean duplicateBool = memberService.duplicateEmail(email);
+
+        //then
+        assertTrue(duplicateBool);
+    }
+
+    @Test
+    @DisplayName("이메일 중복 확인 - 중복")
+    void duplicateEmail() {
+
+        //given
+        String email = "test@test.com";
+        given(memberRepository.countByEmail(email)).willReturn(0);
+
+        //when
+
+        //then
+        assertThrows(DuplicateEmailException.class, () -> {
+            memberService.duplicateEmail(email);
+        });
     }
 
     @Test

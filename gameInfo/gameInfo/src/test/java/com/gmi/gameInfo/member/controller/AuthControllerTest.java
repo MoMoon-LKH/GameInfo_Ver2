@@ -9,9 +9,7 @@ import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.domain.dto.LoginDto;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
 import com.gmi.gameInfo.member.service.MemberService;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
@@ -43,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("dev")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AuthControllerTest {
 
     @Autowired
@@ -54,27 +53,18 @@ public class AuthControllerTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
+
     @Test
     @Rollback
+    @Order(2)
     @DisplayName("로그인 - 실패")
     void failLogin() throws Exception {
     
         //given
-        Calendar cal = Calendar.getInstance();
-        cal.set(1996,6,19);
-        RegisterDto registerDto = RegisterDto.builder()
-                .loginId("test123")
-                .password("123456")
-                .name("테스트")
-                .nickname("테스트 닉네임")
-                .birthday(new Date(cal.getTimeInMillis()))
-                .phoneNo("01012345678")
-                .email("test@asdfs.com").build();
-
         LoginDto loginDto = LoginDto.builder()
                 .loginId("test123")
-                .password("test123")
+                .password("test1234")
                 .build();
 
         //when
@@ -82,14 +72,16 @@ public class AuthControllerTest {
 
         //then
         mvc.perform(post("/api/auth/login")
-                        .content(objectMapper.writeValueAsString(loginDto))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(loginDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @Rollback
+    @Order(1)
     @DisplayName("로그인 - 성공")
     void login() throws Exception{
         //given
@@ -127,20 +119,21 @@ public class AuthControllerTest {
 
     @Test
     @Rollback
-    @WithMockUser(username = "test123", password = "123456", roles = {"USER"})
+    @Order(3)
+    @WithMockUser(username = "test1234", password = "123456", roles = {"USER"})
     @DisplayName("로그아웃 - 성공")
     void logoutSuccess() throws Exception {
         //given
         Calendar cal = Calendar.getInstance();
-        cal.set(1996,6,19);
+        cal.set(1996,6,20);
         RegisterDto registerDto = RegisterDto.builder()
-                .loginId("test123")
+                .loginId("test1234")
                 .password(passwordEncoder.encode("123456"))
                 .name("테스트")
                 .nickname("테스트 닉네임")
                 .birthday(new Date(cal.getTimeInMillis()))
                 .phoneNo("01012345678")
-                .email("test@asdfs.com")
+                .email("test@asdfsa.com")
                 .boolCertifiedEmail(true).build();
 
         Member member = memberService.registerMember(registerDto);
@@ -151,7 +144,8 @@ public class AuthControllerTest {
         memberService.saveRefreshToken(member.getLoginId(), memberToken);
 
         //when
-        ResultActions actions = mvc.perform(post("/api/auth/logout"));
+        ResultActions actions = mvc.perform(post("/api/auth/logout")
+        );
 
 
         //then

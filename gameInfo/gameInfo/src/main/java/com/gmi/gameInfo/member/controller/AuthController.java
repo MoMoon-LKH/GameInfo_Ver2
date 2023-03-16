@@ -116,6 +116,9 @@ public class AuthController {
                 @Header(name = "Authorization", description = "JWT Token", schema = @Schema(implementation = String.class))
         }
     )
+    @ApiResponse(responseCode = "404", description = "Not Found",
+            content = @Content(schema = @Schema(implementation = LoginResponseDto.class))
+    )
     @PostMapping("/reissue-token")
     public ResponseEntity<?> reissueToken(
             @Parameter(name = "memberId", description = "회원 일련번호", required = true)
@@ -130,6 +133,8 @@ public class AuthController {
 
         String access = addTokenFrontString(tokenProvider.createAccessToken(authentication));
         String refresh = tokenProvider.createRefreshToken(authentication, cookie.getMaxAge());
+
+        memberTokenService.updateRefreshToken(member.getMemberToken(), refresh);
 
         response.setHeader("Authorization", access);
         response.addCookie(createRefreshCookie(refresh, cookie.getMaxAge()));

@@ -213,4 +213,17 @@ public class MemberRepositoryTest {
         //then
         assertEquals(0, count);
     }
+    
+    @Test
+    @DisplayName("이메일 - 조회 여부 X")
+    void countDuplicateEmail() {
+    
+        //given
+    
+        //when
+        int count = memberRepository.countByEmail("test@test.com");
+        
+        //then
+        assertEquals(0, count);
+    }
 }

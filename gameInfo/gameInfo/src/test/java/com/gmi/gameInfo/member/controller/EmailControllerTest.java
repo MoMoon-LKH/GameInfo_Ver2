@@ -7,6 +7,7 @@ import com.gmi.gameInfo.member.domain.dto.EmailDto;
 import com.gmi.gameInfo.member.exception.DifferentAuthEmailNumberException;
 import com.gmi.gameInfo.member.exception.SendEmailFailException;
 import com.gmi.gameInfo.member.service.EmailService;
+import com.gmi.gameInfo.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,10 @@ public class EmailControllerTest {
 
     @MockBean
     private EmailService emailService;
+
+    @MockBean
+    private MemberService memberService;
+
     String email = "rlgh28@naver.com";
 
     @Autowired
@@ -50,7 +55,7 @@ public class EmailControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new EmailController(emailService))
+        mockMvc = MockMvcBuilders.standaloneSetup(new EmailController(emailService, memberService))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }

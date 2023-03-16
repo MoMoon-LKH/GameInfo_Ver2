@@ -66,6 +66,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
+    @ExceptionHandler(DuplicateMemberIdException.class)
+    protected ResponseEntity<?> handleDuplicateMemberIdException(DuplicateMemberIdException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message(e.getMessage()).build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
     @ExceptionHandler(LoginFailException.class)
     protected ResponseEntity<?> handleLoginFailException(LoginFailException e) {
         ErrorResponse errorResponse = ErrorResponse.builder()

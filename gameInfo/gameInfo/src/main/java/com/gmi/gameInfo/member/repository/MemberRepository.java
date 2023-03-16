@@ -22,4 +22,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByLoginId(@Param("loginId") String loginId);
 
     int countByLoginId(String loginId);
+
+    int countByEmail(String email);
 }
