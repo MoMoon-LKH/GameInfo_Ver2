@@ -12,6 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",
+                        "https://localhost:3000",
                         "https://gameinfo.momoon.kro.kr"
                 )
                 .allowedHeaders("*")

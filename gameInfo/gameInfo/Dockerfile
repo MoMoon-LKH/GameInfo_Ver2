@@ -3,7 +3,7 @@ CMD ["./mvnw", "clean", "package"]
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
 
-ARG ENVIRONMENT
-ENV SPRING_PROFILES_ACTIVE=${ENVIRONMENT}
+ARG PROFILE
+ENV SPRING_PROFILES_ACTIVE=${PROFILE}
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

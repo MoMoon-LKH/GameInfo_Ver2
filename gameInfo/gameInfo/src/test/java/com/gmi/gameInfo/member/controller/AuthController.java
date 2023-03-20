@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -30,8 +31,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,18 +126,38 @@ public class AuthController {
     )
     @PostMapping("/reissue-token")
     public ResponseEntity<?> reissueToken(
-            @Parameter(name = "memberId", description = "회원 일련번호", required = true)
-            @RequestParam Long memberId,
-            @CookieValue(value = "gameInfo") Cookie cookie,
+            @RequestBody Long memberId,
+            HttpServletRequest request,
             HttpServletResponse response
     ) {
+
+        Cookie[] cookies = request.getCookies();
+        Cookie cookie = null;
+
+        if (cookies != null) {
+            for (Cookie coo : cookies) {
+                if (coo.getName().equals("gameInfo")) {
+                    cookie = coo;
+                    break;
+                }
+            }
+        }
+
+        if (cookie == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("gameInfo cookie not found");
+        }
 
         Member member = memberService.findById(memberId);
         String prevRefresh = cookie.getValue();
         Authentication authentication = tokenProvider.getRefreshAuthentication(prevRefresh);
 
+        if (!member.getMemberToken().getRefreshToken().equals(prevRefresh)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("refresh token 정보가 일치하지않습니다. 다시 확인해주세요");
+        }
+
         String access = addTokenFrontString(tokenProvider.createAccessToken(authentication));
         String refresh = tokenProvider.createRefreshToken(authentication, cookie.getMaxAge());
+
 
         memberTokenService.updateRefreshToken(member.getMemberToken(), refresh);
 
@@ -147,8 +170,9 @@ public class AuthController {
                 .accessToken(access)
                 .build();
 
-        return ResponseEntity.ok(loginResponse);
-    }
+
+            return ResponseEntity.ok(loginResponse);
+        }
 
 
 
