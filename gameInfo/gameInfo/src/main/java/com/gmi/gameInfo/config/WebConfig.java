@@ -16,6 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "https://gameinfo.momoon.kro.kr"
                 )
                 .allowedHeaders("*")
-                .allowedMethods("*");
+                .allowedMethods("*")
+                .allowCredentials(true);
     }
 }

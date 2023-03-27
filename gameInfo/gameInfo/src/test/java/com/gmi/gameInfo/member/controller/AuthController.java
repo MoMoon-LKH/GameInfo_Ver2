@@ -126,7 +126,7 @@ public class AuthController {
     )
     @PostMapping("/reissue-token")
     public ResponseEntity<?> reissueToken(
-            @RequestBody Long memberId,
+            @RequestBody MemberSimpleDto memberSimpleDto,
             HttpServletRequest request,
             HttpServletResponse response
     ) {
@@ -147,7 +147,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("gameInfo cookie not found");
         }
 
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findById(memberSimpleDto.getId());
         String prevRefresh = cookie.getValue();
         Authentication authentication = tokenProvider.getRefreshAuthentication(prevRefresh);
 
@@ -183,7 +183,7 @@ public class AuthController {
     private Cookie createRefreshCookie(String refresh, int maxAge) {
 
         Cookie cookie = new Cookie("gameInfo", refresh);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);

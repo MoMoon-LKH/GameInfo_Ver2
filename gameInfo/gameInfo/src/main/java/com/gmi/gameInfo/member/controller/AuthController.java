@@ -23,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -122,7 +123,7 @@ public class AuthController {
     )
     @PostMapping("/reissue-token")
     public ResponseEntity<?> reissueToken(
-            @RequestBody Long memberId,
+            @RequestBody MemberSimpleDto memberSimpleDto,
             HttpServletRequest request,
             HttpServletResponse response
     ) {
@@ -143,7 +144,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("gameInfo cookie not found");
         }
 
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findById(memberSimpleDto.getId());
         String prevRefresh = cookie.getValue();
         Authentication authentication = tokenProvider.getRefreshAuthentication(prevRefresh);
 
@@ -179,7 +180,7 @@ public class AuthController {
     private Cookie createRefreshCookie(String refresh, int maxAge) {
 
         Cookie cookie = new Cookie("gameInfo", refresh);
-        cookie.setSecure(true);
+        //cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
