@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.category.domain;
 
 
+import com.gmi.gameInfo.category.domain.dto.CategoryDto;
 import com.gmi.gameInfo.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,5 +34,10 @@ public class Category {
     public Category(String name, Long parentId){
         this.name = name;
         this.parentId = parentId;
+    }
+
+    public Category(CategoryDto dto) {
+        this.name = dto.getName();
+        this.parentId = dto.getParentId();
     }
 }
