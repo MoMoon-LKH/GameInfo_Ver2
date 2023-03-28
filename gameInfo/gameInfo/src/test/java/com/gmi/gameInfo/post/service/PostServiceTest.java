@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.post.service;
 
 import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.post.domain.dto.PostListDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
@@ -14,11 +15,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -200,6 +206,32 @@ public class PostServiceTest {
         assertThrows(NotPostOwnerException.class, () -> {
             postService.checkPostOwner(post, other);
         });
+    }
+
+    @Test
+    @DisplayName("PostListDto List 조회")
+    void findByCategoryIdAndPage() {
+
+        //given
+        Pageable pageable = PageRequest.of(0, 10);
+        PostListDto dto = PostListDto.builder()
+                .postId(1L)
+                .title("title")
+                .memberId(1L)
+                .nickname("test")
+                .createDate(new Date())
+                .build();
+
+        List<PostListDto> list = new ArrayList<>();
+        list.add(dto);
+        given(postRepository.findAllByCategoryIdAndPage(any(), any())).willReturn(list);
+
+        //when
+        List<PostListDto> findList = postService.findListByCategoryIdAndPage(1L, pageable);
+
+        //then
+        assertEquals(1, list.size());
+        assertEquals("title", list.get(0).getTitle());
     }
 
     private Member createMember() {

@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.post.domain;
 
+import com.gmi.gameInfo.category.domain.Category;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,10 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public Post(PostDto postDto, Member member) {
         this.title = postDto.getTitle();

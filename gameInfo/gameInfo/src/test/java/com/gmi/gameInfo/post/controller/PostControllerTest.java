@@ -182,6 +182,17 @@ public class PostControllerTest {
 
 
     }
+    
+    @Test
+    @DisplayName("카테고리에 따른 게시글 리스트 조회 - 성공")
+    void findAllByCategoryIdAndPage() {
+    
+        //given
+    
+        //when
+        
+        //then
+    }
 
     private Member createTestMember() {
         return Member.builder()

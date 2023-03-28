@@ -1,9 +1,13 @@
 package com.gmi.gameInfo.post.service;
 
 import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.post.domain.dto.PostListDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 
 public interface PostService {
@@ -14,4 +18,6 @@ public interface PostService {
     void updatePost(Post post, PostDto postDto);
     PostVo findPostVoById(Long id);
     boolean checkPostOwner(Post post, Member member);
+
+    List<PostListDto> findListByCategoryIdAndPage(Long categoryId, Pageable pageable);
 }

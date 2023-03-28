@@ -1,12 +1,16 @@
 package com.gmi.gameInfo.post.repository;
 
-import com.gmi.gameInfo.post.domain.dto.PostVo;
+import com.gmi.gameInfo.category.domain.QCategory;
 import com.gmi.gameInfo.post.domain.QPost;
+import com.gmi.gameInfo.post.domain.dto.PostListDto;
+import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,10 +19,11 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     private final JPAQueryFactory factory;
 
+    private QPost post = QPost.post;
+    private QCategory category = QCategory.category;
+
     @Override
     public Optional<PostVo> findPostVoById(Long id) {
-
-        QPost post = QPost.post;
 
         return Optional.ofNullable(factory
                 .select(
@@ -36,5 +41,27 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         post.id.eq(id)
                 ).fetchOne());
 
+    }
+
+    @Override
+    public List<PostListDto> findAllByCategoryIdAndPage(Long categoryId, Pageable pageable) {
+
+
+        return factory
+                .select(
+                        Projections.bean(PostListDto.class,
+                                post.id.as("postId"),
+                                post.title,
+                                post.member.id.as("memberId"),
+                                post.member.nickname,
+                                post.createDate
+                                )
+                ).from(post)
+                .where(
+                        post.category.id.eq(categoryId)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
     }
 }

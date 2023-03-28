@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.exceptionHandler;
 
+import com.gmi.gameInfo.category.exception.NotFoundCategoryException;
 import com.gmi.gameInfo.member.exception.*;
 import com.gmi.gameInfo.post.exception.FailDeletePostException;
 import com.gmi.gameInfo.post.exception.NotFoundPostException;
@@ -108,6 +109,15 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage()).build();
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+    @ExceptionHandler(NotFoundCategoryException.class)
+    protected ResponseEntity<?> handleNotFoundCategoryException(NotFoundCategoryException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
 }
