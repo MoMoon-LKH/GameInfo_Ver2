@@ -5,6 +5,7 @@ import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
+import com.gmi.gameInfo.post.domain.dto.PostListDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.post.service.PostService;
 import io.swagger.annotations.Api;
@@ -16,6 +17,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Api(tags = "Post Controller")
 @RestController
@@ -118,5 +122,15 @@ public class PostController {
         return ResponseEntity.ok(delete);
     }
 
+    @GetMapping("/list/{categoryId}")
+    public ResponseEntity<?> findAllByCategoryIdAndPage(
+            @PathVariable Long categoryId,
+            @PageableDefault Pageable pageable
+            ) {
+
+        List<PostListDto> list = postService.findListByCategoryIdAndPage(categoryId, pageable);
+
+        return ResponseEntity.ok(list);
+    }
 
 }

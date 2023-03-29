@@ -109,7 +109,7 @@ public class PostCustomRepositoryTest {
 
         //given
         Pageable pageable = PageRequest.of(0, 10);
-        Long categoryId = 1L;
+        Long categoryId = category.getId();
 
         Post post = Post.builder()
                 .title("test")
@@ -126,4 +126,5 @@ public class PostCustomRepositoryTest {
         assertEquals(1, postList.size());
 
     }
+
 }

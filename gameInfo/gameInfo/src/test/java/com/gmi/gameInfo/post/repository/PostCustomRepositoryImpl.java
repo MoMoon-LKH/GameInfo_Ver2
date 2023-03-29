@@ -60,6 +60,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .where(
                         post.category.id.eq(categoryId)
                 )
+                .orderBy(post.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

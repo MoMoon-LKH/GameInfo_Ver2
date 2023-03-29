@@ -2,6 +2,7 @@ package com.gmi.gameInfo.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.post.domain.dto.PostListDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.post.domain.Post;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -22,7 +25,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import javax.xml.transform.Result;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -184,14 +190,42 @@ public class PostControllerTest {
     }
     
     @Test
+    @WithMockUser
     @DisplayName("카테고리에 따른 게시글 리스트 조회 - 성공")
-    void findAllByCategoryIdAndPage() {
+    void findAllByCategoryIdAndPage() throws Exception {
     
         //given
+        Long categoryId = 1L;
+        Pageable page = PageRequest.of(0, 10);
+        List<PostListDto> list = new ArrayList<>();
+        list.add(PostListDto.builder()
+                .postId(1L)
+                .title("title")
+                .memberId(1L)
+                .nickname("nickname")
+                .createDate(new Date())
+                .build()
+        );
+        list.add(PostListDto.builder()
+                .postId(2L)
+                .title("title2")
+                .memberId(1L)
+                .nickname("nickname")
+                .createDate(new Date())
+                .build()
+        );
+        given(postService.findListByCategoryIdAndPage(categoryId, page)).willReturn(list);
     
         //when
-        
+        ResultActions result = mockMvc.perform(get("/api/post/list/" + categoryId)
+                .content(objectMapper.writeValueAsString(page)));
+
         //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(objectMapper.writeValueAsString(list)));
+        ;
     }
 
     private Member createTestMember() {

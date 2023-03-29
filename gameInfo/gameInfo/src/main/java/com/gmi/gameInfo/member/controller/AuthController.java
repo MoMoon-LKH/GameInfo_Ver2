@@ -7,6 +7,7 @@ import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.domain.dto.LoginDto;
 import com.gmi.gameInfo.member.domain.dto.LoginResponseDto;
 import com.gmi.gameInfo.member.domain.dto.MemberSimpleDto;
+import com.gmi.gameInfo.member.exception.LoginFailException;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.member.service.MemberTokenService;
 import io.swagger.annotations.Api;
@@ -19,11 +20,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,33 +64,40 @@ public class AuthController {
             HttpServletResponse response
     ) {
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getLoginId(), loginDto.getPassword());
+        try {
 
-        Authentication authentication =
-                authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginDto.getLoginId(), loginDto.getPassword());
 
-
-        String access = tokenProvider.createAccessToken(authentication);
-        String refresh = tokenProvider.createRefreshToken(authentication, 0);
+            Authentication authentication =
+                    authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
 
-        saveMemberToken(loginDto.getLoginId(), refresh);
-
-        Member member = memberService.findByLoginId(loginDto.getLoginId());
-
-        String accessToken = addTokenFrontString(access);
-        response.setHeader("Authorization", accessToken);
-        response.addCookie(createRefreshCookie(refresh, 60 * 60 * 24 * refreshDays));
+            String access = tokenProvider.createAccessToken(authentication);
+            String refresh = tokenProvider.createRefreshToken(authentication, 0);
 
 
-        LoginResponseDto loginResponse = LoginResponseDto.builder()
-                .message("로그인 되었습니다")
-                .accessToken(accessToken)
-                .member(new MemberSimpleDto(member))
-                .build();
+            saveMemberToken(loginDto.getLoginId(), refresh);
 
-        return ResponseEntity.ok(loginResponse);
+            Member member = memberService.findByLoginId(loginDto.getLoginId());
+
+            String accessToken = addTokenFrontString(access);
+            response.setHeader("Authorization", accessToken);
+            response.addCookie(createRefreshCookie(refresh, 60 * 60 * 24 * refreshDays));
+
+
+            LoginResponseDto loginResponse = LoginResponseDto.builder()
+                    .message("로그인 되었습니다")
+                    .accessToken(accessToken)
+                    .member(new MemberSimpleDto(member))
+                    .build();
+
+            return ResponseEntity.ok(loginResponse);
+
+        } catch (BadCredentialsException e) {
+            throw new LoginFailException();
+        }
+
     }
 
 
@@ -180,7 +188,7 @@ public class AuthController {
     private Cookie createRefreshCookie(String refresh, int maxAge) {
 
         Cookie cookie = new Cookie("gameInfo", refresh);
-        //cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
