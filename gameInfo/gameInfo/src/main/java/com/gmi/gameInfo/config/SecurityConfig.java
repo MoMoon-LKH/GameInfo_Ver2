@@ -54,6 +54,7 @@ public class SecurityConfig{
                 .antMatchers(HttpMethod.GET, "/api/post/{id}", "/api/post/list/{categoryId}").permitAll()
                 .antMatchers("/api/docs", "/v2/api-docs").permitAll()
                 .antMatchers("/api/auth/logout").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/image/upload").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
 
                 .and()
