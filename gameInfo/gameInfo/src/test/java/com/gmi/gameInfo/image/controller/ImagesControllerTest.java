@@ -3,6 +3,7 @@ package com.gmi.gameInfo.image.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.image.domain.Images;
 import com.gmi.gameInfo.image.service.ImagesService;
+import lombok.experimental.StandardException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -25,10 +27,14 @@ import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -46,6 +52,7 @@ public class ImagesControllerTest {
     ObjectMapper objectMapper;
 
     private ClassPathResource resource = new ClassPathResource("test.jpg");
+
 
     @Test
     @WithMockUser
@@ -89,4 +96,39 @@ public class ImagesControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @WithMockUser
+    @DisplayName("파일 삭제 API")
+    void deleteImage() throws Exception {
+
+        //given
+        int id = 1;
+        Images images = Images.builder()
+                .id(1L)
+                .fileName("test")
+                .extension(".jpg")
+                .createDate(new Date())
+                .originalName("test")
+                .path("path")
+                .build();
+
+        given(imagesService.findById(any(Long.class))).willReturn(images);
+        doNothing().when(imagesService).delete(any());
+        given(imagesService.deleteFile(any())).willReturn(true);
+
+        //when
+        ResultActions action = mockMvc.perform(delete("/api/image/" + id)
+                .with(csrf())
+        );
+
+
+        //then
+        action
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+    }
+
+
 }

@@ -1,13 +1,16 @@
 package com.gmi.gameInfo.image.service;
 
 import com.gmi.gameInfo.image.domain.Images;
+import com.gmi.gameInfo.image.exception.FailDeleteFileException;
 import com.gmi.gameInfo.image.exception.FailUploadFileException;
+import com.gmi.gameInfo.image.exception.NotFoundFileException;
 import com.gmi.gameInfo.image.exception.NotFoundImagesException;
 import com.gmi.gameInfo.image.repository.ImagesRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,6 +85,20 @@ public class ImagesService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new FailUploadFileException();
+        }
+    }
+
+    public boolean deleteFile(File file) {
+
+        if (file.exists()) {
+            if (file.delete()) {
+                return true;
+            } else {
+                throw new FailDeleteFileException();
+            }
+
+        } else {
+            throw new NotFoundFileException();
         }
     }
 }

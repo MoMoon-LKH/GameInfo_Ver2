@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 public class ImagesServiceTest {
@@ -108,7 +110,6 @@ public class ImagesServiceTest {
 
         //when
         String saveName = imagesService.createSaveName();
-        System.out.println("saveName = " + saveName);
 
         //then
         assertNotEquals(originalName, saveName);
@@ -148,15 +149,46 @@ public class ImagesServiceTest {
     }
 
     @Test
-    @DisplayName("파일 업로드 - 실패")
-    void fileUploadFail() {
+    @DisplayName("이미지 삭제")
+    void deleteImage_Fail() {
 
         //given
+        Images images = Images.builder()
+                .id(1L)
+                .originalName("test1")
+                .extension(".jpg")
+                .createDate(new Date())
+                .build();
 
+        doNothing().when(imagesRepository).delete(any());
+        given(imagesRepository.findById(any(Long.class))).willReturn(Optional.ofNullable(null));
 
         //when
+        imagesService.delete(images);
 
         //then
+        assertThrows(NotFoundImagesException.class, () -> {
+            imagesService.findById(images.getId());
+        });
+    }
+
+    @Test
+    @DisplayName("파일 삭제")
+    void deleteFile() throws IOException {
+
+        //given
+        File resourceFile = resource.getFile();
+        MultipartFile file = new MockMultipartFile(resourceFile.getName(), new FileInputStream(resourceFile));
+        File saveFile = new File(savePath + file.getName());
+        imagesService.uploadFile(file, saveFile, savePath);
+
+        File files = new File(savePath + resourceFile.getName());
+
+        //when
+        boolean bool = imagesService.deleteFile(files);
+
+        //then
+        assertTrue(bool);
     }
 
 }

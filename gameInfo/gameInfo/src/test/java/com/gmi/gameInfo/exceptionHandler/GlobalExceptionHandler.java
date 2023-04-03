@@ -1,7 +1,9 @@
 package com.gmi.gameInfo.exceptionHandler;
 
 import com.gmi.gameInfo.category.exception.NotFoundCategoryException;
+import com.gmi.gameInfo.image.exception.FailDeleteFileException;
 import com.gmi.gameInfo.image.exception.FailUploadFileException;
+import com.gmi.gameInfo.image.exception.NotFoundFileException;
 import com.gmi.gameInfo.image.exception.NotFoundImagesException;
 import com.gmi.gameInfo.member.exception.*;
 import com.gmi.gameInfo.post.exception.FailDeletePostException;
@@ -135,6 +137,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FailUploadFileException.class)
     protected ResponseEntity<?> handleFailUploadFileException(FailUploadFileException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(NotFoundFileException.class)
+    protected ResponseEntity<?> handleNotFoundFileException(NotFoundFileException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(FailDeleteFileException.class)
+    protected ResponseEntity<?> handleFailDeleteFileException(FailDeleteFileException e){
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message(e.getMessage())

@@ -71,4 +71,21 @@ public class ImagesController {
 
         return ResponseEntity.ok(imageDto);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteImage(
+        @PathVariable(value = "id") Long id,
+        @AuthenticationPrincipal UserDetails userDetails
+    ) {
+
+        Images image = imagesService.findById(id);
+
+        File file = new File(image.getPath() + image.getFileName() + image.getExtension());
+
+        boolean bool = imagesService.deleteFile(file);
+
+        imagesService.delete(image);
+
+        return ResponseEntity.ok(true);
+    }
 }
