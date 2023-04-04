@@ -76,6 +76,10 @@ public class ImagesService {
 
             file.transferTo(saveFile);
 
+            if (!saveFile.exists()) {
+                throw new FailUploadFileException();
+            }
+
             return true;
 
         } catch (Exception e) {
