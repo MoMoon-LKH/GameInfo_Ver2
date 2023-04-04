@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -122,6 +123,12 @@ public class PostController {
         return ResponseEntity.ok(delete);
     }
 
+    
+    @Operation(summary = "게시글 리스트 조회", description = "카테고리에 따른 게시글 리스트 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostListDto.class))))
+    })
     @GetMapping("/list/{categoryId}")
     public ResponseEntity<?> findAllByCategoryIdAndPage(
             @PathVariable Long categoryId,

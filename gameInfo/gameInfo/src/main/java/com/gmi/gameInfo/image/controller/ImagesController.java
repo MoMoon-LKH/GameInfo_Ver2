@@ -5,6 +5,12 @@ import com.gmi.gameInfo.image.domain.Images;
 import com.gmi.gameInfo.image.domain.dto.ImageDto;
 import com.gmi.gameInfo.image.exception.FailUploadFileException;
 import com.gmi.gameInfo.image.service.ImagesService;
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -17,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.Date;
 
+@Api(tags = "Images Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/image")
@@ -27,6 +34,16 @@ public class ImagesController {
     @Value("${image.path}")
     private String path;
 
+    
+    @Operation(summary = "이미지 업로드",description = "이미지 업로드 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "업로드 성공",
+            content = @Content(schema = @Schema(implementation = ImageDto.class))),
+            @ApiResponse(responseCode = "400", description = "업로드 파일이 없을 경우",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "업로드 실패",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @PostMapping("/upload")
     public ResponseEntity<?> uploadImage(
             @RequestPart(value = "file", required = false) MultipartFile file,
@@ -70,11 +87,23 @@ public class ImagesController {
         return ResponseEntity.ok(imageDto);
     }
 
+
+    @Operation(summary = "이미지 삭제", description = "이미지 삭제 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "삭제 성공",
+            content = @Content(schema = @Schema(implementation = Boolean.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "파일 삭제 실패",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteImage(
         @PathVariable(value = "id") Long id,
         @AuthenticationPrincipal UserDetails userDetails
     ) {
+        
+        // 본인 확인 로직 필요 및 entity 수정 필요
 
         Images image = imagesService.findById(id);
 

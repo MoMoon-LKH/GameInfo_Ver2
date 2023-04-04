@@ -46,7 +46,6 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     @Override
     public List<PostListDto> findAllByCategoryIdAndPage(Long categoryId, Pageable pageable) {
 
-
         return factory
                 .select(
                         Projections.bean(PostListDto.class,
@@ -65,4 +64,5 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
     }
+
 }
