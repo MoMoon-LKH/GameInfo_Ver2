@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.config;
 
+import com.gmi.gameInfo.jwt.JwtAuthenticationEntryPoint;
 import com.gmi.gameInfo.jwt.JwtSecurityConfig;
 import com.gmi.gameInfo.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ public class SecurityConfig{
 
     private final TokenProvider tokenProvider;
 
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -42,6 +45,10 @@ public class SecurityConfig{
 
                 .and()
                 .cors().configurationSource(corsConfigurationSource())
+
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
 
                 .and()
                 .formLogin().disable()
