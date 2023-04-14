@@ -2,6 +2,7 @@ package com.gmi.gameInfo.post.service;
 
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.post.domain.dto.PostListDto;
+import com.gmi.gameInfo.post.domain.dto.PostSearchDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
@@ -66,7 +67,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<PostListDto> findListByCategoryIdAndPage(Long categoryId, Pageable pageable) {
-        return postRepository.findAllByCategoryIdAndPage(categoryId, pageable);
+    public List<PostListDto> findListByCategoryIdAndPage(PostSearchDto postSearchDto, Pageable pageable) {
+        return postRepository.findAllByCategoryIdAndPage(postSearchDto, pageable);
     }
 }

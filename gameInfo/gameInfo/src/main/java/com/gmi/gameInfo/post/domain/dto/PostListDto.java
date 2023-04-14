@@ -19,5 +19,9 @@ public class PostListDto {
     private String title;
     private Long memberId;
     private String nickname;
+
+    private int views;
+
+    private int likes;
     private Date createDate;
 }

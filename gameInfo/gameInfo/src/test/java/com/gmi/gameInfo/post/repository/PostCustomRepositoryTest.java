@@ -8,14 +8,13 @@ import com.gmi.gameInfo.member.domain.RoleType;
 import com.gmi.gameInfo.member.repository.MemberRepository;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostListDto;
+import com.gmi.gameInfo.post.domain.dto.PostSearchDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.post.exception.NotFoundPostException;
+import com.gmi.gameInfo.post.service.PostService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -32,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Import(TestConfig.class)
 @Rollback
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PostCustomRepositoryTest {
 
     @Autowired
@@ -44,10 +44,13 @@ public class PostCustomRepositoryTest {
     CategoryRepository categoryRepository;
 
     private Member member;
+    private Member member2;
     private Category category;
 
-    @BeforeEach
-    public void setUp(){
+    private Category childCategory;
+
+    @BeforeAll
+     void setUp(){
         member = Member.builder()
                 .loginId("test")
                 .birthday(new Date())
@@ -58,11 +61,26 @@ public class PostCustomRepositoryTest {
                 .roleType(RoleType.USER)
                 .build();
         memberRepository.save(member);
+        member2 = Member.builder()
+                .loginId("test1")
+                .birthday(new Date())
+                .nickname("member")
+                .name("name")
+                .email("email123")
+                .password("password")
+                .roleType(RoleType.USER)
+                .build();
+        memberRepository.save(member2);
 
         category = Category.builder()
                 .name("test")
                 .build();
         categoryRepository.save(category);
+        childCategory = Category.builder()
+                .name("test2")
+                .parentId(category.getId())
+                .build();
+        categoryRepository.save(childCategory);
     }
     
     @Test
@@ -111,6 +129,10 @@ public class PostCustomRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10);
         Long categoryId = category.getId();
 
+        PostSearchDto postSearchDto = PostSearchDto.builder()
+                .categoryId(categoryId)
+                .build();
+
         Post post = Post.builder()
                 .title("test")
                 .content("test")
@@ -120,11 +142,190 @@ public class PostCustomRepositoryTest {
         postRepository.save(post);
 
         //when
-        List<PostListDto> postList = postRepository.findAllByCategoryIdAndPage(categoryId, pageable);
+        List<PostListDto> postList = postRepository.findAllByCategoryIdAndPage(postSearchDto, pageable);
 
         //then
         assertEquals(1, postList.size());
 
+    }
+
+    @Test
+    @DisplayName("PostListDto 리스트 검색 조회 - 검색값이 없을 시")
+    void notSearch_findAllCategoryAndPage() {
+
+        //given
+        Pageable pageable = PageRequest.of(0, 10);
+        Long categoryId = category.getId();
+
+        PostSearchDto postSearchDto = PostSearchDto.builder()
+                .categoryId(categoryId)
+                .build();
+
+        Post post = Post.builder()
+                .title("test1")
+                .content("test")
+                .createDate(new Date())
+                .category(category)
+                .member(member).build();
+        postRepository.save(post);
+
+        Post post2 = Post.builder()
+                .title("test")
+                .content("test")
+                .createDate(new Date())
+                .category(category)
+                .member(member).build();
+        postRepository.save(post2);
+
+        //when
+        List<PostListDto> postListDtos = postRepository.findAllByCategoryIdAndPage(postSearchDto, pageable);
+
+
+        //then
+        assertEquals(2, postListDtos.size());
+    }
+
+    @Test
+    @DisplayName("PostListDto 리스트 검색 조회 - 값 존재 (제목 기준)")
+    void search_findAllCategoryAndPageByTitle() {
+
+        //given
+        Pageable pageable = PageRequest.of(0, 10);
+        Long categoryId = category.getId();
+
+        PostSearchDto postSearchDto = PostSearchDto.builder()
+                .categoryId(categoryId)
+                .searchSelect("title")
+                .searchWord("test1")
+                .build();
+
+        Post post = Post.builder()
+                .title("test1")
+                .content("test")
+                .createDate(new Date())
+                .category(category)
+                .member(member).build();
+        postRepository.save(post);
+
+        Post post2 = Post.builder()
+                .title("test")
+                .content("test")
+                .createDate(new Date())
+                .category(category)
+                .member(member).build();
+        postRepository.save(post2);
+
+        //when
+        List<PostListDto> postListDtos = postRepository.findAllByCategoryIdAndPage(postSearchDto, pageable);
+
+        //then
+        assertEquals(1, postListDtos.size());
+
+    }
+
+
+    @Test
+    @DisplayName("PostListDto 리스트 검색 조회 - 값 존재 (작성자 기준)")
+    void search_findAllCategoryAndPageByWriter() {
+
+        //given
+        Pageable pageable = PageRequest.of(0, 10);
+        Long categoryId = category.getId();
+
+        PostSearchDto postSearchDto = PostSearchDto.builder()
+                .categoryId(categoryId)
+                .searchSelect("writer")
+                .searchWord("member")
+                .build();
+
+        Post post = Post.builder()
+                .title("test1")
+                .content("test")
+                .createDate(new Date())
+                .category(category)
+                .member(member).build();
+        postRepository.save(post);
+
+        Post post2 = Post.builder()
+                .title("test")
+                .content("test")
+                .createDate(new Date())
+                .category(category)
+                .member(member2).build();
+        postRepository.save(post2);
+
+        //when
+        List<PostListDto> postListDtos = postRepository.findAllByCategoryIdAndPage(postSearchDto, pageable);
+
+        //then
+        assertEquals(1, postListDtos.size());
+    }
+    
+    @Test
+    @DisplayName("PostListDto 리스트 조회 - 카테고리 자식요소 포함하여 조회")
+    void findPostList_childCategoryByParentCategory() {
+    
+        //given
+        Pageable pageable = PageRequest.of(0, 10);
+        Long categoryId = category.getId();
+
+        PostSearchDto postSearchDto = PostSearchDto.builder()
+                .categoryId(categoryId)
+                .build();
+
+        Post post = Post.builder()
+                .title("test1")
+                .content("test")
+                .createDate(new Date())
+                .category(category)
+                .member(member).build();
+        postRepository.save(post);
+
+        Post post2 = Post.builder()
+                .title("test")
+                .content("test")
+                .createDate(new Date())
+                .category(childCategory)
+                .member(member2).build();
+        postRepository.save(post2);
+    
+        //when
+        List<PostListDto> postListDtos = postRepository.findAllByCategoryIdAndPage(postSearchDto, pageable);
+
+        //then
+        assertEquals(2, postListDtos.size());
+    }
+
+    @Test
+    @DisplayName("PostListDto 리스트 조회 - 게시글 제목의 템플릿이 올바른지 ")
+    void collectTitleTemplateByfindAllPostList() {
+    
+        //given
+        Pageable pageable = PageRequest.of(0, 10);
+        Long categoryId = category.getId();
+
+        PostSearchDto postSearchDto = PostSearchDto.builder()
+                .categoryId(categoryId)
+                .build();
+
+        Post post = Post.builder()
+                .title("test1")
+                .content("test")
+                .createDate(new Date())
+                .category(category)
+                .member(member).build();
+        postRepository.save(post);
+
+        String titleTemplate = "[" + category.getName() + "] " + post.getTitle();
+
+        //when
+        List<PostListDto> list = postRepository.findAllByCategoryIdAndPage(postSearchDto, pageable);
+
+
+        //then
+        assertEquals(1, list.size());
+        assertEquals(titleTemplate, list.get(0).getTitle());
+        System.out.println(titleTemplate);
     }
 
 }

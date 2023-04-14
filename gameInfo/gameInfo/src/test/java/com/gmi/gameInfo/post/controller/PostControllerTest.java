@@ -3,6 +3,7 @@ package com.gmi.gameInfo.post.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.post.domain.dto.PostListDto;
+import com.gmi.gameInfo.post.domain.dto.PostSearchDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.post.domain.Post;
@@ -23,12 +24,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import javax.xml.transform.Result;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -214,8 +214,10 @@ public class PostControllerTest {
                 .createDate(new Date())
                 .build()
         );
-        given(postService.findListByCategoryIdAndPage(categoryId, page)).willReturn(list);
-    
+
+
+        given(postService.findListByCategoryIdAndPage(any(PostSearchDto.class), any(Pageable.class))).willReturn(list);
+
         //when
         ResultActions result = mockMvc.perform(get("/api/post/list/" + categoryId)
                 .content(objectMapper.writeValueAsString(page)));

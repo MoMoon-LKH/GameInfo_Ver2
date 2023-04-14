@@ -6,6 +6,7 @@ import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
 import com.gmi.gameInfo.post.domain.dto.PostListDto;
+import com.gmi.gameInfo.post.domain.dto.PostSearchDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.post.service.PostService;
 import io.swagger.annotations.Api;
@@ -133,10 +134,18 @@ public class PostController {
     @GetMapping("/list/{categoryId}")
     public ResponseEntity<?> findAllByCategoryIdAndPage(
             @PathVariable Long categoryId,
-            @PageableDefault Pageable pageable
+            @RequestParam(value = "searchWord", required = false) String searchWord,
+            @RequestParam(value = "searchSelect", required = false) String searchSelect,
+            @PageableDefault(size = 20) Pageable pageable
             ) {
 
-        List<PostListDto> list = postService.findListByCategoryIdAndPage(categoryId, pageable);
+        PostSearchDto postSearchDto = PostSearchDto.builder()
+                .categoryId(categoryId)
+                .searchWord(searchWord)
+                .searchSelect(searchSelect)
+                .build();
+
+        List<PostListDto> list = postService.findListByCategoryIdAndPage(postSearchDto, pageable);
 
         return ResponseEntity.ok(list);
     }

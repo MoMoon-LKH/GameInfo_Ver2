@@ -4,6 +4,7 @@ import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
 import com.gmi.gameInfo.post.domain.dto.PostListDto;
+import com.gmi.gameInfo.post.domain.dto.PostSearchDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import org.springframework.data.domain.Pageable;
 
@@ -19,5 +20,5 @@ public interface PostService {
     PostVo findPostVoById(Long id);
     boolean checkPostOwner(Post post, Member member);
 
-    List<PostListDto> findListByCategoryIdAndPage(Long categoryId, Pageable pageable);
+    List<PostListDto> findListByCategoryIdAndPage(PostSearchDto postSearchDto, Pageable pageable);
 }

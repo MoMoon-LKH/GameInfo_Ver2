@@ -3,8 +3,13 @@ package com.gmi.gameInfo.post.repository;
 import com.gmi.gameInfo.category.domain.QCategory;
 import com.gmi.gameInfo.post.domain.QPost;
 import com.gmi.gameInfo.post.domain.dto.PostListDto;
+import com.gmi.gameInfo.post.domain.dto.PostSearchDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +26,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     private QPost post = QPost.post;
     private QCategory category = QCategory.category;
+
+
 
     @Override
     public Optional<PostVo> findPostVoById(Long id) {
@@ -44,20 +51,40 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
-    public List<PostListDto> findAllByCategoryIdAndPage(Long categoryId, Pageable pageable) {
+    public List<PostListDto> findAllByCategoryIdAndPage(PostSearchDto postSearchDto, Pageable pageable) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+        String searchWord = postSearchDto.getSearchWord();
+        StringExpression resultTitle = Expressions.stringTemplate("'[' || {0} || '] ' || {1}", post.category.name, post.title);
+        Long categoryId = postSearchDto.getCategoryId();
+
+        builder.and(
+            post.category.id.eq(categoryId)
+                .or(post.category.parentId.eq(categoryId))
+        );
+
+        if (searchWord != null && !searchWord.isEmpty()) {
+            String searchSelect = postSearchDto.getSearchSelect();
+
+            if (searchSelect != null && searchSelect.equals("writer")) {
+                builder.and(post.member.nickname.containsIgnoreCase(searchWord));
+            } else {
+                builder.and(post.title.containsIgnoreCase(searchWord));
+            }
+        }
 
         return factory
                 .select(
                         Projections.bean(PostListDto.class,
                                 post.id.as("postId"),
-                                post.title,
+                                resultTitle.as("title"),
                                 post.member.id.as("memberId"),
                                 post.member.nickname,
                                 post.createDate
                                 )
                 ).from(post)
                 .where(
-                        post.category.id.eq(categoryId)
+                        builder
                 )
                 .orderBy(post.createDate.desc())
                 .offset(pageable.getOffset())

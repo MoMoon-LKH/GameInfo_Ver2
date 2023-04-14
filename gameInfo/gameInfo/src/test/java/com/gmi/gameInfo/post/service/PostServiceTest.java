@@ -2,6 +2,7 @@ package com.gmi.gameInfo.post.service;
 
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.post.domain.dto.PostListDto;
+import com.gmi.gameInfo.post.domain.dto.PostSearchDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
@@ -222,12 +223,15 @@ public class PostServiceTest {
                 .createDate(new Date())
                 .build();
 
+        PostSearchDto postSearchDto = PostSearchDto.builder()
+                .build();
+
         List<PostListDto> list = new ArrayList<>();
         list.add(dto);
         given(postRepository.findAllByCategoryIdAndPage(any(), any())).willReturn(list);
 
         //when
-        List<PostListDto> findList = postService.findListByCategoryIdAndPage(1L, pageable);
+        List<PostListDto> findList = postService.findListByCategoryIdAndPage(postSearchDto, pageable);
 
         //then
         assertEquals(1, list.size());

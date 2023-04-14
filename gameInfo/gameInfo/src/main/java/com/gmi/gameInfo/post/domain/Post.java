@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.post.domain;
 
 import com.gmi.gameInfo.category.domain.Category;
+import com.gmi.gameInfo.image.domain.Images;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -42,6 +44,9 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "post")
+    private List<Images> imagesList;
 
     public Post(PostDto postDto, Member member) {
         this.title = postDto.getTitle();
