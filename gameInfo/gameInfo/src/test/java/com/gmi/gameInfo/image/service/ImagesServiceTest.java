@@ -3,6 +3,7 @@ package com.gmi.gameInfo.image.service;
 import com.gmi.gameInfo.image.domain.Images;
 import com.gmi.gameInfo.image.exception.NotFoundImagesException;
 import com.gmi.gameInfo.image.repository.ImagesRepository;
+import com.gmi.gameInfo.post.domain.Post;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -189,6 +190,72 @@ public class ImagesServiceTest {
 
         //then
         assertTrue(bool);
+    }
+
+    @Test
+    @DisplayName("파일정보 업데이트")
+    void imageUpdate() throws IOException {
+
+        //given
+        Images images = Images.builder()
+                .fileName("test")
+                .originalName("test")
+                .extension(".jpg")
+                .path("test.jpg")
+                .build();
+
+        Images updateImages = Images.builder()
+                .fileName("update")
+                .originalName("update")
+                .extension(".jpg")
+                .path("update.jpg")
+                .build();
+
+        given(imagesRepository.findById(any())).willReturn(Optional.of(updateImages));
+
+        //when
+        imagesService.save(images);
+        imagesService.update(images, updateImages);
+        Images find = imagesService.findById(images.getId());
+
+        //then
+        assertEquals("update", find.getFileName());
+
+    }
+
+    @Test
+    @DisplayName("이미지 - 게시글 연관관계 수정")
+    void updateAssociationOfPost() {
+
+        //given
+        Images images = Images.builder()
+                .fileName("test")
+                .originalName("test")
+                .extension(".jpg")
+                .path("test.jpg")
+                .build();
+
+        Post post = Post.builder()
+                .id(1L)
+                .build();
+
+        Images result = Images.builder()
+                .fileName("test")
+                .originalName("test")
+                .extension(".jpg")
+                .path("test.jpg")
+                .post(post)
+                .build();
+
+        given(imagesRepository.findById(any())).willReturn(Optional.of(result));
+
+        //when
+        imagesService.save(images);
+        imagesService.updateAssociationOfPost(images, post);
+        Images find = imagesService.findById(1L);
+
+        //then
+        assertSame(post, find.getPost());
     }
 
 }

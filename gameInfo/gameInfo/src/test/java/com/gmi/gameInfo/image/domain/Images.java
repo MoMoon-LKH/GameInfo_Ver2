@@ -33,4 +33,16 @@ public class Images {
     @JoinColumn(name = "post_id")
     private Post post;
 
+
+    public void updateImages(Images images) {
+        this.originalName = images.getOriginalName();
+        this.fileName = images.getFileName();
+        this.extension = images.getExtension();
+        this.path = images.getPath();
+    }
+
+    public void updateRelationPost(Post post) {
+        this.post = post;
+    }
+
 }

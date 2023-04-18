@@ -1,6 +1,8 @@
 package com.gmi.gameInfo.post.controller;
 
 import com.gmi.gameInfo.exceptionHandler.ErrorResponse;
+import com.gmi.gameInfo.image.domain.Images;
+import com.gmi.gameInfo.image.service.ImagesService;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.post.domain.Post;
@@ -39,6 +41,8 @@ public class PostController {
     private final PostService postService;
     private final MemberService memberService;
 
+    private final ImagesService imagesService;
+
 
     @Operation(summary = "포스트 작성", description = "포스트 작성 API")
     @ApiResponse(responseCode = "201", description = "포스트 작성 성공",
@@ -51,8 +55,14 @@ public class PostController {
 
         Member member = memberService.findByLoginId(userDetails.getUsername());
         Post post = Post.createPostByDto(postDto, member);
-
         postService.save(post);
+
+        if(postDto.getImageIds() != null) {
+            for (Long id : postDto.getImageIds()) {
+                Images images = imagesService.findById(id);
+                imagesService.updateAssociationOfPost(images, post);
+            }
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.findPostVoById(post.getId()));
     }

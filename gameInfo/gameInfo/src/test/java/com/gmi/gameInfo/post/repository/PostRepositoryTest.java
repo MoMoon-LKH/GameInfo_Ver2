@@ -189,4 +189,5 @@ public class PostRepositoryTest {
                 .email("test@asdf.com").build();
         return member;
     }
+
 }

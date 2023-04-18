@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gmi.gameInfo.image.service.ImagesService;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.post.domain.dto.PostListDto;
 import com.gmi.gameInfo.post.domain.dto.PostSearchDto;
@@ -50,6 +51,9 @@ public class PostControllerTest {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private ImagesService imagesService;
 
     @Autowired
     private ObjectMapper objectMapper;
