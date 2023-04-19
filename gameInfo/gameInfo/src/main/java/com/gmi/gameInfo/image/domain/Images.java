@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.image.domain;
 
+import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,10 @@ public class Images {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "news_id")
+    private News news;
 
 
     public void updateImages(Images images) {

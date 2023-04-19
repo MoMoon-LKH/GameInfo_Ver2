@@ -6,6 +6,8 @@ import com.gmi.gameInfo.image.exception.FailUploadFileException;
 import com.gmi.gameInfo.image.exception.NotFoundFileException;
 import com.gmi.gameInfo.image.exception.NotFoundImagesException;
 import com.gmi.gameInfo.member.exception.*;
+import com.gmi.gameInfo.news.exception.NotFoundNewsException;
+import com.gmi.gameInfo.platform.exception.NotFoundPlatformException;
 import com.gmi.gameInfo.post.exception.FailDeletePostException;
 import com.gmi.gameInfo.post.exception.NotFoundPostException;
 import com.gmi.gameInfo.post.exception.NotPostOwnerException;
@@ -159,5 +161,23 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(NotFoundPlatformException.class)
+    protected ResponseEntity<?> handleNotFoundPlatformException(NotFoundPlatformException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(NotFoundNewsException.class)
+    protected ResponseEntity<?> handleNotFoundNewsException(NotFoundNewsException e){
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }
