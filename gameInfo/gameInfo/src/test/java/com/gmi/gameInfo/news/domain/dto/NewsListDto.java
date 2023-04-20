@@ -9,22 +9,18 @@ import java.util.Date;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class NewsDto {
+@NoArgsConstructor
+public class NewsListDto {
 
     private Long id;
 
     private String title;
 
-    private String content;
-
-    private int commentCnt;
-
-    private Date createDate;
 
     private Long memberId;
 
     private String nickname;
 
+    private Date createDate;
 }

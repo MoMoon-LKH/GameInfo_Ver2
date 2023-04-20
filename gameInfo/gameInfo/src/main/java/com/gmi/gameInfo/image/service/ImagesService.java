@@ -6,6 +6,7 @@ import com.gmi.gameInfo.image.exception.FailUploadFileException;
 import com.gmi.gameInfo.image.exception.NotFoundFileException;
 import com.gmi.gameInfo.image.exception.NotFoundImagesException;
 import com.gmi.gameInfo.image.repository.ImagesRepository;
+import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -43,8 +44,20 @@ public class ImagesService {
     }
 
     @Transactional
+    public void updateAssociationOfNews(Images images, News news) {
+        images.updateRelationNews(news);
+    }
+
+    @Transactional
     public void delete(Images images) {
-        imagesRepository.delete(images);
+        File file = new File(images.getPath());
+        boolean delete = deleteFile(file);
+
+        if(delete) {
+            imagesRepository.delete(images);
+        } else {
+            throw new FailDeleteFileException();
+        }
     }
 
     public Images findById(Long id){

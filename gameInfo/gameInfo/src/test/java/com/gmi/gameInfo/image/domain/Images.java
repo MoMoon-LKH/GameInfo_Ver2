@@ -50,4 +50,7 @@ public class Images {
         this.post = post;
     }
 
+    public void updateRelationNews(News news) {
+        this.news = news;
+    }
 }
