@@ -59,9 +59,10 @@ public class News {
         this.platform = platform;
     }
 
-    public void updateNews(NewsDto dto){
+    public void updateNews(NewsCreateDto dto, Platform platform){
         this.title = dto.getTitle();
         this.content = dto.getContent();
+        this.platform = platform;
         this.updateDate = new Date();
     }
 

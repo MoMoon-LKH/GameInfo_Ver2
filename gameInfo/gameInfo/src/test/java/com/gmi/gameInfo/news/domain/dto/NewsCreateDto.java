@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.news.domain.dto;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -31,5 +32,6 @@ public class NewsCreateDto {
     @NotNull(message = "플랫폼을 선택해주세요")
     private Long platformId;
 
+    @ApiModelProperty(name = "이미지 아이디 리스트")
     private List<Long> imageIds;
 }

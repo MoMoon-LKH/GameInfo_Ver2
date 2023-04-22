@@ -1,16 +1,13 @@
 package com.gmi.gameInfo.news.domain;
 
-import com.gmi.gameInfo.genre.domain.Genre;
 import com.gmi.gameInfo.image.domain.Images;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.news.domain.dto.NewsCreateDto;
-import com.gmi.gameInfo.news.domain.dto.NewsDto;
 import com.gmi.gameInfo.platform.domain.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.util.Lazy;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -59,9 +56,10 @@ public class News {
         this.platform = platform;
     }
 
-    public void updateNews(NewsDto dto){
+    public void updateNews(NewsCreateDto dto, Platform platform){
         this.title = dto.getTitle();
         this.content = dto.getContent();
+        this.platform = platform;
         this.updateDate = new Date();
     }
 

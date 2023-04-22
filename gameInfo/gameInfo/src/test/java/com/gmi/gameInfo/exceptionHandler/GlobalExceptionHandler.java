@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.exceptionHandler;
 
 import com.gmi.gameInfo.category.exception.NotFoundCategoryException;
+import com.gmi.gameInfo.exceptionHandler.exception.NoPermissionException;
 import com.gmi.gameInfo.image.exception.FailDeleteFileException;
 import com.gmi.gameInfo.image.exception.FailUploadFileException;
 import com.gmi.gameInfo.image.exception.NotFoundFileException;
@@ -11,7 +12,6 @@ import com.gmi.gameInfo.platform.exception.NotFoundPlatformException;
 import com.gmi.gameInfo.post.exception.FailDeletePostException;
 import com.gmi.gameInfo.post.exception.NotFoundPostException;
 import com.gmi.gameInfo.post.exception.NotPostOwnerException;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -180,5 +180,14 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(NoPermissionException.class)
+    protected ResponseEntity<?> handleNoPermissionException(NoPermissionException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 }

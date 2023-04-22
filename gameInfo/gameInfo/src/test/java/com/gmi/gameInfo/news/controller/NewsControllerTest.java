@@ -4,14 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.image.domain.Images;
 import com.gmi.gameInfo.image.service.ImagesService;
+import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.member.domain.RoleType;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.domain.dto.NewsCreateDto;
+import com.gmi.gameInfo.news.domain.dto.NewsDto;
 import com.gmi.gameInfo.news.domain.dto.NewsListDto;
 import com.gmi.gameInfo.news.domain.dto.NewsSearchDto;
 import com.gmi.gameInfo.news.service.NewsService;
 import com.gmi.gameInfo.platform.domain.Platform;
 import com.gmi.gameInfo.platform.service.PlatformService;
+import lombok.With;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +30,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -191,6 +195,70 @@ public class NewsControllerTest {
         ResultActions result = mockMvc.perform(get("/api/news/list?page=0&size=20")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newsSearchDto))
+                .with(csrf())
+        );
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @WithMockUser
+    @DisplayName("NewsDto 단일조회")
+    void getNewsDetails() throws Exception{
+
+        //given
+        NewsDto newsDto = NewsDto.builder()
+                .id(1L)
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .memberId(1L)
+                .nickname("nickname")
+                .build();
+
+        given(newsService.findDtoOneById(any(Long.class))).willReturn(newsDto);
+
+        //when
+        ResultActions result = mockMvc.perform(get("/api/news/" + newsDto.getId())
+                .with(csrf())
+        );
+
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+    
+    @Test
+    @WithMockUser
+    @DisplayName("News 삭제")
+    void deleteNews() throws Exception {
+    
+        //given
+        Member member = Member.builder()
+                .id(1L)
+                .nickname("nickname")
+                .loginId("rlsdf12323")
+                .password("password")
+                .roleType(RoleType.USER)
+                .build();
+        News news = News.builder()
+                .id(1L)
+                .title("title")
+                .content("content")
+                .member(member)
+                .build();
+
+        given(memberService.findByLoginId(any(String.class))).willReturn(member);
+        given(newsService.findById(any(Long.class))).willReturn(news);
+    
+        //when
+        ResultActions result = mockMvc.perform(delete("/api/news/delete/" + news.getId())
                 .with(csrf())
         );
 

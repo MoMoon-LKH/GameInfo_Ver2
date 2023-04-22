@@ -19,8 +19,6 @@ public class NewsDto {
 
     private String content;
 
-    private int commentCnt;
-
     private Date createDate;
 
     private Long memberId;

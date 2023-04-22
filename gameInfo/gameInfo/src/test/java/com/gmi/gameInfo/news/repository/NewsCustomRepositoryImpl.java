@@ -2,6 +2,7 @@ package com.gmi.gameInfo.news.repository;
 
 
 import com.gmi.gameInfo.news.domain.QNews;
+import com.gmi.gameInfo.news.domain.dto.NewsDto;
 import com.gmi.gameInfo.news.domain.dto.NewsListDto;
 import com.gmi.gameInfo.news.domain.dto.NewsSearchDto;
 import com.gmi.gameInfo.platform.domain.QPlatform;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,6 +34,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
 
         BooleanBuilder builder = new BooleanBuilder();
 
+        int commentCnt = 0;
         Long platformId = searchDto.getPlatformId();
         String searchWord = searchDto.getSearchWord();
 
@@ -61,7 +64,6 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                 .select(Projections.bean(NewsListDto.class,
                         news.id,
                         resultTitle.as("title"),
-                        news.content,
                         news.member.id.as("memberId"),
                         news.member.nickname.as("nickname"),
                         news.createDate
@@ -71,5 +73,22 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                 .where(builder)
                 .orderBy(news.createDate.desc())
                 .fetch();
+    }
+
+    @Override
+    public Optional<NewsDto> findDtoOneById(Long id) {
+
+        return Optional.ofNullable(
+                factory.select(
+                        Projections.bean(NewsDto.class,
+                                news.id,
+                                news.title,
+                                news.content,
+                                news.createDate,
+                                news.member.id,
+                                news.member.nickname
+                        ))
+                .from(news)
+                .fetchOne());
     }
 }

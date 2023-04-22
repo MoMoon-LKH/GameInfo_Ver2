@@ -5,6 +5,7 @@ import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.RoleType;
 import com.gmi.gameInfo.member.repository.MemberRepository;
 import com.gmi.gameInfo.news.domain.News;
+import com.gmi.gameInfo.news.domain.dto.NewsDto;
 import com.gmi.gameInfo.news.domain.dto.NewsListDto;
 import com.gmi.gameInfo.news.domain.dto.NewsSearchDto;
 import com.gmi.gameInfo.news.exception.NotFoundNewsException;
@@ -22,6 +23,7 @@ import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -271,6 +273,29 @@ public class NewsRepositoryTest {
 
         //then
         assertEquals(1, find.size());
+    }
+    
+    
+    @Test
+    @DisplayName("NewsDto 단일조회")
+    void findOneById() {
+    
+        //given
+        News news = News.builder()
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .build();
+
+        newsRepository.save(news);
+
+        //when
+        NewsDto find = newsRepository.findDtoOneById(news.getId()).orElseGet(null);
+
+        //then
+        assertEquals(news.getId(), find.getId());
+
     }
 
 }

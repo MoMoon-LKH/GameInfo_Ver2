@@ -2,10 +2,13 @@ package com.gmi.gameInfo.news.service;
 
 
 import com.gmi.gameInfo.news.domain.News;
+import com.gmi.gameInfo.news.domain.dto.NewsCreateDto;
+import com.gmi.gameInfo.news.domain.dto.NewsDto;
 import com.gmi.gameInfo.news.domain.dto.NewsListDto;
 import com.gmi.gameInfo.news.domain.dto.NewsSearchDto;
 import com.gmi.gameInfo.news.exception.NotFoundNewsException;
 import com.gmi.gameInfo.news.repository.NewsRepository;
+import com.gmi.gameInfo.platform.domain.Platform;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -144,5 +147,84 @@ public class NewsServiceTest {
         //then
         assertEquals(1, list.size());
     }
+
+
+    @Test
+    @DisplayName("NewsDto 단일조회 - 실패")
+    void findOneById_Fail() {
+
+        //given
+        given(newsRepository.findDtoOneById(any(Long.class))).willReturn(Optional.ofNullable(null));
+
+        //when
+
+
+        //then
+        assertThrows(NotFoundNewsException.class, () -> {
+            NewsDto find = newsService.findDtoOneById(1L);
+        });
+
+    }
+
+
+    @Test
+    @DisplayName("NewsDto 단일조회 - 성공")
+    void findOneById_Success() {
+
+        //given
+        NewsDto newsDto = NewsDto.builder()
+                .id(1L)
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .memberId(1L)
+                .nickname("nickname")
+                .build();
+
+        given(newsRepository.findDtoOneById(any(Long.class))).willReturn(Optional.of(newsDto));
+
+        //when
+        NewsDto find = newsService.findDtoOneById(1L);
+
+        //then
+        assertEquals(1, find.getId());
+    }
+    
+    @Test
+    @DisplayName("News 업데이트")
+    void updateNews() {
+    
+        //given
+        Platform platform1 = Platform.builder()
+                .id(1L)
+                .name("p1")
+                .build();
+        Platform platform2 = Platform.builder()
+                .id(2L)
+                .name("p2")
+                .build();
+
+        News news = News.builder()
+                .id(1L)
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .platform(platform1)
+                .build();
+
+        NewsCreateDto createDto = NewsCreateDto.builder()
+                .title("updateTitle")
+                .content("updateContent")
+                .platformId(2L)
+                .build();
+
+        //when
+        newsService.updateNews(news, createDto, platform2);
+        
+        //then
+        assertEquals(createDto.getTitle(), news.getTitle());
+        assertSame(platform2, news.getPlatform());
+    }
+
 
 }

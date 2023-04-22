@@ -30,5 +30,6 @@ public class NewsCreateDto {
     @NotNull(message = "플랫폼을 선택해주세요")
     private Long platformId;
 
+    @ApiModelProperty(name = "이미지 아이디 리스트")
     private List<Long> imageIds;
 }
