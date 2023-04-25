@@ -1,23 +1,20 @@
 package com.gmi.gameInfo.news.domain;
 
-import com.gmi.gameInfo.genre.domain.Genre;
 import com.gmi.gameInfo.image.domain.Images;
+import com.gmi.gameInfo.likes.domain.NewsLikes;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.news.domain.dto.NewsCreateDto;
-import com.gmi.gameInfo.news.domain.dto.NewsDto;
 import com.gmi.gameInfo.platform.domain.Platform;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.util.Lazy;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,6 +46,9 @@ public class News {
 
     @OneToMany(mappedBy = "news", fetch = FetchType.LAZY)
     private List<Images> images;
+
+    @OneToMany(mappedBy = "news", fetch = FetchType.LAZY)
+    private List<NewsLikes> likes = new ArrayList<>();
 
 
     public News(NewsCreateDto dto, Member member, Platform platform) {

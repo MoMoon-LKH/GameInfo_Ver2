@@ -2,6 +2,7 @@ package com.gmi.gameInfo.post.domain;
 
 import com.gmi.gameInfo.category.domain.Category;
 import com.gmi.gameInfo.image.domain.Images;
+import com.gmi.gameInfo.likes.domain.NewsLikes;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
 import lombok.AllArgsConstructor;
