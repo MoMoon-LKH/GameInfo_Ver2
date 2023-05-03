@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.news.domain;
 
+import com.gmi.gameInfo.comment.domain.Comment;
 import com.gmi.gameInfo.image.domain.Images;
 import com.gmi.gameInfo.likes.domain.NewsLikes;
 import com.gmi.gameInfo.member.domain.Member;
@@ -49,6 +50,9 @@ public class News {
 
     @OneToMany(mappedBy = "news", fetch = FetchType.LAZY)
     private List<NewsLikes> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "news", fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
 
     public News(NewsCreateDto dto, Member member, Platform platform) {

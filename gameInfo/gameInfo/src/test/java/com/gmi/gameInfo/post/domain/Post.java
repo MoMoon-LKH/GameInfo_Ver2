@@ -1,8 +1,8 @@
 package com.gmi.gameInfo.post.domain;
 
 import com.gmi.gameInfo.category.domain.Category;
+import com.gmi.gameInfo.comment.domain.Comment;
 import com.gmi.gameInfo.image.domain.Images;
-import com.gmi.gameInfo.likes.domain.NewsLikes;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
 import lombok.AllArgsConstructor;
@@ -46,8 +46,11 @@ public class Post {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Images> imagesList;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
     public Post(PostDto postDto, Member member) {
         this.title = postDto.getTitle();

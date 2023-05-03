@@ -1,11 +1,10 @@
 package com.gmi.gameInfo.likes.service;
 
 
-import com.gmi.gameInfo.likes.domain.LikesType;
+import com.gmi.gameInfo.likes.domain.LikeType;
 import com.gmi.gameInfo.likes.domain.NewsLikes;
+import com.gmi.gameInfo.likes.domain.dto.LikeDto;
 import com.gmi.gameInfo.likes.repository.NewsLikesRepository;
-import com.gmi.gameInfo.member.domain.Member;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.annotation.Rollback;
 
-import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,11 +36,11 @@ public class NewsLikesServiceTest {
     
         //given
         NewsLikes likes = NewsLikes.builder()
-                .likesType(LikesType.LIKE)
+                .likeType(LikeType.LIKE)
                 .build();
         NewsLikes saveLike = NewsLikes.builder()
                 .id(1L)
-                .likesType(LikesType.LIKE)
+                .likeType(LikeType.LIKE)
                 .build();
 
         given(likesRepository.save(likes)).willReturn(saveLike);
@@ -60,14 +58,14 @@ public class NewsLikesServiceTest {
     
         //given
         NewsLikes likes = NewsLikes.builder()
-                .likesType(LikesType.LIKE)
+                .likeType(LikeType.LIKE)
                 .build();
     
         //when
-        newsLikesService.updateType(likes, LikesType.DISLIKE);
+        newsLikesService.updateType(likes, LikeType.DISLIKE);
         
         //then
-        assertEquals(LikesType.DISLIKE, likes.getLikesType());
+        assertEquals(LikeType.DISLIKE, likes.getLikeType());
 
     }
 
@@ -78,7 +76,7 @@ public class NewsLikesServiceTest {
         //given
         NewsLikes likes = NewsLikes.builder()
                 .id(1L)
-                .likesType(LikesType.LIKE)
+                .likeType(LikeType.LIKE)
                 .build();
         doNothing().when(likesRepository).delete(any());
         given(likesRepository.findById(any())).willReturn(Optional.ofNullable(null));
@@ -104,7 +102,7 @@ public class NewsLikesServiceTest {
         //given
         NewsLikes likes = NewsLikes.builder()
                 .id(1L)
-                .likesType(LikesType.LIKE)
+                .likeType(LikeType.LIKE)
                 .build();
         given(likesRepository.findById(any())).willReturn(Optional.of(likes));
 
@@ -123,7 +121,7 @@ public class NewsLikesServiceTest {
         //given
         NewsLikes likes = NewsLikes.builder()
                 .id(1L)
-                .likesType(LikesType.LIKE)
+                .likeType(LikeType.LIKE)
                 .build();
         given(likesRepository.findByNewsIdAndMemberId(any(Long.class), any(Long.class))).willReturn(Optional.of(likes));
 
@@ -132,5 +130,35 @@ public class NewsLikesServiceTest {
 
         //then
         assertSame(find.get(), likes);
+    }
+    
+    @Test
+    @DisplayName("NewsLikes LikeType 따른 총 수 조회")
+    void countByNewsIdAndMemberId() {
+    
+        //given
+        given(likesRepository.countByNewsIdAndLikeType(any(Long.class), any(LikeType.class))).willReturn(2);
+
+        //when
+        int count = newsLikesService.countByNewsIdAndLikesType(1L, LikeType.LIKE);
+        
+        //then
+        assertEquals(2, count);
+    }
+
+    @Test
+    @DisplayName("LikeDto 조회")
+    void findLikeDtoByType() {
+
+        //given
+        given(likesRepository.countByNewsIdAndLikeType(any(Long.class), any(LikeType.class))).willReturn(1);
+        given(likesRepository.existsByNewsIdAndMemberIdAndLikeType(any(Long.class), any(Long.class), any(LikeType.class))).willReturn(true);
+
+        //when
+        LikeDto likeDto = newsLikesService.findLikeDtoByType(1L, 1L, LikeType.LIKE);
+
+        //then
+        assertEquals(1, likeDto.getCount());
+
     }
 }

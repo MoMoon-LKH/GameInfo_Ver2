@@ -1,15 +1,13 @@
 package com.gmi.gameInfo.likes.repository;
 
 import com.gmi.gameInfo.config.TestConfig;
-import com.gmi.gameInfo.likes.domain.LikesType;
+import com.gmi.gameInfo.likes.domain.LikeType;
 import com.gmi.gameInfo.likes.domain.NewsLikes;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.RoleType;
 import com.gmi.gameInfo.member.repository.MemberRepository;
 import com.gmi.gameInfo.news.domain.News;
-import com.gmi.gameInfo.news.exception.NotFoundNewsException;
 import com.gmi.gameInfo.news.repository.NewsRepository;
-import com.gmi.gameInfo.post.repository.PostRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -70,14 +68,14 @@ public class NewsLikesRepositoryTest {
     void likesSaveTest() {
 
         //given
-        NewsLikes likes = NewsLikes.createNewLikes(news, member, LikesType.LIKE);
+        NewsLikes likes = NewsLikes.createNewLikes(news, member, LikeType.LIKE);
 
         //when
         NewsLikes save = likesRepository.save(likes);
         News find = newsRepository.findById(news.getId()).orElse(null);
 
         //then
-        assertEquals(LikesType.LIKE, save.getLikesType());
+        assertEquals(LikeType.LIKE, save.getLikeType());
         assertEquals(1, find.getLikes().size());
 
     }
@@ -88,7 +86,7 @@ public class NewsLikesRepositoryTest {
     void NewsLikesRepositoryTest() {
 
         //given
-        NewsLikes likes = NewsLikes.createNewLikes(news, member, LikesType.LIKE);
+        NewsLikes likes = NewsLikes.createNewLikes(news, member, LikeType.LIKE);
 
         //when
         NewsLikes save = likesRepository.save(likes);
@@ -109,7 +107,7 @@ public class NewsLikesRepositoryTest {
     void findByNewsIdAndMemberId() {
 
         //given
-        NewsLikes likes = NewsLikes.createNewLikes(news, member, LikesType.LIKE);
+        NewsLikes likes = NewsLikes.createNewLikes(news, member, LikeType.LIKE);
         likesRepository.save(likes);
 
         //when
@@ -118,5 +116,79 @@ public class NewsLikesRepositoryTest {
         //then
         assertSame(likes, find.get());
 
+    }
+
+    @Test
+    @DisplayName("NewsLikes count 조회")
+    void countLikeType() {
+
+        //given
+        NewsLikes like1 = NewsLikes.createNewLikes(news, member, LikeType.LIKE);
+        NewsLikes like2 = NewsLikes.createNewLikes(news, member, LikeType.LIKE);
+        likesRepository.save(like1);
+        likesRepository.save(like2);
+
+        //when
+        int count = likesRepository.countByNewsIdAndLikeType(news.getId(), LikeType.LIKE);
+
+
+        //then
+        assertEquals(2, count);
+    }
+
+    @Test
+    @DisplayName("사용자가 해당 뉴스의 Like 누른 여부 조회")
+    void existLikeByMemberIdAndNewsIdAndLikeType() {
+
+        //given
+        NewsLikes like1 = NewsLikes.createNewLikes(news, member, LikeType.LIKE);
+        likesRepository.save(like1);
+
+        //when
+        boolean bool = likesRepository.existsByNewsIdAndMemberIdAndLikeType(news.getId(), member.getId(), LikeType.LIKE);
+
+        //then
+        assertTrue(bool);
+    }
+
+    @Test
+    @DisplayName("사용자가 해당 뉴스의 Like 누른 여부 조회 - 여부 X")
+    void notExistLikeByMemberIdAndNewsIdAndLikeType() {
+
+        //given
+
+        //when
+        boolean bool = likesRepository.existsByNewsIdAndMemberIdAndLikeType(news.getId(), member.getId(), LikeType.LIKE);
+
+        //then
+        assertFalse(bool);
+    }
+    
+    @Test
+    @DisplayName("사용자가 해당 뉴스의 Dislike 누른 여부 조회 - 여부 X")
+    void notExistDisLikeByMemberIdAndNewsIdAndLikeType() {
+    
+        //given
+    
+        //when
+        boolean bool = likesRepository.existsByNewsIdAndMemberIdAndLikeType(news.getId(), member.getId(), LikeType.DISLIKE);
+        
+        //then
+        assertFalse(bool);
+    }
+
+    @Test
+    @DisplayName("사용자가 해당 뉴스의 Dislike 누른 여부 조회")
+    void existDisLikeByMemberIdAndNewsIdAndLikeType() {
+
+        //given
+        NewsLikes like = NewsLikes.createNewLikes(news, member, LikeType.DISLIKE);
+        likesRepository.save(like);
+
+        //when
+        boolean bool = likesRepository.existsByNewsIdAndMemberIdAndLikeType(news.getId(), member.getId(), LikeType.DISLIKE);
+
+        //then
+        assertTrue(bool);
     }
 }

@@ -1,5 +1,5 @@
 package com.gmi.gameInfo.likes.domain;
 
-public enum LikesType {
+public enum LikeType {
     LIKE, DISLIKE
 }
