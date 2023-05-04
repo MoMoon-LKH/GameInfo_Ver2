@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class CommentRepositoryImpl implements CustomCommentRepository{
+public class CustomCommentRepositoryImpl implements CustomCommentRepository{
 
     private final JPAQueryFactory factory;
 

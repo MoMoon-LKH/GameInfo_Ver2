@@ -95,6 +95,10 @@ public class Comment {
     }
 
 
+    public void updateCommentContent(String content) {
+        this.content = content;
+        this.updateDate = new Date();
+    }
 
     public static Comment createReplyNewsComment(CommentCreateDto dto, Member createMember, News news, Member replyMember) {
         return new Comment(dto, createMember, news, replyMember);

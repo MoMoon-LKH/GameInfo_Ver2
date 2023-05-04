@@ -23,7 +23,9 @@ public class CommentDto {
 
     private String nickname;
 
-    private int sort;
+    private int groups;
+
+    private int sequence;
 
     private String replyNickname;
 
