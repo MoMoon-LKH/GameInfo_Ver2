@@ -60,6 +60,7 @@ public class SecurityConfig{
                 .antMatchers("/api/auth/login", "/api/auth/reissue-token").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/post/{id}", "/api/post/list/{categoryId}", "/api/news/list", "/api/news/{id}").permitAll()
                 .antMatchers("/api/docs", "/v2/api-docs").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/comment/news/{newsId}", "/api/comment/post/{postId}").permitAll()
                 .antMatchers("/api/auth/logout").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/image/upload").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
