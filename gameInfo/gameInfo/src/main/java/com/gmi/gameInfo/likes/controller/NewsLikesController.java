@@ -7,6 +7,7 @@ import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.service.NewsService;
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Api(tags = "NewsLikes Controller")
 @RestController
 @RequestMapping("/api/news/likes")
 @RequiredArgsConstructor

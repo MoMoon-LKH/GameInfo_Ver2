@@ -15,6 +15,7 @@ import com.gmi.gameInfo.news.domain.dto.NewsSearchDto;
 import com.gmi.gameInfo.news.service.NewsService;
 import com.gmi.gameInfo.platform.domain.Platform;
 import com.gmi.gameInfo.platform.service.PlatformService;
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,6 +34,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.util.List;
 
+@Api(tags = "News Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/news")

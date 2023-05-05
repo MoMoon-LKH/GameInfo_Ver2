@@ -9,6 +9,7 @@ import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.service.NewsService;
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Api(tags = "Comment Controller")
 @RestController
 @RequestMapping("/api/comment")
 @RequiredArgsConstructor
@@ -154,7 +156,7 @@ public class CommentController {
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        
+
         Member member = memberService.findByLoginId(userDetails.getUsername());
         Comment comment = commentService.findById(id);
 
