@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.apiguardian.api.API;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -108,7 +109,14 @@ public class NewsController {
     }
 
 
-    @PatchMapping("/update/{id}")
+    @Operation(summary = "뉴스 업데이트", description = "뉴스 업데이트 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "업데이트 성공",
+            content = @Content(schema = @Schema(implementation = NewsDto.class))),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateNews (
         @PathVariable("id") Long id,
         @Valid @RequestBody NewsCreateDto newsCreateDto,
@@ -127,11 +135,27 @@ public class NewsController {
             throw new NoPermissionException();
         }
 
-        return ResponseEntity.ok(news);
+        NewsDto newsDto = NewsDto.builder()
+                .id(news.getId())
+                .title(news.getTitle())
+                .content(news.getContent())
+                .memberId(news.getMember().getId())
+                .nickname(news.getMember().getNickname())
+                .createDate(news.getCreateDate())
+                .build();
+
+        return ResponseEntity.ok(newsDto);
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @Operation(summary = "뉴스 삭제", description = "뉴스 삭제 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "삭제 성공",
+            content = @Content(schema = @Schema(implementation = Boolean.class))),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteNews(
             @PathVariable("id") Long id,
             @AuthenticationPrincipal UserDetails userDetails

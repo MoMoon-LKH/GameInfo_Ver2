@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.exceptionHandler;
 
 import com.gmi.gameInfo.category.exception.NotFoundCategoryException;
+import com.gmi.gameInfo.comment.exception.NotFoundCommentException;
 import com.gmi.gameInfo.exceptionHandler.exception.NoPermissionException;
 import com.gmi.gameInfo.image.exception.FailDeleteFileException;
 import com.gmi.gameInfo.image.exception.FailUploadFileException;
@@ -189,5 +190,14 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .build();
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+    @ExceptionHandler(NotFoundCommentException.class)
+    protected ResponseEntity<?> handleNotFoundCommentException(NotFoundCommentException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }

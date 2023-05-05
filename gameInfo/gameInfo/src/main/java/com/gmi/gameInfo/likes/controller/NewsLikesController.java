@@ -7,6 +7,9 @@ import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.service.NewsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +30,10 @@ public class NewsLikesController {
     private final NewsService newsService;
 
 
+    @Operation(summary = "Like/Dislike 동작", description = "Like/Dislike 동작 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
     @PostMapping("/{id}")
     public ResponseEntity<?> pushLike(
             @PathVariable Long id,

@@ -258,7 +258,7 @@ public class NewsControllerTest {
         given(newsService.findById(any(Long.class))).willReturn(news);
     
         //when
-        ResultActions result = mockMvc.perform(delete("/api/news/delete/" + news.getId())
+        ResultActions result = mockMvc.perform(delete("/api/news/" + news.getId())
                 .with(csrf())
         );
 

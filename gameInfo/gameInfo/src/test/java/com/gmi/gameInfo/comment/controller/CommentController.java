@@ -9,6 +9,11 @@ import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.service.NewsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +41,11 @@ public class CommentController {
     private final MemberService memberService;
 
 
+    @Operation(summary = "댓글(뉴스) 리스트 조회", description = "댓글(뉴스) 리스트 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = HashMap.class)))
+    })
     @GetMapping("/news/{newsId}")
     public ResponseEntity<?> getCommentListByNewsIdAndPage(
             @PathVariable Long newsId,
@@ -53,6 +63,11 @@ public class CommentController {
     }
 
 
+    @Operation(summary = "댓글(뉴스) 생성", description = "댓글(뉴스) 생성 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "생성 성공",
+            content = @Content(schema = @Schema(implementation = HashMap.class)))
+    })
     @PostMapping("/news")
     public ResponseEntity<?> createComment(
             @Valid @RequestBody CommentCreateDto commentCreateDto,
@@ -61,8 +76,14 @@ public class CommentController {
 
         Member member = memberService.findByLoginId(userDetails.getUsername());
         News news = newsService.findById(commentCreateDto.getPostId());
+        Comment comment;
 
-        Comment comment = Comment.createNewsComment(commentCreateDto, member, news);
+        if(commentCreateDto.getReplyMemberId() != null) {
+            comment = Comment.createReplyNewsComment(commentCreateDto, member, news, memberService.findById(commentCreateDto.getReplyMemberId()));
+        } else {
+            comment = Comment.createNewsComment(commentCreateDto, member, news);
+        }
+
         commentService.save(comment);
 
         int total = commentService.countByNewsId(news.getId());
@@ -75,6 +96,11 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(map);
     }
 
+    @Operation(summary = "댓글 내용 업데이트" ,description = "댓글 내용 업데이트 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "업데이트 성공",
+            content = @Content(schema = @Schema(implementation = CommentDto.class)))
+    })
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateCommentContent(
             @PathVariable Long id,
@@ -119,6 +145,11 @@ public class CommentController {
     }
 
 
+    @Operation(summary = "댓글 삭제", description = "댓글 삭제 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공",
+                    content = @Content(schema = @Schema(implementation = Boolean.class)))
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteComment(
             @PathVariable Long id,
