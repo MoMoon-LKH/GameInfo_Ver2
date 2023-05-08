@@ -34,7 +34,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "News Controller")
 @RestController
@@ -84,15 +86,28 @@ public class NewsController {
             @ApiResponse(responseCode = "200", description = "조회 성공",
              content = @Content(array = @ArraySchema(schema = @Schema(implementation = NewsListDto.class))))
     })
-    @GetMapping("/list")
+    @GetMapping("/list/{platformId}")
     public ResponseEntity<?> getListByPageable(
-            @Valid @RequestBody NewsSearchDto searchDto,
-            @PageableDefault(page = 0, size = 20) Pageable pageable
+            @PathVariable("platformId") Long platformId,
+            @RequestParam("searchSelect") String searchSelect,
+            @RequestParam("searchInput") String searchInput,
+            @PageableDefault(page = 0, size = 30) Pageable pageable
             ) {
 
+        NewsSearchDto searchDto = NewsSearchDto.builder()
+                .platformId(platformId)
+                .searchSelect(searchSelect)
+                .searchWord(searchInput)
+                .build();
+
+        int total = newsService.countByPlatformId(searchDto.getPlatformId());
         List<NewsListDto> list = newsService.findListByPageable(searchDto, pageable);
 
-        return ResponseEntity.ok(list);
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", total);
+        map.put("list", list);
+
+        return ResponseEntity.ok(map);
     }
     
 

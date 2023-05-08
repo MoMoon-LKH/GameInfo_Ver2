@@ -49,4 +49,8 @@ public class NewsService {
     public NewsDto findDtoOneById(Long id) {
         return newsRepository.findDtoOneById(id).orElseThrow(NotFoundNewsException::new);
     }
+
+    public int countByPlatformId(Long id) {
+        return newsRepository.countByPlatformId(id);
+    }
 }

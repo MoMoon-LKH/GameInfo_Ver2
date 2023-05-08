@@ -42,7 +42,6 @@ public class NewsLikesController {
             @RequestParam String type,
             @AuthenticationPrincipal UserDetails userDetails
             ) {
-
         Member member = memberService.findByLoginId(userDetails.getUsername());
         News news = newsService.findById(id);
         Optional<NewsLikes> likes = likesService.findByNewsIdAndMemberId(id, member.getId());
