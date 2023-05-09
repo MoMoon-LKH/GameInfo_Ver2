@@ -3,7 +3,9 @@ package com.gmi.gameInfo.comment.repository;
 import com.gmi.gameInfo.comment.domain.QComment;
 import com.gmi.gameInfo.comment.domain.dto.CommentDto;
 import com.gmi.gameInfo.member.domain.QMember;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,16 +32,16 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
                                 comment.createDate,
                                 comment.member.id.as("memberId"),
                                 comment.member.nickname,
-                                comment.groups.as("groups"),
+                                comment.commentGroups.as("groups"),
                                 comment.sequence.as("sequence"),
-                                comment.replyMember.nickname.as("replyNickname")
+                                member.nickname.as("replyNickname")
                         )
                 ).from(comment)
                 .leftJoin(comment.replyMember, member)
                 .where(comment.news.id.eq(newsId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(comment.groups.asc(), comment.sequence.asc())
+                .orderBy(comment.commentGroups.asc(), comment.sequence.asc())
                 .fetch();
     }
 

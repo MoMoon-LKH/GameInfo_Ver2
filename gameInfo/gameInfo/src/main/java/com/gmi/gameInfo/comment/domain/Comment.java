@@ -27,7 +27,7 @@ public class Comment {
     @Lob
     private String content;
 
-    private int groups;
+    private int commentGroups;
 
     @ColumnDefault("0")
     private int sequence;
@@ -58,7 +58,7 @@ public class Comment {
 
     public Comment(CommentCreateDto dto, Member createMember, News news) {
         this.content = dto.getContent();
-        this.groups = dto.getGroup();
+        this.commentGroups = dto.getGroup();
         this.sequence = 0;
         this.createDate = new Date();
         this.member = createMember;
@@ -67,7 +67,7 @@ public class Comment {
 
     public Comment(CommentCreateDto dto, Member createMember, Post post) {
         this.content = dto.getContent();
-        this.groups = dto.getGroup();
+        this.commentGroups = dto.getGroup();
         this.sequence = 0;
         this.createDate = new Date();
         this.member = createMember;
@@ -77,7 +77,7 @@ public class Comment {
 
     public Comment(CommentCreateDto dto, Member createMember, News news, Member replyMember) {
         this.content = dto.getContent();
-        this.groups = dto.getGroup();
+        this.commentGroups = dto.getGroup();
         this.sequence = dto.getSequence();
         this.createDate = new Date();
         this.member = createMember;
@@ -86,7 +86,7 @@ public class Comment {
     }
     public Comment(CommentCreateDto dto, Member createMember, Post post, Member replyMember) {
         this.content = dto.getContent();
-        this.groups = dto.getGroup();
+        this.commentGroups = dto.getGroup();
         this.sequence = dto.getSequence();
         this.createDate = new Date();
         this.member = createMember;

@@ -30,16 +30,16 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
                                 comment.createDate,
                                 comment.member.id.as("memberId"),
                                 comment.member.nickname,
-                                comment.groups.as("groups"),
+                                comment.commentGroups.as("groups"),
                                 comment.sequence.as("sequence"),
-                                comment.replyMember.nickname.as("replyNickname")
+                                member.nickname.as("replyNickname")
                         )
                 ).from(comment)
                 .leftJoin(comment.replyMember, member)
                 .where(comment.news.id.eq(newsId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(comment.groups.asc(), comment.sequence.asc())
+                .orderBy(comment.commentGroups.asc(), comment.sequence.asc())
                 .fetch();
     }
 

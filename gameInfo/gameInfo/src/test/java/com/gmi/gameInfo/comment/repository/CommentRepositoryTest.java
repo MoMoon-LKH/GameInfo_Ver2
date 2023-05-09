@@ -133,7 +133,7 @@ public class CommentRepositoryTest {
         Comment find = commentRepository.findById(comment.getId()).orElse(null);
 
         //then
-        assertEquals(1, find.getGroups());
+        assertEquals(1, find.getCommentGroups());
         assertEquals("test", find.getContent());
 
     }
