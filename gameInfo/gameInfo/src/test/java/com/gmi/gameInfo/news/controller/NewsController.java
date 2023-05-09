@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.apiguardian.api.API;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -77,7 +78,7 @@ public class NewsController {
             }
         }
 
-        return ResponseEntity.ok(news.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(news.getId());
     }
 
 
@@ -122,6 +123,8 @@ public class NewsController {
     public ResponseEntity<?> getNewsDtoById (
         @PathVariable Long id
     ) {
+        News news = newsService.findById(id);
+        newsService.updateViews(news);
         return ResponseEntity.ok(newsService.findDtoOneById(id));
     }
 

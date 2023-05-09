@@ -42,6 +42,11 @@ public class NewsService {
         news.updateNews(dto, platform);
     }
 
+    @Transactional
+    public void updateViews(News news) {
+        news.updateViews();
+    }
+
     public List<NewsListDto> findListByPageable(NewsSearchDto newsSearchDto, Pageable pageable) {
         return newsRepository.findListByPageable(newsSearchDto, pageable);
     }

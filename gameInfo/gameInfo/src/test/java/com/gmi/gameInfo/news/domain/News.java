@@ -7,6 +7,7 @@ import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.news.domain.dto.NewsCreateDto;
 import com.gmi.gameInfo.platform.domain.Platform;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,10 +32,15 @@ public class News {
     @Lob
     private String content;
 
+    private int views;
+
+
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createDate;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date updateDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,6 +65,7 @@ public class News {
         this.title = dto.getTitle();
         this.content = dto.getContent();
         this.createDate = new Date();
+        this.views = 0;
         this.member = member;
         this.platform = platform;
     }
@@ -68,6 +75,10 @@ public class News {
         this.content = dto.getContent();
         this.platform = platform;
         this.updateDate = new Date();
+    }
+
+    public void updateViews() {
+        this.views++;
     }
 
     public static News createNews(NewsCreateDto createDto, Member member, Platform platform) {

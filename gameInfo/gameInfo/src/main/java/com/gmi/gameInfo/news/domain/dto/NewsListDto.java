@@ -17,6 +17,11 @@ public class NewsListDto {
 
     private String title;
 
+    private int views;
+
+    private int likesCount;
+
+    private int commentCount;
 
     private Long memberId;
 
