@@ -288,13 +288,15 @@ public class NewsRepositoryTest {
                 .member(member)
                 .build();
 
-        newsRepository.save(news);
+        News save = newsRepository.save(news);
+        System.out.println("save.getId() = " + save.getId());
 
         //when
-        NewsDto find = newsRepository.findDtoOneById(news.getId()).orElseGet(null);
+        NewsDto find = newsRepository.findDtoOneById(save.getId()).orElseGet(null);
+
 
         //then
-        assertEquals(news.getId(), find.getId());
+        assertSame(news.getId(), find.getId());
 
     }
 

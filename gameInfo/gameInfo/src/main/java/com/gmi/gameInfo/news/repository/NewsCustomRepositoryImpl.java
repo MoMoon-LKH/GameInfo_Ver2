@@ -9,12 +9,10 @@ import com.gmi.gameInfo.news.domain.dto.NewsListDto;
 import com.gmi.gameInfo.news.domain.dto.NewsSearchDto;
 import com.gmi.gameInfo.platform.domain.QPlatform;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -47,11 +45,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
         String searchWord = searchDto.getSearchWord();
 
         StringExpression resultTitle = Expressions.stringTemplate("'[' || {0} || '] ' || {1}", news.platform.name, news.title);
-        StringTemplate dateFormat = Expressions.stringTemplate(
-                "DATE_FORMAT({0}, {1})",
-                news.createDate,
-                ConstantImpl.create("%Y-%m-%d hh:MM")
-        );
+
 
         if (platformId != null && platformId != 0) {
             builder.and(
@@ -80,7 +74,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                         resultTitle.as("title"),
                         news.member.id.as("memberId"),
                         news.member.nickname.as("nickname"),
-                        dateFormat.as("createDate"),
+                        news.createDate,
                         news.comments.size().as("commentCount"),
                         news.views.as("views"),
                         ExpressionUtils.as(
@@ -111,7 +105,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                                 news.title,
                                 news.content,
                                 news.createDate,
-                                news.member.id,
+                                news.member.id.as("memberId"),
                                 news.member.nickname
                         ))
                 .from(news)

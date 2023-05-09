@@ -135,7 +135,7 @@ public class NewsServiceTest {
                         .id(1L)
                         .title("title")
                         .nickname("nickname")
-                        .createDate(new Date().toString())
+                        .createDate(new Date())
                         .build()
         );
 

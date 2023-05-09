@@ -27,5 +27,5 @@ public class NewsListDto {
 
     private String nickname;
 
-    private String createDate;
+    private Date createDate;
 }
