@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.news.service;
 
+import com.gmi.gameInfo.member.domain.dto.MemberSimpleDto;
 import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.domain.dto.NewsCreateDto;
 import com.gmi.gameInfo.news.domain.dto.NewsDto;
@@ -8,6 +9,7 @@ import com.gmi.gameInfo.news.domain.dto.NewsSearchDto;
 import com.gmi.gameInfo.news.exception.NotFoundNewsException;
 import com.gmi.gameInfo.news.repository.NewsRepository;
 import com.gmi.gameInfo.platform.domain.Platform;
+import com.gmi.gameInfo.platform.domain.dto.PlatformDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,27 @@ public class NewsService {
 
     public News findById(Long id) {
         return newsRepository.findById(id).orElseThrow(NotFoundNewsException::new);
+    }
+
+    public NewsDto findDtoById(Long id) {
+        News news = newsRepository.findById(id).orElseThrow(NotFoundNewsException::new);
+        PlatformDto platformDto = PlatformDto.builder()
+                .id(news.getPlatform().getId())
+                .name(news.getPlatform().getName())
+                .build();
+        MemberSimpleDto memberSimpleDto = MemberSimpleDto.builder()
+                .id(news.getMember().getId())
+                .nickname(news.getMember().getNickname())
+                .build();
+
+        return NewsDto.builder()
+                .id(news.getId())
+                .title(news.getTitle())
+                .content(news.getContent())
+                .createDate(news.getCreateDate())
+                .memberDto(memberSimpleDto)
+                .platformDto(platformDto)
+                .build();
     }
 
     @Transactional

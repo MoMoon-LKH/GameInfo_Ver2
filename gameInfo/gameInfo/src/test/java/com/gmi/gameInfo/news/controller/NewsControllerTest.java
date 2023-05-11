@@ -101,7 +101,7 @@ public class NewsControllerTest {
         //then
         result
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
     }
     
@@ -163,7 +163,7 @@ public class NewsControllerTest {
         //then
         result
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
 
@@ -192,9 +192,9 @@ public class NewsControllerTest {
         given(newsService.findListByPageable(any(), any())).willReturn(newsList);
 
         //when
-        ResultActions result = mockMvc.perform(get("/api/news/list?page=0&size=20")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newsSearchDto))
+        ResultActions result = mockMvc.perform(get("/api/news/list/"+ 1 +"?page=0&size=20")
+                        .param("searchInput", "")
+                        .param("searchSelect", "title")
                 .with(csrf())
         );
 
@@ -216,8 +216,6 @@ public class NewsControllerTest {
                 .title("title")
                 .content("content")
                 .createDate(new Date())
-                .memberId(1L)
-                .nickname("nickname")
                 .build();
 
         given(newsService.findDtoOneById(any(Long.class))).willReturn(newsDto);

@@ -104,9 +104,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                                 news.id,
                                 news.title,
                                 news.content,
-                                news.createDate,
-                                news.member.id.as("memberId"),
-                                news.member.nickname
+                                news.createDate
                         ))
                 .from(news)
                 .where(news.id.eq(id))

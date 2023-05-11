@@ -1,5 +1,7 @@
 package com.gmi.gameInfo.news.domain.dto;
 
+import com.gmi.gameInfo.member.domain.dto.MemberSimpleDto;
+import com.gmi.gameInfo.platform.domain.dto.PlatformDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,8 +23,9 @@ public class NewsDto {
 
     private Date createDate;
 
-    private Long memberId;
 
-    private String nickname;
+    private MemberSimpleDto memberDto;
+
+    private PlatformDto platformDto;
 
 }

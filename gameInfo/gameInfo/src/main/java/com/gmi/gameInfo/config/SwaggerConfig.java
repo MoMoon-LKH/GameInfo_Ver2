@@ -1,9 +1,11 @@
 package com.gmi.gameInfo.config;
 
+import com.gmi.gameInfo.comment.domain.dto.CommentDto;
 import com.gmi.gameInfo.exceptionHandler.ErrorResponse;
 import com.gmi.gameInfo.image.domain.dto.ImageDto;
 import com.gmi.gameInfo.member.domain.dto.LoginResponseDto;
 import com.gmi.gameInfo.member.domain.dto.MemberDto;
+import com.gmi.gameInfo.news.domain.dto.NewsDto;
 import com.gmi.gameInfo.post.domain.dto.PostListDto;
 import com.gmi.gameInfo.post.domain.dto.PostVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +63,9 @@ public class SwaggerConfig {
                         typeResolver.resolve(PostVo.class),
                         typeResolver.resolve(LoginResponseDto.class),
                         typeResolver.resolve(ImageDto.class),
-                        typeResolver.resolve(PostListDto.class)
+                        typeResolver.resolve(PostListDto.class),
+                        typeResolver.resolve(NewsDto.class),
+                        typeResolver.resolve(CommentDto.class)
                 )
                 .ignoredParameterTypes(AuthenticationPrincipal.class);
     }

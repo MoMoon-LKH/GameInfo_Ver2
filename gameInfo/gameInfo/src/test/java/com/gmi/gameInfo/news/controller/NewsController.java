@@ -112,6 +112,7 @@ public class NewsController {
     }
     
 
+    // return dto 구조 다시 짤 것 -> member 및 platform에 관한 정보 추가 ( NewsDto( memberDto, platformDto))
     @Operation(summary = "뉴스 단일 조회", description = "뉴스 단일 조회 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
@@ -125,7 +126,7 @@ public class NewsController {
     ) {
         News news = newsService.findById(id);
         newsService.updateViews(news);
-        return ResponseEntity.ok(newsService.findDtoOneById(id));
+        return ResponseEntity.ok(newsService.findDtoById(id));
     }
 
 
@@ -148,21 +149,14 @@ public class NewsController {
 
         if (news.getMember().getId().equals(member.getId()) || member.getRoleType().equals(RoleType.ADMIN)) {
 
-            Platform platform = platformService.findById(news.getId());
+            Platform platform = platformService.findById(newsCreateDto.getPlatformId());
 
             newsService.updateNews(news, newsCreateDto, platform);
         } else {
             throw new NoPermissionException();
         }
 
-        NewsDto newsDto = NewsDto.builder()
-                .id(news.getId())
-                .title(news.getTitle())
-                .content(news.getContent())
-                .memberId(news.getMember().getId())
-                .nickname(news.getMember().getNickname())
-                .createDate(news.getCreateDate())
-                .build();
+        NewsDto newsDto = newsService.findDtoById(id);
 
         return ResponseEntity.ok(newsDto);
     }
@@ -185,8 +179,6 @@ public class NewsController {
         News news = newsService.findById(id);
 
         if (news.getMember().getId().equals(member.getId()) || member.getRoleType().equals(RoleType.ADMIN)) {
-            newsService.delete(news);
-
             if (news.getImages() != null && news.getImages().size() > 0) {
                 for (Images images : news.getImages()) {
                     File file = new File(images.getPath());
@@ -194,6 +186,7 @@ public class NewsController {
                     imagesService.delete(images);
                 }
             }
+            newsService.delete(news);
 
             return ResponseEntity.ok(true);
         } else {

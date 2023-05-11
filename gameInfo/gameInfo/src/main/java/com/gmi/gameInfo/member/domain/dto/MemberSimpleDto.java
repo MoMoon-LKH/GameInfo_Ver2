@@ -4,11 +4,13 @@ import com.gmi.gameInfo.member.domain.Member;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Schema(description = "회원 간단 DTO")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberSimpleDto {

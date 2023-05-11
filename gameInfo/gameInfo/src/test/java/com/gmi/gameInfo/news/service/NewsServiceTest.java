@@ -1,6 +1,8 @@
 package com.gmi.gameInfo.news.service;
 
 
+import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.member.domain.dto.MemberSimpleDto;
 import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.domain.dto.NewsCreateDto;
 import com.gmi.gameInfo.news.domain.dto.NewsDto;
@@ -177,8 +179,6 @@ public class NewsServiceTest {
                 .title("title")
                 .content("content")
                 .createDate(new Date())
-                .memberId(1L)
-                .nickname("nickname")
                 .build();
 
         given(newsRepository.findDtoOneById(any(Long.class))).willReturn(Optional.of(newsDto));
@@ -224,6 +224,38 @@ public class NewsServiceTest {
         //then
         assertEquals(createDto.getTitle(), news.getTitle());
         assertSame(platform2, news.getPlatform());
+    }
+    
+    @Test
+    @DisplayName("NewsDto 단일 조회")
+    void findDtoById() {
+    
+        //given
+        Member member = Member.builder()
+                .id(1L)
+                .nickname("nick")
+                .build();
+        Platform platform = Platform.builder()
+                .id(1L)
+                .name("platform")
+                .build();
+
+        News news = News.builder()
+                .id(1L)
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .platform(platform)
+                .build();
+
+        given(newsRepository.findById(1L)).willReturn(Optional.of(news));
+    
+        //when
+        NewsDto newsDto = newsService.findDtoById(1L);
+
+        //then
+        assertEquals(news.getId(), newsDto.getId());
     }
 
 
