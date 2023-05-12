@@ -102,7 +102,6 @@ public class CommentControllerTest {
         CommentCreateDto createDto = CommentCreateDto.builder()
                 .content("content")
                 .group(0)
-                .sequence(0)
                 .postId(1L)
                 .memberId(1L)
                 .build();
@@ -124,6 +123,7 @@ public class CommentControllerTest {
 
         given(newsService.findById(any(Long.class))).willReturn(news);
         given(memberService.findByLoginId(any(String.class))).willReturn(member);
+        given(commentService.maxGroupsByNewsId(any(Long.class))).willReturn(0);
         given(commentService.save(any(Comment.class))).willReturn(comment);
         given(commentService.countByNewsId(any(Long.class))).willReturn(1);
 
@@ -142,6 +142,57 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$.page").value(0));
 
     }
+    
+    @Test
+    @WithMockUser
+    @DisplayName("대댓글 생성 API - 뉴스")
+    void createReplyComment() throws Exception {
+
+        //given
+        CommentCreateDto createDto = CommentCreateDto.builder()
+                .content("content")
+                .group(0)
+                .postId(1L)
+                .memberId(1L)
+                .build();
+        News news = News.builder()
+                .id(1L)
+                .title("test")
+                .content("test")
+                .build();
+        Member member = Member.builder()
+                .id(1L)
+                .loginId("test")
+                .password("test")
+                .name("test")
+                .birthday(new Date())
+                .email("test")
+                .roleType(RoleType.USER)
+                .build();
+        Comment comment = Comment.createNewsComment(createDto, member, news);
+
+        given(newsService.findById(any(Long.class))).willReturn(news);
+        given(memberService.findByLoginId(any(String.class))).willReturn(member);
+        given(commentService.maxSequenceByNewsIdAndGroups(any(Long.class), any(Integer.class))).willReturn(1);
+        given(commentService.save(any(Comment.class))).willReturn(comment);
+        given(commentService.countByNewsId(any(Long.class))).willReturn(1);
+
+
+        //when
+        ResultActions result = mockMvc.perform(post("/api/comment/news")
+                .content(objectMapper.writeValueAsString(createDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf())
+        );
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.page").value(0));
+
+    }
+  
     
     
     @Test

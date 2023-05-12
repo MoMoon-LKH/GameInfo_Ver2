@@ -44,4 +44,22 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
     }
 
 
+    @Override
+    public int maxGroupByNewsId(Long newsId) {
+        return factory.select(
+                        comment.commentGroups.max().coalesce(-1)
+                ).from(comment)
+                .where(comment.news.id.eq(newsId))
+                .fetchFirst();
+    }
+
+    @Override
+    public int maxSequenceByComment(Long newsId, int groups) {
+        return factory.select(
+                        comment.sequence.max().coalesce(-1)
+                ).from(comment)
+                .where(comment.news.id.eq(newsId)
+                        .and(comment.commentGroups.eq(groups)))
+                .fetchFirst();
+    }
 }

@@ -232,4 +232,38 @@ public class CommentServiceTest {
         //then
         assertEquals(3, count);
     }
+
+    @Test
+    @DisplayName("해당 뉴스의 댓글 그룹 최대값 조회")
+    void maxGroupsByNewsId() {
+
+        //given
+        Long newsId = 1L;
+
+        // 최상위 값이 0이기때문에 +1 하기위해서 -1 반환 (댓글이 없을 경우)
+        given(commentRepository.maxGroupByNewsId(any(Long.class))).willReturn(-1);
+
+        //when
+        int groups = commentService.maxGroupsByNewsId(newsId);
+
+        //then
+        assertEquals(-1, groups);
+    }
+    
+    @Test
+    @DisplayName("해당 뉴스 댓글 그룹의 순서 최대값 조회")
+    void maxSequenceByNewsIdAndGroups() {
+    
+        //given
+        Long newsId = 1L;
+        int groups = 0;
+
+        given(commentRepository.maxSequenceByComment(any(Long.class), any(Integer.class))).willReturn(0);
+    
+        //when
+        int sequence = commentService.maxSequenceByNewsIdAndGroups(newsId, groups);
+        
+        //then
+        assertEquals(0, sequence);
+    }
 }

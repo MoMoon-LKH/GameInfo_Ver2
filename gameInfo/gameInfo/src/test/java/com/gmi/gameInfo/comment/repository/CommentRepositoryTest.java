@@ -266,4 +266,87 @@ public class CommentRepositoryTest {
         assertEquals(2, total);
     }
 
+
+    @Test
+    @DisplayName("댓글 그룹의 최대값 조회 - 댓글이 없을 경우")
+    void maxCommentGroupByNewsId_Empty() {
+
+        //given
+
+        //when
+        int max = commentRepository.maxGroupByNewsId(news.getId());
+
+        //then
+        assertEquals(-1, max);
+    }
+
+    @Test
+    @DisplayName("댓글 그룹의 최대값 조회")
+    void maxCommentGroupByNewsId() {
+
+        //given
+        CommentCreateDto dto = CommentCreateDto.builder()
+                .content("test1")
+                .group(0)
+                .postId(1L)
+                .build();
+        Comment comment = Comment.createNewsComment(dto, member, news);
+        commentRepository.save(comment);
+        CommentCreateDto dto2 = CommentCreateDto.builder()
+                .content("test2")
+                .group(1)
+                .postId(1L)
+                .build();
+        Comment comment2 = Comment.createNewsComment(dto2, member, news);
+        commentRepository.save(comment2);
+
+        //when
+        int maxGroups = commentRepository.maxGroupByNewsId(news.getId());
+
+        //then
+        assertEquals(1, maxGroups);
+    }
+
+    
+    @Test
+    @DisplayName("댓글 그룹의 순서 최대값 조회 - 없을 경우")
+    void maxSequenceByNewsIdAndGroups_Empty() {
+    
+        //given
+
+        //when
+        int sequence = commentRepository.maxSequenceByComment(news.getId(), 0);
+
+        //then
+        assertEquals(-1, sequence);
+    }
+
+    @Test
+    @DisplayName("댓글 그룹의 순서 최대값 조회")
+    void maxSequenceByNewsIdAndGroups() {
+
+        //given
+        CommentCreateDto dto = CommentCreateDto.builder()
+                .content("test1")
+                .group(0)
+                .sequence(0)
+                .postId(1L)
+                .build();
+        Comment comment = Comment.createReplyNewsComment(dto, member, news, member);
+        commentRepository.save(comment);
+        CommentCreateDto dto2 = CommentCreateDto.builder()
+                .content("test2")
+                .group(0)
+                .sequence(1)
+                .postId(1L)
+                .build();
+        Comment comment2 = Comment.createReplyNewsComment(dto2, member, news, member);
+        commentRepository.save(comment2);
+
+        //when
+        int sequence = commentRepository.maxSequenceByComment(news.getId(), 0);
+
+        //then
+        assertEquals(1, sequence);
+    }
 }

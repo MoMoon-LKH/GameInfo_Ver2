@@ -80,8 +80,10 @@ public class CommentController {
         Comment comment;
 
         if(commentCreateDto.getReplyMemberId() != null) {
+            commentCreateDto.setSequence(commentService.maxSequenceByNewsIdAndGroups(news.getId(), commentCreateDto.getGroup()) + 1);
             comment = Comment.createReplyNewsComment(commentCreateDto, member, news, memberService.findById(commentCreateDto.getReplyMemberId()));
         } else {
+            commentCreateDto.setGroup(commentService.maxGroupsByNewsId(news.getId()) + 1);
             comment = Comment.createNewsComment(commentCreateDto, member, news);
         }
 

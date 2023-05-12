@@ -46,4 +46,12 @@ public class CommentService {
     public int countByNewsId(Long newsId) {
         return commentRepository.countByNewsId(newsId);
     }
+
+    public int maxGroupsByNewsId(Long newsId) {
+        return commentRepository.maxGroupByNewsId(newsId);
+    }
+
+    public int maxSequenceByNewsIdAndGroups(Long newsId, int groups) {
+        return commentRepository.maxSequenceByComment(newsId, groups);
+    }
 }

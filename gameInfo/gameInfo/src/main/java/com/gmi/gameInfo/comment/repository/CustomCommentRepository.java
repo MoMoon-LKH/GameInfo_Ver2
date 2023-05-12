@@ -9,4 +9,8 @@ public interface CustomCommentRepository {
 
     List<CommentDto> findPageByNewsId(Long newsId, Pageable pageable);
 
+    int maxGroupByNewsId(Long newsId);
+
+    int maxSequenceByComment(Long newsId, int groups);
+
 }
