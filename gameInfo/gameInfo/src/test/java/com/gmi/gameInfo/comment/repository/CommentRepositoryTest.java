@@ -12,11 +12,13 @@ import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.repository.NewsRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -155,7 +157,6 @@ public class CommentRepositoryTest {
 
         //when
         List<CommentDto> list = commentRepository.findPageByNewsId(news.getId(), pageable);
-
 
         //then
         assertEquals(1, list.size());

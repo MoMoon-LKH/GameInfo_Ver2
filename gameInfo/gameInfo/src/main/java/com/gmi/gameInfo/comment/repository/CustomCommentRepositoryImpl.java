@@ -23,6 +23,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
 
     @Override
     public List<CommentDto> findPageByNewsId(Long newsId, Pageable pageable) {
+        
         return factory.select(
                         Projections.bean(CommentDto.class,
                                 comment.id,

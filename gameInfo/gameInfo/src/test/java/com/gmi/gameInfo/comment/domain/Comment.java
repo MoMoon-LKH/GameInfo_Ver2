@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.comment.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gmi.gameInfo.comment.domain.dto.CommentCreateDto;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.news.domain.News;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -32,12 +34,10 @@ public class Comment {
     @ColumnDefault("0")
     private int sequence;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date createDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date updateDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

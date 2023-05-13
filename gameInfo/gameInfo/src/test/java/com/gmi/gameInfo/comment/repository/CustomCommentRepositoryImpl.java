@@ -3,8 +3,11 @@ package com.gmi.gameInfo.comment.repository;
 import com.gmi.gameInfo.comment.domain.QComment;
 import com.gmi.gameInfo.comment.domain.dto.CommentDto;
 import com.gmi.gameInfo.member.domain.QMember;
+import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
 
     @Override
     public List<CommentDto> findPageByNewsId(Long newsId, Pageable pageable) {
+
         return factory.select(
                         Projections.bean(CommentDto.class,
                                 comment.id,
