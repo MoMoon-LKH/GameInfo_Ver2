@@ -79,6 +79,10 @@ public class NewsService {
     }
 
     public int countByPlatformId(Long id) {
-        return newsRepository.countByPlatformId(id);
+        if(id != 0) {
+            return newsRepository.countByPlatformId(id);
+        } else {
+            return newsRepository.countAllBy();
+        }
     }
 }

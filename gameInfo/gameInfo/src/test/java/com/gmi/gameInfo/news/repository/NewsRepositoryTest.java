@@ -300,4 +300,60 @@ public class NewsRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("News 총 개수 조회")
+    void countAll() {
+
+        //given
+        News news = News.builder()
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .platform(platform)
+                .build();
+        News news2 = News.builder()
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .build();
+        newsRepository.save(news);
+        newsRepository.save(news2);
+
+        //when
+        int count = newsRepository.countAllBy();
+
+        //then
+        assertEquals(2, count);
+    }
+
+    @Test
+    @DisplayName("News 총 개수 조회 - platformId")
+    void countByPlatformId() {
+
+        //given
+        News news = News.builder()
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .platform(platform)
+                .build();
+        News news2 = News.builder()
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .build();
+        newsRepository.save(news);
+        newsRepository.save(news2);
+
+        //when
+        int count = newsRepository.countByPlatformId(platform.getId());
+
+        //then
+        assertEquals(1, count);
+    }
+
 }

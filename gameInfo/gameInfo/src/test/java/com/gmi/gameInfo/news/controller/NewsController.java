@@ -91,7 +91,7 @@ public class NewsController {
     public ResponseEntity<?> getListByPageable(
             @PathVariable("platformId") Long platformId,
             @RequestParam("searchSelect") String searchSelect,
-            @RequestParam("searchInput") String searchInput,
+            @RequestParam(value = "searchInput", required = false) String searchInput,
             @PageableDefault(page = 0, size = 30) Pageable pageable
             ) {
 
@@ -101,7 +101,7 @@ public class NewsController {
                 .searchWord(searchInput)
                 .build();
 
-        int total = newsService.countByPlatformId(searchDto.getPlatformId());
+        int total = newsService.countByPlatformId(platformId);
         List<NewsListDto> list = newsService.findListByPageable(searchDto, pageable);
 
         Map<String, Object> map = new HashMap<>();
