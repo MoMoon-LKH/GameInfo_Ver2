@@ -13,7 +13,13 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "https://localhost:3000",
-                        "https://gameinfo.momoon.kro.kr"
+                        "http://localhost:8080",
+                        "https://localhost:8080",
+                        "http://localhost:433",
+                        "https://gameinfo.momoon.kro.kr",
+                        "http://gameinfo.momoon.kro.kr",
+                        "https://www.gameinfo.momoon.kro.kr",
+                        "http://www.gameinfo.momoon.kro.kr"
                 )
                 .allowedHeaders("*")
                 .allowedMethods("*")

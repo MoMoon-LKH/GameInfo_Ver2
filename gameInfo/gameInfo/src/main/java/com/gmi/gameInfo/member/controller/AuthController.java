@@ -188,7 +188,7 @@ public class AuthController {
     private Cookie createRefreshCookie(String refresh, int maxAge) {
 
         Cookie cookie = new Cookie("gameInfo", refresh);
-        cookie.setSecure(false);
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);

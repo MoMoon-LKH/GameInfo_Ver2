@@ -91,6 +91,7 @@ public class SecurityConfig{
 
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("https://gameinfo.momoon.kro.kr");
+        config.addAllowedOrigin("https://www.gameinfo.momoon.kro.kr");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true);
