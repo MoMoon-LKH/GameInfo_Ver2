@@ -2,6 +2,7 @@ package com.gmi.gameInfo.member.repository;
 
 import com.gmi.gameInfo.config.TestConfig;
 import com.gmi.gameInfo.member.domain.Member;
+import com.gmi.gameInfo.member.domain.RoleType;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -225,5 +226,28 @@ public class MemberRepositoryTest {
         
         //then
         assertEquals(0, count);
+    }
+
+    @Test
+    @DisplayName("이메일 - 조회 여부 O")
+    void countDuplicateEmail_Success() {
+
+        //given
+        Member member = Member.builder()
+                .loginId("test")
+                .password("test")
+                .email("test@test.com")
+                .birthday(new Date())
+                .name("test")
+                .nickname("nickname")
+                .roleType(RoleType.USER)
+                .build();
+        memberRepository.save(member);
+
+        //when
+        int count = memberRepository.countByEmail("test@test.com");
+
+        //then
+        assertEquals(1, count);
     }
 }

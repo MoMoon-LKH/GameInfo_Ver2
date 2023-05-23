@@ -229,7 +229,7 @@ public class MemberServiceTest {
 
         //given
         String email = "test@test.com";
-        given(memberRepository.countByEmail(email)).willReturn(1);
+        given(memberRepository.countByEmail(email)).willReturn(0);
 
         //when
         boolean duplicateBool = memberService.duplicateEmail(email);
@@ -244,7 +244,7 @@ public class MemberServiceTest {
 
         //given
         String email = "test@test.com";
-        given(memberRepository.countByEmail(email)).willReturn(0);
+        given(memberRepository.countByEmail(email)).willReturn(1);
 
         //when
 

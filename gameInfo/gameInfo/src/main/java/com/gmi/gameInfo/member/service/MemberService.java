@@ -48,7 +48,7 @@ public class MemberService {
     public boolean duplicateEmail(String email) {
         int count = memberRepository.countByEmail(email);
 
-        if (count <= 0) {
+        if (count > 0) {
             throw new DuplicateEmailException();
         }
         return true;
