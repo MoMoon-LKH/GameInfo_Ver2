@@ -15,11 +15,11 @@ public class WebConfig implements WebMvcConfigurer {
                         "https://localhost:3000",
                         "http://localhost:8080",
                         "https://localhost:8080",
-                        "http://localhost:433",
                         "https://gameinfo.momoon.kro.kr",
                         "http://gameinfo.momoon.kro.kr",
                         "https://www.gameinfo.momoon.kro.kr",
-                        "http://www.gameinfo.momoon.kro.kr"
+                        "http://www.gameinfo.momoon.kro.kr",
+                        "http://gameinfo-back:8080"
                 )
                 .allowedHeaders("*")
                 .allowedMethods("*")
