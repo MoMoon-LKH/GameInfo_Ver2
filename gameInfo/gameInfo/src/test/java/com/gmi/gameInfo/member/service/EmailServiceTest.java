@@ -35,7 +35,7 @@ public class EmailServiceTest {
 
     @Autowired
     PasswordEncoder passwordEncoder;
-
+    
     @Order(1)
     @Test
     @Rollback
@@ -165,6 +165,7 @@ public class EmailServiceTest {
 
     @Test
     @Rollback
+    @Order(4)
     @DisplayName("이메일 재전송 시")
     void EmailServiceTest() {
 
@@ -182,4 +183,5 @@ public class EmailServiceTest {
         assertEquals(emailService.findByEmail(sendEmail.getEmail()).getAuthNum(), resendEmail.getAuthNum());
 
     }
+
 }

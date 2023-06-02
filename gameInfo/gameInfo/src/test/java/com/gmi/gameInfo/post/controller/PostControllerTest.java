@@ -65,8 +65,10 @@ public class PostControllerTest {
 
         //given
         PostDto postDto = PostDto.builder()
-                        .title("test")
-                        .content("test").build();
+                .title("test")
+                .content("test")
+                .categoryId(1L)
+                .build();
         Member member = Member.builder()
                         .id(1L)
                         .loginId("test")
@@ -139,7 +141,9 @@ public class PostControllerTest {
         //given
         PostDto postDto = PostDto.builder()
                 .title("update")
-                .content("updateC").build();
+                .content("updateC")
+                .categoryId(1L)
+                .build();
 
         Member member = createTestMember();
         Post post = createTestPost(member);

@@ -52,21 +52,21 @@ public class PostCustomRepositoryTest {
     @BeforeAll
      void setUp(){
         member = Member.builder()
-                .loginId("test")
+                .loginId("test232314")
                 .birthday(new Date())
                 .nickname("test")
                 .name("name")
-                .email("email")
+                .email("email424141")
                 .password("password")
                 .roleType(RoleType.USER)
                 .build();
         memberRepository.save(member);
         member2 = Member.builder()
-                .loginId("test1")
+                .loginId("test112321425")
                 .birthday(new Date())
                 .nickname("member")
                 .name("name")
-                .email("email123")
+                .email("email1232323")
                 .password("password")
                 .roleType(RoleType.USER)
                 .build();

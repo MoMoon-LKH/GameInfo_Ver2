@@ -1,8 +1,12 @@
 package com.gmi.gameInfo.news.repository;
 
 
+import com.gmi.gameInfo.common.date.CommonDateFunction;
+import com.gmi.gameInfo.image.domain.QImages;
 import com.gmi.gameInfo.likes.domain.LikeType;
 import com.gmi.gameInfo.likes.domain.QNewsLikes;
+import com.gmi.gameInfo.main.dto.NewsImageListDto;
+import com.gmi.gameInfo.main.dto.NewsSimpleDto;
 import com.gmi.gameInfo.news.domain.QNews;
 import com.gmi.gameInfo.news.domain.dto.NewsDto;
 import com.gmi.gameInfo.news.domain.dto.NewsListDto;
@@ -12,16 +16,14 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.DateTemplate;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.core.types.dsl.StringTemplate;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +34,15 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
 
     private final JPAQueryFactory factory;
 
+    private final CommonDateFunction dateFunction = new CommonDateFunction();
+
     private QNews news = QNews.news;
 
     private QPlatform platform = QPlatform.platform;
 
     private QNewsLikes likes = QNewsLikes.newsLikes;
+
+    private QImages image = QImages.images;
 
 
     @Override
@@ -113,5 +119,61 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                 .from(news)
                 .where(news.id.eq(id))
                 .fetchOne());
+    }
+
+    @Override
+    public List<NewsImageListDto> findNewsImageListAtMain() throws ParseException {
+
+        StringExpression imageName = Expressions.stringTemplate("{0} || {1}", image.fileName, image.extension);
+
+        List<NewsImageListDto> images = factory.select(
+                        Projections.bean(NewsImageListDto.class,
+                                news.id.as("id"),
+                                news.title.as("title"),
+                                news.title.as("imageName")
+                                ))
+                .from(news)
+                .where(
+                        news.createDate.between(dateFunction.getCalDate(-7), dateFunction.getCalDate(7))
+                )
+                .innerJoin(news.images, image)
+                .offset(0)
+                .orderBy(news.likes.size().desc(), news.createDate.desc())
+                .limit(5)
+                .fetch();
+
+        for (NewsImageListDto dto : images) {
+
+            dto.setImageName(
+                    factory.select(
+                                    imageName
+                            ).from(image)
+                            .join(image.news, news)
+                            .where(image.news.id.eq(dto.getId()))
+                            .orderBy(image.id.asc())
+                            .fetchFirst()
+            );
+        }
+        return images;
+    }
+
+    @Override
+    public List<NewsSimpleDto> findNewsListByNotIds(List<Long> ids) {
+
+        StringExpression title = Expressions
+                .stringTemplate("'[' || {0} || '] ' || {1}", news.platform.name, news.title);
+
+        return factory.select(
+                        Projections.bean(NewsSimpleDto.class,
+                                news.id.as("id"),
+                                title.as("title")
+                        )
+                )
+                .from(news)
+                .where(news.id.notIn(ids))
+                .orderBy(news.createDate.desc())
+                .offset(0)
+                .limit(8)
+                .fetch();
     }
 }

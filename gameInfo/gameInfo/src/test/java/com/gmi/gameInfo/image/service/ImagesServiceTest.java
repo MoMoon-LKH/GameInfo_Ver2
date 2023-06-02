@@ -41,6 +41,7 @@ public class ImagesServiceTest {
 
     private ClassPathResource resource = new ClassPathResource("test.jpg");
 
+
     @Test
     @DisplayName("이미지 저장")
     void saveImages() {
@@ -131,6 +132,7 @@ public class ImagesServiceTest {
         assertEquals(".jpg", extension);
     }
 
+
     @Test
     @DisplayName("파일 업로드 - 성공")
     void fileUpload() throws IOException {
@@ -147,17 +149,24 @@ public class ImagesServiceTest {
 
         //then
         assertTrue(bool);
+        imagesService.deleteFile(saveFile);
     }
 
     @Test
     @DisplayName("이미지 삭제")
-    void deleteImage_Fail() {
+    void deleteImage_Fail() throws IOException {
 
         //given
+        File resourceFile = resource.getFile();
+        MultipartFile file = new MockMultipartFile(resourceFile.getName(), new FileInputStream(resourceFile));
+        File saveFile = new File(savePath + file.getName());
+        imagesService.uploadFile(file, saveFile, savePath);
+
         Images images = Images.builder()
                 .id(1L)
                 .originalName("test1")
                 .extension(".jpg")
+                .path(savePath + saveFile.getName())
                 .createDate(new Date())
                 .build();
 

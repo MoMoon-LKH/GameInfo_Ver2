@@ -180,7 +180,7 @@ public class PostRepositoryTest {
 
     private Member createMember() {
         Member member = Member.builder()
-                .loginId("test")
+                .loginId("test1234656")
                 .name("테스트")
                 .password("test")
                 .nickname("테스트 닉네임")

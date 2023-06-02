@@ -42,7 +42,7 @@ public class NewsLikesRepositoryTest {
     @BeforeAll
     void setUp(){
         member = Member.builder()
-                .loginId("test")
+                .loginId("test123142")
                 .name("test")
                 .email("test123")
                 .password("testtest123")

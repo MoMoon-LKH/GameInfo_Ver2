@@ -1,5 +1,7 @@
 package com.gmi.gameInfo.news.service;
 
+import com.gmi.gameInfo.main.dto.NewsImageListDto;
+import com.gmi.gameInfo.main.dto.NewsSimpleDto;
 import com.gmi.gameInfo.member.domain.dto.MemberSimpleDto;
 import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.domain.dto.NewsCreateDto;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.util.List;
 
 @Service
@@ -84,5 +87,13 @@ public class NewsService {
         } else {
             return newsRepository.countAllBy();
         }
+    }
+
+    public List<NewsImageListDto> findNewsImageListAtMain() throws ParseException {
+        return newsRepository.findNewsImageListAtMain();
+    }
+
+    public List<NewsSimpleDto> findNewsSimpleListByNotInIds(List<Long> ids) {
+        return newsRepository.findNewsListByNotIds(ids);
     }
 }

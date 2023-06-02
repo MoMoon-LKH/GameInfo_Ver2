@@ -1,6 +1,8 @@
 package com.gmi.gameInfo.news.service;
 
 
+import com.gmi.gameInfo.main.dto.NewsImageListDto;
+import com.gmi.gameInfo.main.dto.NewsSimpleDto;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.dto.MemberSimpleDto;
 import com.gmi.gameInfo.news.domain.News;
@@ -21,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -256,6 +259,66 @@ public class NewsServiceTest {
 
         //then
         assertEquals(news.getId(), newsDto.getId());
+    }
+    
+    @Test
+    @DisplayName("NewsImageListDto 조회 - 메인화면 이미지 리스트")
+    void findMainList() throws ParseException {
+    
+        //given
+        List<NewsImageListDto> list = new ArrayList<>();
+        NewsImageListDto dto1 = NewsImageListDto.builder()
+                .id(1L)
+                .title("title1")
+                .imageName("test1.jpg")
+                .build();
+        NewsImageListDto dto2 = NewsImageListDto.builder()
+                .id(1L)
+                .title("title1")
+                .imageName("test1.jpg")
+                .build();
+        list.add(dto1);
+        list.add(dto2);
+
+        given(newsRepository.findNewsImageListAtMain()).willReturn(list);
+
+        //when
+        List<NewsImageListDto> find = newsService.findNewsImageListAtMain();
+
+        //then
+        assertEquals(2, find.size());
+    }
+    
+    @Test
+    @DisplayName("NewsSimpleDto 리스트 조회 - ids 제외")
+    void findNewsSimpleByNotInIds() {
+    
+        //given
+        List<NewsSimpleDto> list = new ArrayList<>();
+        NewsSimpleDto dto = NewsSimpleDto.builder()
+                .id(1L)
+                .title("title1")
+                .build();
+
+        NewsSimpleDto dto2 = NewsSimpleDto.builder()
+                .id(2L)
+                .title("title2")
+                .build();
+
+        list.add(dto);
+        list.add(dto2);
+
+        List<Long> ids = new ArrayList<>();
+        ids.add(3L);
+
+        given(newsRepository.findNewsListByNotIds(ids)).willReturn(list);
+
+        //when
+        List<NewsSimpleDto> result = newsService.findNewsSimpleListByNotInIds(ids);
+
+        //then
+        assertEquals(2, result.size());
+
     }
 
 

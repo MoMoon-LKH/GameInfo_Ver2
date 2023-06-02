@@ -1,6 +1,10 @@
 package com.gmi.gameInfo.news.repository;
 
 import com.gmi.gameInfo.config.TestConfig;
+import com.gmi.gameInfo.image.domain.Images;
+import com.gmi.gameInfo.image.repository.ImagesRepository;
+import com.gmi.gameInfo.main.dto.NewsImageListDto;
+import com.gmi.gameInfo.main.dto.NewsSimpleDto;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.RoleType;
 import com.gmi.gameInfo.member.repository.MemberRepository;
@@ -21,6 +25,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.test.annotation.Rollback;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +48,10 @@ public class NewsRepositoryTest {
     @Autowired
     PlatformRepository platformRepository;
 
+    @Autowired
+    ImagesRepository imagesRepository;
+
+
     private Member member;
 
     private Member member2;
@@ -50,8 +60,10 @@ public class NewsRepositoryTest {
 
     @BeforeAll
     void setUp() {
+        newsRepository.deleteAll();
+
         member = Member.builder()
-                .loginId("test")
+                .loginId("test555")
                 .birthday(new Date())
                 .nickname("test")
                 .name("name")
@@ -77,6 +89,7 @@ public class NewsRepositoryTest {
                 .build();
         platformRepository.save(platform);
     }
+
     
     @Test
     @DisplayName("News 저장 테스트")
@@ -93,6 +106,8 @@ public class NewsRepositoryTest {
 
         //then
         assertSame(save, news);
+
+        newsRepository.delete(news);
     }
     
     @Test
@@ -111,6 +126,9 @@ public class NewsRepositoryTest {
 
         //then
         assertSame(news, save);
+
+        newsRepository.delete(news);
+
     }
 
     @Test
@@ -160,7 +178,6 @@ public class NewsRepositoryTest {
 
         //then
         assertEquals(1, find.size());
-
     }
     
     
@@ -199,8 +216,8 @@ public class NewsRepositoryTest {
 
         //then
         assertEquals(1, find.size());
-
     }
+
 
     @Test
     @DisplayName("NewsListDto 리스트 조회 - title 검색 조회")
@@ -289,7 +306,6 @@ public class NewsRepositoryTest {
                 .build();
 
         News save = newsRepository.save(news);
-        System.out.println("save.getId() = " + save.getId());
 
         //when
         NewsDto find = newsRepository.findDtoOneById(save.getId()).orElseGet(null);
@@ -354,6 +370,108 @@ public class NewsRepositoryTest {
 
         //then
         assertEquals(1, count);
+    }
+
+
+    @Test
+    @DisplayName("News Main 이미지 리스트 조회")
+    void getMainNewsImageList() throws ParseException {
+
+        //given
+        News news = News.builder()
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .platform(platform)
+                .build();
+        newsRepository.save(news);
+
+        News news2 = News.builder()
+                .title("title2")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .platform(platform)
+                .build();
+        newsRepository.save(news2);
+
+        Images images = Images.builder()
+                .fileName("test")
+                .originalName("test")
+                .extension(".jpg")
+                .path("/test.jpg")
+                .news(news)
+                .build();
+        imagesRepository.save(images);
+        Images images2 = Images.builder()
+                .fileName("test2")
+                .originalName("test2")
+                .extension(".jpg")
+                .path("/test2.jpg")
+                .news(news)
+                .build();
+        imagesRepository.save(images2);
+        Images images3 = Images.builder()
+                .fileName("test3")
+                .originalName("test3")
+                .extension(".jpg")
+                .path("/test3.jpg")
+                .news(news2)
+                .build();
+        imagesRepository.save(images3);
+
+
+
+        //when
+        List<NewsImageListDto> mainList = newsRepository.findNewsImageListAtMain();
+
+        assertEquals("test3.jpg", mainList.get(0).getImageName());
+        assertEquals("test.jpg", mainList.get(1).getImageName());
+
+    }
+
+
+    @Test
+    @DisplayName("NewsSimpleDto 조회 - ids 제외")
+    void findNewsSimpleDtoByNotInIds() {
+
+        //given
+        News news = News.builder()
+                .title("title")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .platform(platform)
+                .build();
+        newsRepository.save(news);
+        News news2 = News.builder()
+                .title("title2")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .platform(platform)
+                .build();
+        newsRepository.save(news2);
+        News news3 = News.builder()
+                .title("title3")
+                .content("content")
+                .createDate(new Date())
+                .member(member)
+                .platform(platform)
+                .build();
+        newsRepository.save(news3);
+
+        List<Long> ids = new ArrayList<>();
+        ids.add(news.getId());
+        ids.add(news3.getId());
+
+        //when
+        List<NewsSimpleDto> list = newsRepository.findNewsListByNotIds(ids);
+
+        //then
+        assertEquals(1, list.size());
+        assertEquals("[platform1] title2", list.get(0).getTitle());
     }
 
 }

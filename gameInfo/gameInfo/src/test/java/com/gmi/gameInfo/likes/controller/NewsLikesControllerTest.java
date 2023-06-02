@@ -28,6 +28,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(NewsLikesController.class)
@@ -53,7 +54,6 @@ public class NewsLikesControllerTest {
             .id(1L)
             .loginId("test")
             .password("test")
-            .loginId("test")
             .email("test")
             .name("test")
             .birthday(new Date())
@@ -92,7 +92,8 @@ public class NewsLikesControllerTest {
         result
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("1"));
+                .andExpect(jsonPath("$.like").value(1));
+
     }
 
     @Test
@@ -118,7 +119,7 @@ public class NewsLikesControllerTest {
         result
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("0"));
+                .andExpect(jsonPath("$.like").value(0));
     }
     
     @Test

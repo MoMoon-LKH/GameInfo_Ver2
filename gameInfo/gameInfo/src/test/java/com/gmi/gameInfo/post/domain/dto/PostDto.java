@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Schema(description = "포스트 DTO")
@@ -28,7 +29,7 @@ public class PostDto {
     private String content;
 
     @ApiModelProperty(value = "카테고리 아이디", required = true)
-    @NotEmpty(message = "카테고리를 선택해주세요")
+    @NotNull(message = "카테고리를 선택해주세요")
     private Long categoryId;
 
     @ApiModelProperty(value = "이미지 아이디 리스트")
