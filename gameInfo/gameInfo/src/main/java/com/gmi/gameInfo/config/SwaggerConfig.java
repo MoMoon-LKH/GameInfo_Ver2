@@ -3,6 +3,7 @@ package com.gmi.gameInfo.config;
 import com.gmi.gameInfo.comment.domain.dto.CommentDto;
 import com.gmi.gameInfo.exceptionHandler.ErrorResponse;
 import com.gmi.gameInfo.image.domain.dto.ImageDto;
+import com.gmi.gameInfo.main.dto.NewsMainDto;
 import com.gmi.gameInfo.member.domain.dto.LoginResponseDto;
 import com.gmi.gameInfo.member.domain.dto.MemberDto;
 import com.gmi.gameInfo.news.domain.dto.NewsDto;
@@ -65,7 +66,8 @@ public class SwaggerConfig {
                         typeResolver.resolve(ImageDto.class),
                         typeResolver.resolve(PostListDto.class),
                         typeResolver.resolve(NewsDto.class),
-                        typeResolver.resolve(CommentDto.class)
+                        typeResolver.resolve(CommentDto.class),
+                        typeResolver.resolve(NewsMainDto.class)
                 )
                 .ignoredParameterTypes(AuthenticationPrincipal.class);
     }

@@ -74,7 +74,7 @@ public class NewsController {
         if (newsCreateDto.getImageIds() != null) {
             for (Long id : newsCreateDto.getImageIds()) {
                 Images images = imagesService.findById(id);
-                images.updateRelationNews(news);
+                imagesService.updateAssociationOfNews(images, news);
             }
         }
 
