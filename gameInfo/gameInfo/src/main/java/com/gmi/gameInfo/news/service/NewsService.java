@@ -73,7 +73,7 @@ public class NewsService {
         news.updateViews();
     }
 
-    public List<NewsListDto> findListByPageable(NewsSearchDto newsSearchDto, Pageable pageable) {
+    public List<NewsListDto> findListByPageable(NewsSearchDto newsSearchDto, Pageable pageable) throws ParseException {
         return newsRepository.findListByPageable(newsSearchDto, pageable);
     }
 

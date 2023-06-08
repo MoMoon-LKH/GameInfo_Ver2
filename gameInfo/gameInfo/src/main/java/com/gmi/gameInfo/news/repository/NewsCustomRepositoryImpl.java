@@ -15,6 +15,7 @@ import com.gmi.gameInfo.platform.domain.QPlatform;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.JPAExpressions;
@@ -24,6 +25,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,13 +48,14 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
 
 
     @Override
-    public List<NewsListDto> findListByPageable(NewsSearchDto searchDto, Pageable pageable) {
+    public List<NewsListDto> findListByPageable(NewsSearchDto searchDto, Pageable pageable) throws ParseException {
+
 
         BooleanBuilder builder = new BooleanBuilder();
-
         int commentCnt = 0;
         Long platformId = searchDto.getPlatformId();
         String searchWord = searchDto.getSearchWord();
+        Date today = getToday();
 
         StringExpression resultTitle = Expressions.stringTemplate("'[' || {0} || '] ' || {1}", news.platform.name, news.title);
 
@@ -75,7 +79,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                 );
             }
         }
-
+        System.out.println(" = " + today);
 
         return factory
                 .select(Projections.bean(NewsListDto.class,
@@ -83,7 +87,10 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                         resultTitle.as("title"),
                         news.member.id.as("memberId"),
                         news.member.nickname.as("nickname"),
-                        news.createDate,
+                        new CaseBuilder()
+                                .when(news.createDate.before(today)).then(news.createDate)
+                                        .otherwise((Date) null).as("createDate"),
+                        news.createDate.as("createHour"),
                         news.comments.size().as("commentCount"),
                         news.views.as("views"),
                         ExpressionUtils.as(
@@ -174,5 +181,13 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                 .offset(0)
                 .limit(8)
                 .fetch();
+    }
+
+
+    private Date getToday() throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String date = format.format(new Date());
+
+        return format.parse(date);
     }
 }

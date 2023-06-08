@@ -26,6 +26,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.test.annotation.Rollback;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -154,7 +155,7 @@ public class NewsRepositoryTest {
     
     @Test
     @DisplayName("NewsListDto 리스트 조회")
-    void findListByPageable() {
+    void findListByPageable() throws ParseException {
     
         //given
         News news = News.builder()
@@ -183,7 +184,7 @@ public class NewsRepositoryTest {
     
     @Test
     @DisplayName("NewsLisDto 리스트 조회 - platform 조회")
-    void findListByPageable_Platform() {
+    void findListByPageable_Platform() throws ParseException {
     
         //given
         News news = News.builder()
@@ -221,7 +222,7 @@ public class NewsRepositoryTest {
 
     @Test
     @DisplayName("NewsListDto 리스트 조회 - title 검색 조회")
-    void findListByPageable_SearchTitle() {
+    void findListByPageable_SearchTitle() throws ParseException {
 
         News news = News.builder()
                 .title("title")
@@ -257,7 +258,7 @@ public class NewsRepositoryTest {
 
     @Test
     @DisplayName("NewsListDto 리스트 조회 - writer 검색 조회")
-    void findListByPageable_SearchWriter() {
+    void findListByPageable_SearchWriter() throws ParseException {
 
         //given
         News news = News.builder()
@@ -472,6 +473,35 @@ public class NewsRepositoryTest {
         //then
         assertEquals(1, list.size());
         assertEquals("[platform1] title2", list.get(0).getTitle());
+    }
+
+    @Test
+    @DisplayName("뉴스 리스트 조회 시 - 오늘 날짜인 경우 createDate null")
+    void findNewsListByPageable_CreateDateIsNUll() throws ParseException {
+
+        News news = News.builder()
+                .title("title")
+                .content("content")
+                .member(member)
+                .createDate(new Date())
+                .build();
+
+        newsRepository.save(news);
+
+        Pageable pageable = PageRequest.of(0, 20);
+
+        NewsSearchDto searchDto = NewsSearchDto.builder()
+                .platformId(0L)
+                .searchSelect("")
+                .searchWord("")
+                .build();
+
+        //when
+        List<NewsListDto> find = newsRepository.findListByPageable(searchDto, pageable);
+
+        //then
+        assertNull(find.get(0).getCreateDate());
+
     }
 
 }

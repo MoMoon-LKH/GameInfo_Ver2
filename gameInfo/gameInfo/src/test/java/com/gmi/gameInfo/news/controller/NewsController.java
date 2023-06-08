@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +94,7 @@ public class NewsController {
             @RequestParam("searchSelect") String searchSelect,
             @RequestParam(value = "searchInput", required = false) String searchInput,
             @PageableDefault(page = 0, size = 30) Pageable pageable
-            ) {
+            ) throws ParseException {
 
         NewsSearchDto searchDto = NewsSearchDto.builder()
                 .platformId(platformId)

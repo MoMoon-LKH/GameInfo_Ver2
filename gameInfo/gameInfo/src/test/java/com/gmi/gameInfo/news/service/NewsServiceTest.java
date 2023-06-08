@@ -126,7 +126,7 @@ public class NewsServiceTest {
 
     @Test
     @DisplayName("NewsListDto 리스트 조회")
-    void findListByPageable() {
+    void findListByPageable() throws ParseException {
 
         //given
         Pageable pageable = PageRequest.of(0, 10);
@@ -320,6 +320,8 @@ public class NewsServiceTest {
         assertEquals(2, result.size());
 
     }
+
+
 
 
 }

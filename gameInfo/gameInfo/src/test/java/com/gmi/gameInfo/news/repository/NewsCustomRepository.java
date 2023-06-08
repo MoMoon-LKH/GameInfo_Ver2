@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface NewsCustomRepository {
 
-    List<NewsListDto> findListByPageable(NewsSearchDto searchDto, Pageable pageable);
+    List<NewsListDto> findListByPageable(NewsSearchDto searchDto, Pageable pageable) throws ParseException;
 
     Optional<NewsDto> findDtoOneById(Long id);
 
