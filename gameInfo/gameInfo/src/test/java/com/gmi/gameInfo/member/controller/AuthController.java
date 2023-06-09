@@ -53,6 +53,7 @@ public class AuthController {
 
     private final MemberTokenService memberTokenService;
 
+
     @Value("${jwt.refresh-validity-date}")
     private int refreshDays;
 
@@ -182,8 +183,6 @@ public class AuthController {
 
             return ResponseEntity.ok(loginResponse);
         }
-
-
 
     private String addTokenFrontString(String token) {
         return "Bearer " + token;

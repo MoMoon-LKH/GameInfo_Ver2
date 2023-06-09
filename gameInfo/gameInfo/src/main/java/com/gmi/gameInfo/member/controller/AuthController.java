@@ -49,6 +49,7 @@ public class AuthController {
 
     private final MemberTokenService memberTokenService;
 
+
     @Value("${jwt.refresh-validity-date}")
     private int refreshDays;
 
@@ -179,8 +180,6 @@ public class AuthController {
             return ResponseEntity.ok(loginResponse);
         }
 
-
-
     private String addTokenFrontString(String token) {
         return "Bearer " + token;
     }
@@ -188,7 +187,7 @@ public class AuthController {
     private Cookie createRefreshCookie(String refresh, int maxAge) {
 
         Cookie cookie = new Cookie("gameInfo", refresh);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
