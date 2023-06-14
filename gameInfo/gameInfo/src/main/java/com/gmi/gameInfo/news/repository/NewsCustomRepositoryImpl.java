@@ -59,6 +59,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
 
         StringExpression resultTitle = Expressions.stringTemplate("'[' || {0} || '] ' || {1}", news.platform.name, news.title);
 
+        builder.and(news.deleteYn.eq(false));
 
         if (platformId != null && platformId != 0) {
             builder.and(
@@ -99,8 +100,6 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                                 )
                                 .from(likes)
                                 .where(likes.news.id.eq(news.id).and(likes.likeType.eq(LikeType.LIKE)))
-
-
                                         , "likesCount"
                         )
                         ))
@@ -123,7 +122,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                                 news.createDate
                         ))
                 .from(news)
-                .where(news.id.eq(id))
+                .where(news.id.eq(id).and(news.deleteYn.eq(false)))
                 .fetchOne());
     }
 
@@ -140,7 +139,9 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                                 ))
                 .from(news)
                 .where(
+                        news.deleteYn.eq(false).and(
                         news.createDate.between(dateFunction.getCalDate(-7), dateFunction.getCalDate(7))
+                        )
                 )
                 .innerJoin(news.images, image)
                 .offset(0)
@@ -176,7 +177,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                         )
                 )
                 .from(news)
-                .where(news.id.notIn(ids))
+                .where(news.id.notIn(ids).and(news.deleteYn.eq(false)))
                 .orderBy(news.createDate.desc())
                 .offset(0)
                 .limit(8)

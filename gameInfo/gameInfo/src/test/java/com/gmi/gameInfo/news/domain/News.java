@@ -7,6 +7,7 @@ import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.news.domain.dto.NewsCreateDto;
 import com.gmi.gameInfo.platform.domain.Platform;
 import lombok.*;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -43,6 +44,9 @@ public class News {
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date updateDate;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean deleteYn;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -75,6 +79,10 @@ public class News {
         this.content = dto.getContent();
         this.platform = platform;
         this.updateDate = new Date();
+    }
+
+    public void deleteNews() {
+        this.deleteYn = true;
     }
 
     public void updateViews() {

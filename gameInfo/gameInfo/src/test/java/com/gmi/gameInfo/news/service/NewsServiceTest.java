@@ -116,7 +116,7 @@ public class NewsServiceTest {
         given(newsRepository.findById(any())).willReturn(Optional.ofNullable(null));
 
         //when
-        newsService.delete(news);
+        newsService.deleteRecord(news);
 
         //then
         assertThrows(NotFoundNewsException.class, () -> {
@@ -322,6 +322,23 @@ public class NewsServiceTest {
     }
 
 
+    @Test
+    @DisplayName("delete 상태 업데이트")
+    void updateDeleteYn() {
+
+        //given
+        News news = News.builder()
+                .id(1L)
+                .title("title")
+                .content("content")
+                .build();
+
+        //when
+        newsService.delete(news);
+
+        //then
+        assertTrue(news.isDeleteYn());
+    }
 
 
 }

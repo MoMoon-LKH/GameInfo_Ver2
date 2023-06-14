@@ -69,6 +69,7 @@ public class PostControllerTest {
                 .content("test")
                 .categoryId(1L)
                 .build();
+
         Member member = Member.builder()
                         .id(1L)
                         .loginId("test")

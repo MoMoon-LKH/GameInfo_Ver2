@@ -59,9 +59,16 @@ public class NewsService {
     }
 
     @Transactional
-    public void delete(News news) {
+    public void deleteRecord(News news) {
         newsRepository.delete(news);
     }
+
+    @Transactional
+    public void delete(News news) {
+        news.deleteNews();
+    }
+
+
 
     @Transactional
     public void updateNews(News news, NewsCreateDto dto, Platform platform) {
@@ -72,6 +79,7 @@ public class NewsService {
     public void updateViews(News news) {
         news.updateViews();
     }
+
 
     public List<NewsListDto> findListByPageable(NewsSearchDto newsSearchDto, Pageable pageable) throws ParseException {
         return newsRepository.findListByPageable(newsSearchDto, pageable);

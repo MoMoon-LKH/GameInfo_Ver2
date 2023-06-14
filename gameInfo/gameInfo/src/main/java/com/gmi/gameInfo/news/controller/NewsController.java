@@ -32,7 +32,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -178,13 +177,13 @@ public class NewsController {
         News news = newsService.findById(id);
 
         if (news.getMember().getId().equals(member.getId()) || member.getRoleType().equals(RoleType.ADMIN)) {
-            if (news.getImages() != null && news.getImages().size() > 0) {
-                for (Images images : news.getImages()) {
-                    File file = new File(images.getPath());
-                    boolean bool = imagesService.deleteFile(file);
-                    imagesService.delete(images);
-                }
-            }
+//            if (news.getImages() != null && news.getImages().size() > 0) {
+//                for (Images images : news.getImages()) {
+//                    File file = new File(images.getPath());
+//                    boolean bool = imagesService.deleteFile(file);
+//                    imagesService.delete(images);
+//                }
+//            }
             newsService.delete(news);
 
             return ResponseEntity.ok(true);
