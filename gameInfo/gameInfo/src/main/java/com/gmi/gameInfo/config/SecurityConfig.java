@@ -51,10 +51,16 @@ public class SecurityConfig{
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
 
                 .and()
+                .headers()
+                .frameOptions()
+                .sameOrigin()
+                
+                .and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/email/**").permitAll()
                 .antMatchers("/api/members/register", "/api/members/duplicate-loginId").permitAll()
                 .antMatchers("/api/auth/login", "/api/auth/reissue-token").permitAll()
@@ -82,7 +88,8 @@ public class SecurityConfig{
                     "/swagger-ui/**",
                     "/api/docs",
                     "/swagger-resources/**",
-                    "/webjars/**");
+                    "/webjars/**",
+                    "/favicon.ico");
         };
     }
 
