@@ -36,6 +36,11 @@ public class CommentService {
 
     @Transactional
     public void delete(Comment comment) {
+        comment.updateDeleteY();
+    }
+
+    @Transactional
+    public void deleteRecord(Comment comment) {
         commentRepository.delete(comment);
     }
 

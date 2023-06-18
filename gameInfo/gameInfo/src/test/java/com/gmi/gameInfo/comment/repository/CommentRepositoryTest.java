@@ -236,7 +236,29 @@ public class CommentRepositoryTest {
         assertEquals(0, list.get(4).getSequence());
 
     }
-    
+
+    @Test
+    @DisplayName("댓글 삭제 내용 확인 - deleteY")
+    void confirmContentByDeleteY() {
+
+        //given
+        Pageable pageable = PageRequest.of(0, 30);
+        CommentCreateDto dto = CommentCreateDto.builder()
+                .content("test")
+                .group(0)
+                .postId(1L)
+                .build();
+        Comment comment = Comment.createNewsComment(dto, member, news);
+        comment.updateDeleteY();
+        commentRepository.save(comment);
+
+        //when
+        List<CommentDto> find = commentRepository.findPageByNewsId(comment.getId(), pageable);
+
+        //then
+        assertEquals("삭제된 댓글입니다", find.get(0).getContent());
+
+    }
     
     @Test
     @DisplayName("댓글 수 조회 - newsId")

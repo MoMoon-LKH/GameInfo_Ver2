@@ -40,6 +40,9 @@ public class Comment {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date updateDate;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean deleteYn;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -98,6 +101,10 @@ public class Comment {
     public void updateCommentContent(String content) {
         this.content = content;
         this.updateDate = new Date();
+    }
+
+    public void updateDeleteY() {
+        this.deleteYn = true;
     }
 
     public static Comment createReplyNewsComment(CommentCreateDto dto, Member createMember, News news, Member replyMember) {

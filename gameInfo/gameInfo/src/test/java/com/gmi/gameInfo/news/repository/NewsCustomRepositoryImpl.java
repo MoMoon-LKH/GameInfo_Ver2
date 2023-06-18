@@ -137,9 +137,7 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                                 ))
                 .from(news)
                 .where(
-                        news.deleteYn.eq(false).and(
-                        news.createDate.between(dateFunction.getCalDate(-7), dateFunction.getCalDate(7))
-                        )
+                        news.deleteYn.eq(false)
                 )
                 .innerJoin(news.images, image)
                 .offset(0)

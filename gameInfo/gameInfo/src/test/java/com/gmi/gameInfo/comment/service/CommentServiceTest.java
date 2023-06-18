@@ -144,7 +144,7 @@ public class CommentServiceTest {
     }
     
     @Test
-    @DisplayName("댓글 삭제")
+    @DisplayName("댓글 삭제 - 레코드")
     void deleteComment() {
     
         //given
@@ -161,12 +161,33 @@ public class CommentServiceTest {
         given(commentRepository.findById(any(Long.class))).willReturn(Optional.empty());
     
         //when
-        commentService.delete(comment);
+        commentService.deleteRecord(comment);
 
         //then
         assertThrows(NotFoundCommentException.class, () -> {
             commentService.findById(1L);
         });
+    }
+    
+    @Test
+    @DisplayName("댓글 삭제 - deleteYn 업데이트")
+    void updateDeleteYn() {
+    
+        //given
+        CommentCreateDto commentCreateDto = CommentCreateDto.builder()
+                .content("test")
+                .group(0)
+                .sequence(0)
+                .postId(news.getId())
+                .memberId(member.getId())
+                .build();
+        Comment comment = Comment.createNewsComment(commentCreateDto, member, news);
+    
+        //when
+        commentService.delete(comment);
+        
+        //then
+        assertTrue(comment.isDeleteYn());
     }
 
 

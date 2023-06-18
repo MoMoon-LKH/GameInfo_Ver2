@@ -6,6 +6,7 @@ import com.gmi.gameInfo.member.domain.QMember;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.JPAExpressions;
@@ -33,7 +34,12 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
         return factory.select(
                         Projections.bean(CommentDto.class,
                                 comment.id,
-                                comment.content,
+                                new CaseBuilder()
+                                        .when(comment.deleteYn.eq(true))
+                                        .then("삭제된 댓글입니다")
+                                        .otherwise(comment.content)
+                                        .as("content")
+                                ,
                                 comment.createDate,
                                 comment.member.id.as("memberId"),
                                 comment.member.nickname,
