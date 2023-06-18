@@ -54,7 +54,7 @@ public class SecurityConfig{
                 .headers()
                 .frameOptions()
                 .sameOrigin()
-                
+
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()

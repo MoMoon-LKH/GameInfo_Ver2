@@ -33,10 +33,10 @@ public class Games {
     private LocalDate createDate;
 
     @OneToMany(mappedBy = "games", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GamesGenre> gamesGenres = new ArrayList<>();
+    private List<GamesGenre> genres = new ArrayList<>();
 
     @OneToMany(mappedBy = "games", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GamesPlatform> gamesPlatforms = new ArrayList<>();
+    private List<GamesPlatform> platforms = new ArrayList<>();
 
     public Games(GamesCreateDto dto) {
         this.name = dto.getName();

@@ -1,17 +1,16 @@
 package com.gmi.gameInfo.games.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gmi.gameInfo.genre.domain.Genre;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.domain.Persistable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GamesGenre {
 
     @EmbeddedId
@@ -26,5 +25,12 @@ public class GamesGenre {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    public GamesGenre(Games games, Genre genre) {
+        this.games = games;
+        this.genre = genre;
+        this.id = new GamesGenreId(games.getId(), genre.getId());
+    }
+
 
 }
