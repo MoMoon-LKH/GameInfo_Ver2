@@ -8,8 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -29,5 +30,9 @@ public class Platform {
     private List<News> news;
 
     @OneToMany(mappedBy = "platform", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<GamesPlatform> gamesPlatforms = new ArrayList<>();
+    private Set<GamesPlatform> gamesPlatforms = new HashSet<>();
+
+    public void associateGamePlatform(GamesPlatform gamesPlatform) {
+        gamesPlatforms.add(gamesPlatform);
+    }
 }

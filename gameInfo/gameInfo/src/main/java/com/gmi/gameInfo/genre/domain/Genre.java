@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,7 +26,11 @@ public class Genre {
 
 
     @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GamesGenre> gamesGenres = new ArrayList<>();
+    private Set<GamesGenre> gamesGenres = new HashSet<>();
+
+    public void associateGamesGenre(GamesGenre gamesGenre) {
+        gamesGenres.add(gamesGenre);
+    }
 
 
 }
