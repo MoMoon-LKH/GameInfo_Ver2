@@ -25,6 +25,13 @@ public class GamesServiceTest {
 
     @InjectMocks
     private GamesService gamesService;
+
+    @Test
+    @DisplayName("게임 저장 - (Genre || Platform) List가 size 0인 상태로 들어갈 경우")
+    void save_EmptyGenreOrPlatformList() {
+        
+    }
+    
     
     @Test
     @DisplayName("게임 저장 - 성공")
@@ -36,4 +43,6 @@ public class GamesServiceTest {
         
         //then
     }
+    
+    
 }

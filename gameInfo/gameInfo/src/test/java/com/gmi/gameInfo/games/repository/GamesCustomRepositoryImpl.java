@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -69,4 +70,20 @@ public class GamesCustomRepositoryImpl implements GamesCustomRepository{
                 .fetch();
     }
 
+    @Override
+    public Optional<Games> findOneDetailById(Long id) {
+
+        return Optional.ofNullable(
+                factory.select(
+                                games
+                        )
+                        .from(games)
+                        .leftJoin(games.platforms, gamesPlatform).fetchJoin()
+                        .leftJoin(games.genres, gamesGenre).fetchJoin()
+                        .leftJoin(gamesPlatform.platform, platform).fetchJoin()
+                        .leftJoin(gamesGenre.genre, genre).fetchJoin()
+                        .where(games.id.eq(id))
+                        .fetchOne()
+        );
+    }
 }

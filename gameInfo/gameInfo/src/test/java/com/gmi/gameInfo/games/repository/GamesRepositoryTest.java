@@ -19,11 +19,9 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,8 +46,8 @@ public class GamesRepositoryTest {
 
 
     @Test
-    @Rollback
     @DisplayName("게임 - 저장")
+    @Transactional
     void save() {
 
         //given
@@ -69,8 +67,8 @@ public class GamesRepositoryTest {
     }
     
     @Test
-    @Rollback
     @DisplayName("게임 - 단일 조회")
+    @Transactional
     void findById() {
     
         //given
@@ -86,6 +84,7 @@ public class GamesRepositoryTest {
     
     @Test
     @DisplayName("게임 - 삭제")
+    @Transactional
     void delete() {
     
         //given
@@ -101,29 +100,19 @@ public class GamesRepositoryTest {
     }
     
     @Test
-    @Rollback
     @DisplayName("게임 - 페이지 리스트 조회")
+    @Transactional
     void findByPageable() {
     
         //given
         Pageable pageable = PageRequest.of(0, 10);
+        List<String> platforms = new ArrayList<>();
+        platforms.add("platform1");
 
-        Games games = createGameSample("pageGames");
-        Platform platform = Platform.builder()
-                .name("platform1")
-                .build();
-        Genre genre = Genre.builder()
-                .name("genre1")
-                .build();
-        gamesRepository.save(games);
-        platformRepository.save(platform);
-        genreRepository.save(genre);
+        List<String> genres = new ArrayList<>();
+        genres.add("genre1");
 
-        GamesGenre gamesGenre = new GamesGenre(games, genre);
-        GamesPlatform gamesPlatform = new GamesPlatform(games, platform);
-        games.associatePlatform(gamesPlatform);
-        games.associateGenre(gamesGenre);
-
+        Map<String, Object> map = createGameAndPlatformAndGenre("pageGames", platforms, genres);
 
         //when
 
@@ -143,6 +132,40 @@ public class GamesRepositoryTest {
         assertEquals("genre1", itGenre.next().getGenre().getName());
 
     }
+    
+    
+    @Test
+    @DisplayName("게임 - 단일 조회 (fetch Join)")
+    @Transactional
+    void findOneById() {
+    
+        //given
+        List<String> platformName = new ArrayList<>();
+        platformName.add("platform1");
+        platformName.add("platform2");
+
+        Platform platform = Platform.builder()
+                .name("dummy1")
+                .build();
+        platformRepository.save(platform);
+
+        List<String> genreName = new ArrayList<>();
+        genreName.add("genre1");
+
+        Map<String, Object> map = createGameAndPlatformAndGenre("Games", platformName, genreName);
+
+        Games games = (Games) map.get("game");
+    
+        //when
+        Games find = gamesRepository.findOneDetailById(games.getId()).orElse(null);
+        Iterator<GamesPlatform> gamesPlatforms = find.getPlatforms().iterator();
+
+        //then
+        assertNotNull(find);
+        assertEquals(find.getName(), "Games");
+        assertEquals(find.getPlatforms().size(), 2);
+        assertEquals(find.getGenres().size(), 1);
+    }
 
 
     private Games createGameSample(String name) {
@@ -154,6 +177,49 @@ public class GamesRepositoryTest {
 
         Games games = Games.createGames(dto);
         return gamesRepository.save(games);
+    }
+
+
+    private Map<String, Object> createGameAndPlatformAndGenre(String gameName, List<String> pName, List<String> gName) {
+        Games games = createGameSample(gameName);
+        List<Platform> platforms = new ArrayList<>();
+        List<Genre> genres = new ArrayList<>();
+
+        for (String name : pName) {
+            Platform platform = Platform.builder()
+                    .name(name)
+                    .build();
+            platformRepository.save(platform);
+            platforms.add(platform);
+        }
+
+
+        for (String name : gName) {
+            Genre genre = Genre.builder()
+                    .name(name)
+                    .build();
+            genreRepository.save(genre);
+            genres.add(genre);
+        }
+        gamesRepository.save(games);
+
+        for (Platform platform : platforms) {
+            GamesPlatform gamesPlatform = new GamesPlatform(games, platform);
+            games.associatePlatform(gamesPlatform);
+        }
+
+        for (Genre genre : genres) {
+            GamesGenre gamesGenre = new GamesGenre(games, genre);
+            games.associateGenre(gamesGenre);
+        }
+
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("game", games);
+        map.put("genre", genres);
+        map.put("platform", platforms);
+
+        return map;
     }
 
 }

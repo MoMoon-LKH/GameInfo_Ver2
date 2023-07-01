@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.Rollback;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,6 +43,7 @@ public class PlatformRepositoryTest {
     }
 
     @Test
+    @Rollback
     @DisplayName("Platform - id 단일조회")
     void findByIdTest() {
 
@@ -58,5 +61,40 @@ public class PlatformRepositoryTest {
         assertSame(platform, find.get());
     }
 
+    @Test
+    @Rollback
+    @DisplayName("Platform - List<Long> id에 해당되는 List 조회")
+    void findByIdIn() {
+    
+        //given
+        Platform platform = Platform.builder()
+                .name("name1")
+                .build();
+
+        platformRepository.save(platform);
+
+        Platform platform2 = Platform.builder()
+                .name("name2")
+                .build();
+
+        platformRepository.save(platform2);
+
+        Platform platform3 = Platform.builder()
+                .name("name3")
+                .build();
+
+        platformRepository.save(platform2);
+
+        List<Long> list = new ArrayList<>();
+        list.add(platform.getId());
+        list.add(platform2.getId());
+
+        //when
+        List<Platform> find = platformRepository.findAllByIdIn(list);
+
+        //then
+        assertEquals(2, find.size());
+
+    }
 
 }

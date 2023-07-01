@@ -19,4 +19,5 @@ public class GamesFindDto {
     private List<Long> platformIds = new ArrayList<>();
 
     private List<Long> genreIds = new ArrayList<>();
+
 }
