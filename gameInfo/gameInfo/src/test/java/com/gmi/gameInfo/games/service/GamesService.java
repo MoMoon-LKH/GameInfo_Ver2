@@ -49,7 +49,7 @@ public class GamesService {
 
     @Transactional
     public void delete(Games games) {
-        games.updateDelete();
+        games.updateDeleteY();
 
     }
 

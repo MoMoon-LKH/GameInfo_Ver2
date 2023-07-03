@@ -62,9 +62,17 @@ public class GamesController {
 
     @GetMapping("/list")
     public ResponseEntity<?> findListByPage(
-            @RequestBody GamesFindDto findDto,
+            @RequestParam String search,
+            @RequestParam(value="platformId", required = false) List<Long> platformIds,
+            @RequestParam(value = "genreId", required = false) List<Long> genreIds,
             @PageableDefault(size = 30) Pageable pageable
     ) {
+
+        GamesFindDto findDto = GamesFindDto.builder()
+                .search(search)
+                .platformIds(platformIds)
+                .genreIds(genreIds)
+                .build();
 
         List<Games> find = gamesService.findByPageable(findDto, pageable);
         List<GamesListDto> dtoList = new ArrayList<>();
@@ -76,13 +84,20 @@ public class GamesController {
         return ResponseEntity.ok(dtoList);
     }
 
+
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findGameById(
             @PathVariable("id") Long id
     ) {
 
+        Games games = gamesService.findDetailById(id);
 
-        return ResponseEntity.ok(null);
+        GamesDto gamesDto = new GamesDto(games);
+
+        // 추가 상세 정보가 있다면 조회
+
+        return ResponseEntity.ok(gamesDto);
     }
 
 }

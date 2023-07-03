@@ -50,6 +50,7 @@ public class Games {
         this.name = dto.getName();
         this.explanation = dto.getExplanation();
         this.mainImage = dto.getMainImage();
+        this.releaseDate = dto.getReleaseDate();
     }
 
     public void associatePlatform(GamesPlatform gamesPlatform) {
@@ -60,7 +61,7 @@ public class Games {
         genres.add(gamesGenre);
     }
 
-    public void updateDelete() {
+    public void updateDeleteY() {
         this.deleteYn = true;
     }
 

@@ -11,6 +11,7 @@ import com.gmi.gameInfo.genre.domain.Genre;
 import com.gmi.gameInfo.genre.service.GenreService;
 import com.gmi.gameInfo.platform.domain.Platform;
 import com.gmi.gameInfo.platform.service.PlatformService;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -18,7 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -127,6 +132,122 @@ public class GamesControllerTest {
                 .andExpect(jsonPath("$.name").value(gamesCreateDto.getName()))
                 .andExpect(jsonPath("$.genreList.size()").value(1))
                 .andExpect(jsonPath("$.platformList.size()").value(1));
+    }
+
+
+    @Test
+    @WithMockUser
+    @DisplayName("게임 - 리스트 조회 (페이징), Genre 및 Platform 둘 다 null 값인 경우")
+    void findAllByPaging_NotFindPlatformAndGenre() throws Exception {
+
+        //given
+        Pageable page = PageRequest.of(0, 1);
+
+        GamesCreateDto gamesCreateDto = GamesCreateDto.builder()
+                .name("game")
+                .explanation("explanation")
+                .mainImage("/games/game")
+                .releaseDate(LocalDate.now())
+                .build();
+        GamesCreateDto gamesCreateDto2 = GamesCreateDto.builder()
+                .name("game2")
+                .explanation("explanation2")
+                .mainImage("/games/game")
+                .releaseDate(LocalDate.now())
+                .build();
+
+
+        List<Games> gamesList = new ArrayList<>();
+        //gamesList.add(createGamesAssociatePlatformsAndGenres(1L, Games.createGames(gamesCreateDto), 1, 1));
+        gamesList.add(createGamesAssociatePlatformsAndGenres(2L, Games.createGames(gamesCreateDto2), 1, 2));
+
+        given(gamesService.findByPageable(any(), any())).willReturn(gamesList);
+
+        //when
+        ResultActions result = mockMvc.perform(get("/api/game/list")
+                .param("page", String.valueOf(page.getPageNumber()))
+                .param("size", String.valueOf(page.getPageSize()))
+                .param("search", "")
+                .with(csrf()));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$.[0].name").value("game2"));
+    }
+
+
+    @Test
+    @WithMockUser
+    @DisplayName("게임 - 리스트 조회 (페이징)")
+    void findAllByPaging() throws Exception{
+
+        //given
+        GamesCreateDto gamesCreateDto = GamesCreateDto.builder()
+                .name("game")
+                .explanation("explanation")
+                .mainImage("/games/game")
+                .releaseDate(LocalDate.now())
+                .build();
+
+        List<Games> gamesList = new ArrayList<>();
+        gamesList.add(createGamesAssociatePlatformsAndGenres(1L, Games.createGames(gamesCreateDto), 1, 1));
+        Pageable page = PageRequest.of(0, 2);
+
+        given(gamesService.findByPageable(any(), any())).willReturn(gamesList);
+
+        List<Long> genres = new ArrayList<>();
+        genres.add(1L);
+
+        List<Long> platforms = new ArrayList<>();
+        platforms.add(1L);
+
+
+        //when
+        ResultActions result = mockMvc.perform(get("/api/game/list")
+                .param("page", String.valueOf(page.getPageNumber()))
+                .param("size", String.valueOf(page.getPageSize()))
+                .param("search", "")
+                        .param("genre", Arrays.toString(genres.toArray()))
+                        .param("platform", Arrays.toString(platforms.toArray()))
+                .with(csrf()));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$.[0].name").value("game"));
+    }
+
+
+
+    private Games createGamesAssociatePlatformsAndGenres(Long gamesId , Games games, int pCount, int gCount) {
+
+        List<Platform> platforms = new ArrayList<>();
+        List<Genre> genres = new ArrayList<>();
+
+        for (int i = 1; i <= pCount; i++) {
+            platforms.add(Platform.builder().id((long) i).name("platform" + i).build());
+        }
+
+        for (int i = 1; i <= gCount; i++) {
+            genres.add(Genre.builder().id((long) i).name("genre" + i).build());
+        }
+
+        Games g = new Games(
+                gamesId,
+                games.getName(),
+                games.getExplanation(),
+                games.getMainImage(),
+                games.getReleaseDate(),
+                false,
+                LocalDate.now(),
+                getGamesGenre(games, genres),
+                getGamesPlatform(games, platforms)
+        );
+
+        return g;
     }
 
 
