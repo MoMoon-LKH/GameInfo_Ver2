@@ -3,6 +3,8 @@ package com.gmi.gameInfo.exceptionHandler;
 import com.gmi.gameInfo.category.exception.NotFoundCategoryException;
 import com.gmi.gameInfo.comment.exception.NotFoundCommentException;
 import com.gmi.gameInfo.exceptionHandler.exception.NoPermissionException;
+import com.gmi.gameInfo.games.exception.GameSameNameException;
+import com.gmi.gameInfo.games.exception.NotFoundGameException;
 import com.gmi.gameInfo.image.exception.FailDeleteFileException;
 import com.gmi.gameInfo.image.exception.FailUploadFileException;
 import com.gmi.gameInfo.image.exception.NotFoundFileException;
@@ -157,7 +159,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(FailDeleteFileException.class)
-    protected ResponseEntity<?> handleFailDeleteFileException(FailDeleteFileException e){
+    protected ResponseEntity<?> handleFailDeleteFileException(FailDeleteFileException e) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message(e.getMessage())
@@ -175,7 +177,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundNewsException.class)
-    protected ResponseEntity<?> handleNotFoundNewsException(NotFoundNewsException e){
+    protected ResponseEntity<?> handleNotFoundNewsException(NotFoundNewsException e) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .message(e.getMessage())
@@ -200,4 +202,23 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
+    @ExceptionHandler(NotFoundGameException.class)
+    protected ResponseEntity<?> handleNotFoundGameException(NotFoundGameException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(GameSameNameException.class)
+    protected ResponseEntity<?> handleGameSameNameException(GameSameNameException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
 }

@@ -253,7 +253,7 @@ public class CommentRepositoryTest {
         commentRepository.save(comment);
 
         //when
-        List<CommentDto> find = commentRepository.findPageByNewsId(comment.getId(), pageable);
+        List<CommentDto> find = commentRepository.findPageByNewsId(news.getId(), pageable);
 
         //then
         assertEquals("삭제된 댓글입니다", find.get(0).getContent());
