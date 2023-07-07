@@ -44,7 +44,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new MemberDto(member));
     }
 
-    @Operation(summary = "로그인 중복여부", description = "로그인 중복여부 확인\n 중복이면 true 아니라면 false")
+    @Operation(summary = "로그인 아이디 중복여부", description = "로그인 중복여부 확인\n 중복이 아니라면 true")
     @ApiResponse(responseCode = "200", description = "중복여부",
         content = @Content(schema = @Schema(implementation = Boolean.class))
     )

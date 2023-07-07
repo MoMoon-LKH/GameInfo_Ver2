@@ -35,11 +35,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @WebMvcTest(GamesController.class)
@@ -220,6 +218,64 @@ public class GamesControllerTest {
                 .andExpect(jsonPath("$.[0].name").value("game"));
     }
 
+
+    @Test
+    @WithMockUser
+    @DisplayName("게임 - 삭제 (실패)")
+    void deleteGames_FAIL() throws Exception{
+
+        //given
+        GamesCreateDto gamesCreateDto = GamesCreateDto.builder()
+                .name("game")
+                .explanation("explanation")
+                .mainImage("/games/game")
+                .releaseDate(LocalDate.now())
+                .build();
+        Games games = Games.createGames(gamesCreateDto);
+
+        given(gamesService.findById(any())).willReturn(games);
+        given(gamesService.countByIdAndDeleteN(any())).willReturn(1);
+
+        //when
+        ResultActions result = mockMvc.perform(delete("/api/game/1")
+                .with(csrf())
+        );
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    @DisplayName("게임 - 삭제 (성공)")
+    @WithMockUser
+    void deleteGames_SUCCESS() throws Exception {
+
+        //given
+        GamesCreateDto gamesCreateDto = GamesCreateDto.builder()
+                .name("game")
+                .explanation("explanation")
+                .mainImage("/games/game")
+                .releaseDate(LocalDate.now())
+                .build();
+        Games games = Games.createGames(gamesCreateDto);
+
+        given(gamesService.findById(any())).willReturn(games);
+        given(gamesService.countByIdAndDeleteN(any())).willReturn(0);
+
+        //when
+        ResultActions result = mockMvc.perform(delete("/api/game/1")
+                .with(csrf())
+        );
+
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+    }
 
 
     private Games createGamesAssociatePlatformsAndGenres(Long gamesId , Games games, int pCount, int gCount) {

@@ -71,6 +71,7 @@ public class SecurityConfig{
                 .antMatchers("/api/auth/logout").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/image/upload").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/game").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/game/{id}").hasRole("ADMIN")
                 .anyRequest().authenticated()
 
                 .and()
@@ -103,6 +104,9 @@ public class SecurityConfig{
         config.addAllowedOrigin("http://gameinfo.momoon.kro.kr");
         config.addAllowedOrigin("https://www.gameinfo.momoon.kro.kr");
         config.addAllowedOrigin("http://www.gameinfo.momoon.kro.kr");
+        config.addAllowedOrigin("gameinfo.momoon.kro.kr");
+        config.addAllowedOrigin("www.gameinfo.momoon.kro.kr");
+        config.addAllowedOrigin("http://gameinfo-front:3000");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true);

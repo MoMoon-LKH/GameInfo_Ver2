@@ -19,7 +19,10 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://gameinfo.momoon.kro.kr",
                         "https://www.gameinfo.momoon.kro.kr",
                         "http://www.gameinfo.momoon.kro.kr",
-                        "http://gameinfo-back:8080"
+                        "http://gameinfo-back:8080",
+                        "gameinfo.momoon.kro.kr",
+                        "www.gameinfo.momoon.kro.kr",
+                        "http://gameinfo-front:3000"
                 )
                 .allowedHeaders("*")
                 .allowedMethods("*")

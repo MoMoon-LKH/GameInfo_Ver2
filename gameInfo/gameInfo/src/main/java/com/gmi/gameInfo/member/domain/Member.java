@@ -39,7 +39,7 @@ public class Member {
     @Column(nullable = false)
     private Date birthday;
 
-    @Column(length = 11)
+    @Column(length = 15)
     private String phoneNo;
 
     @Column(length = 50, nullable = false, unique = true)

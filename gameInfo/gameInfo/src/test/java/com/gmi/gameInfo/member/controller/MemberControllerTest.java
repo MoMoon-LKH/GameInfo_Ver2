@@ -67,7 +67,7 @@ public class MemberControllerTest {
                 .name("테스트")
                 .nickname("테스트 닉네임")
                 .birthday(new Date(cal.getTimeInMillis()))
-                .phoneNo("01012345678")
+                .phoneNo("010-1234-5678")
                 .email("test@asdf.com").build();
 
         given(memberService.registerMember(any(RegisterDto.class))).willReturn(Member.createMember(registerDto));

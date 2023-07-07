@@ -55,7 +55,10 @@ public class GamesService {
     @Transactional
     public void delete(Games games) {
         games.updateDeleteY();
+    }
 
+    public int countByIdAndDeleteN(Long id) {
+        return gamesRepository.countByIdAndDeleteYn(id, false);
     }
 
     public Games findById(Long id) {

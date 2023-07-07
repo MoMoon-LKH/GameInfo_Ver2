@@ -192,23 +192,23 @@ public class MemberServiceTest {
     }
     
     @Test
-    @DisplayName("로그인 아이디 - 중복 X")
+    @DisplayName("로그인 아이디 - 중복 O")
     void notDuplicateLoginId() {
-    
+
         //given
         String loginId = "test";
         given(memberRepository.countByLoginId(loginId)).willReturn(1);
-    
-        //when
-        boolean dupleBool = memberService.duplicateLoginId(loginId);
 
-        
+        //when
+
         //then
-        assertTrue(dupleBool);
+        assertThrows(DuplicateMemberIdException.class, () -> {
+            memberService.duplicateLoginId(loginId);
+        });
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("로그인 아이디 - 중복 X")
     void duplicateLoginId() {
 
         //given
@@ -216,11 +216,11 @@ public class MemberServiceTest {
         given(memberRepository.countByLoginId(loginId)).willReturn(0);
 
         //when
+        boolean dupleBool = memberService.duplicateLoginId(loginId);
+
 
         //then
-        assertThrows(DuplicateMemberIdException.class, () -> {
-           memberService.duplicateLoginId(loginId);
-        });
+        assertTrue(dupleBool);
     }
 
     @Test

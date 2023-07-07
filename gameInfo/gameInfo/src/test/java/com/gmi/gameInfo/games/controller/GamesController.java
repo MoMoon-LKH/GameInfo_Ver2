@@ -13,6 +13,7 @@ import com.gmi.gameInfo.platform.domain.Platform;
 import com.gmi.gameInfo.platform.service.PlatformService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,10 +27,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@Tag(name = "Game", description = "게임 관련 API")
+@Api(tags = "Game API", description = "게임 관련 API")
 @RestController
 @RequestMapping("/api/game")
 @RequiredArgsConstructor
@@ -54,7 +56,7 @@ public class GamesController {
     )
     @PostMapping("")
     public ResponseEntity<?> createGame(
-            @RequestBody GamesCreateDto createDto
+            @Valid @RequestBody GamesCreateDto createDto
     ) {
 
         Games games = Games.createGames(createDto);
@@ -86,8 +88,11 @@ public class GamesController {
     })
     @GetMapping("/list")
     public ResponseEntity<?> findListByPage(
+            @Parameter(description = "검색 내용")
             @RequestParam String search,
+            @Parameter(description = "검색 조건 - 플랫폼 아이디들")
             @RequestParam(value="platformId", required = false) List<Long> platformIds,
+            @Parameter(description = "검색 조건 - 장르 아이디들")
             @RequestParam(value = "genreId", required = false) List<Long> genreIds,
             @PageableDefault(size = 30) Pageable pageable
     ) {
@@ -115,6 +120,7 @@ public class GamesController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> findGameById(
+            @Parameter(description = "게임 상세정보을 찾기 위한 id")
             @PathVariable("id") Long id
     ) {
 
@@ -125,6 +131,30 @@ public class GamesController {
         // 추가 상세 정보가 있다면 조회
 
         return ResponseEntity.ok(gamesDto);
+    }
+
+
+    @Operation(summary = "게임 삭제", description = "해당 id를 통한 게임 삭제 API ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공",
+            content = @Content(schema = @Schema(implementation = Boolean.class))),
+            @ApiResponse(responseCode = "409", description = "삭제 실패",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGames(
+            @Parameter(description = "삭제할 game 아이디")
+            @PathVariable("id") Long id
+    ) {
+        Games find = gamesService.findById(id);
+
+        gamesService.delete(find);
+
+        if (gamesService.countByIdAndDeleteN(id) > 0) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse.builder().status(409).message("삭제에 실패하였습니다").build());
+        }
+
+        return ResponseEntity.ok(true);
     }
 
 }

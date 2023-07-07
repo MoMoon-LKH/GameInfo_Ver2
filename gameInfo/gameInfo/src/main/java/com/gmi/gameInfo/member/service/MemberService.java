@@ -39,7 +39,7 @@ public class MemberService {
     public boolean duplicateLoginId(String loginId) {
         int count = memberRepository.countByLoginId(loginId);
 
-        if (count <= 0) {
+        if (count > 0) {
             throw new DuplicateMemberIdException();
         }
         return true;
