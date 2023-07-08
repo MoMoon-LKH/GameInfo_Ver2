@@ -41,6 +41,7 @@ public class RegisterDto {
     private Date birthday;
 
     @ApiModelProperty(value = "핸드폰 번호")
+    @Pattern(regexp ="^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$", message = "핸드폰 번호의 유효방식 아닙니다\n 다시 확인해주세요" )
     @NotBlank(message = "핸드폰 번호를 입력해주세요")
     private String phoneNo;
 

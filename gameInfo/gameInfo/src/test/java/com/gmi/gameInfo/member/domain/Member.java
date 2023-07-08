@@ -7,11 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import java.time.LocalDate;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +40,7 @@ public class Member {
     @Column(nullable = false)
     private Date birthday;
 
-    @Column(length = 15)
+    @Size(max = 15)
     private String phoneNo;
 
     @Column(length = 50, nullable = false, unique = true)

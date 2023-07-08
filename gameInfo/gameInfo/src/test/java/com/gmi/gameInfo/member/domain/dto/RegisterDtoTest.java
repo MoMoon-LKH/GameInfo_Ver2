@@ -227,6 +227,31 @@ public class RegisterDtoTest {
         validateMessage(dto,"이메일 인증을 해주세요");
     }
 
+
+    @Test
+    @DisplayName("핸드폰 번호 형식 체크")
+    void phoneNumberCheck_Worst() {
+
+        //given
+        String worst = "010232422132";
+
+        //when
+        RegisterDto dto = RegisterDto.builder()
+                .loginId("test")
+                .password("test")
+                .name("test")
+                .nickname("test")
+                .email("test@test.colm")
+                .birthday(Date.valueOf(LocalDate.of(1996,6,19)))
+                .phoneNo(worst)
+                .boolCertifiedEmail(true)
+                .build();
+
+        //then
+        validateMessage(dto, "핸드폰 번호의 유효방식 아닙니다\n 다시 확인해주세요");
+    }
+
+
     void validateMessage(RegisterDto dto, String message) {
         //when
         Set<ConstraintViolation<RegisterDto>> validate = validator.validate(dto);
