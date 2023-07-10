@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
@@ -40,6 +41,9 @@ public class GamesServiceTest {
 
     @InjectMocks
     private GamesService gamesService;
+
+
+
 
     @Test
     @DisplayName("게임 저장 - (Genre || Platform) List가 size 0인 상태로 들어갈 경우")
@@ -120,6 +124,9 @@ public class GamesServiceTest {
         //then
         assertTrue(games.isDeleteYn());
     }
+
+
+
 }
 
 

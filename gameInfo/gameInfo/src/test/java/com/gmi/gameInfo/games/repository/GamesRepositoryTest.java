@@ -155,7 +155,7 @@ public class GamesRepositoryTest {
         Map<String, Object> map = createGameAndPlatformAndGenre("Games", platformName, genreName);
 
         Games games = (Games) map.get("game");
-    
+
         //when
         Games find = gamesRepository.findOneDetailById(games.getId()).orElse(null);
         Iterator<GamesPlatform> gamesPlatforms = find.getPlatforms().iterator();

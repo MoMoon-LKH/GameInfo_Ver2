@@ -107,7 +107,8 @@ public class GamesControllerTest {
                 false,
                 LocalDate.now(),
                 getGamesGenre(sam, genres),
-                getGamesPlatform(sam, platforms)
+                getGamesPlatform(sam, platforms),
+                0
         );
 
         given(genreService.findAllByIdsIn(any())).willReturn(genres);
@@ -300,7 +301,8 @@ public class GamesControllerTest {
                 false,
                 LocalDate.now(),
                 getGamesGenre(games, genres),
-                getGamesPlatform(games, platforms)
+                getGamesPlatform(games, platforms),
+                0
         );
 
         return g;

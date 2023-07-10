@@ -16,6 +16,12 @@ public class PlatformService {
 
     private final PlatformRepository platformRepository;
 
+
+    @Transactional
+    public Platform save(Platform platform) {
+        return platformRepository.save(platform);
+    }
+
     public Platform findById(Long id){
         return platformRepository.findById(id).orElseThrow(NotFoundPlatformException::new);
     }

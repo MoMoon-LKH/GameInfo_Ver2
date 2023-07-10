@@ -3,6 +3,7 @@ package com.gmi.gameInfo.games.service;
 import com.gmi.gameInfo.games.domain.Games;
 import com.gmi.gameInfo.games.domain.GamesGenre;
 import com.gmi.gameInfo.games.domain.GamesPlatform;
+import com.gmi.gameInfo.games.domain.dto.GamesCreateDto;
 import com.gmi.gameInfo.games.domain.dto.GamesFindDto;
 import com.gmi.gameInfo.games.exception.NotFoundGameException;
 import com.gmi.gameInfo.games.exception.GameSameNameException;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,27 +32,45 @@ public class GamesService {
 
     private final GamesGenreRepository gamesGenreRepository;
 
+    private final GameAssociateService gameAssociateService;
+
 
     @Transactional
     public Games save(Games games, List<Platform> platforms, List<Genre> genres) {
         try {
-            Games save = gamesRepository.save(games);
 
-            for (Platform platform : platforms) {
-                GamesPlatform gamesPlatform = new GamesPlatform(games, platform);
-                games.associatePlatform(gamesPlatform);
-            }
+            gamesRepository.save(games);
+            gameAssociateService.addGamesGenre(games, genres);
+            gameAssociateService.addGamesPlatforms(games, platforms);
 
-            for (Genre genre : genres) {
-                GamesGenre gamesGenre = new GamesGenre(games, genre);
-                games.associateGenre(gamesGenre);
-            }
-
-            return save;
+            return games;
 
         } catch (DataIntegrityViolationException e) {
             throw new GameSameNameException();
         }
+    }
+
+    @Transactional
+    public Games update(Long id, GamesCreateDto dto, List<Platform> platforms, List<Genre> genres) {
+        Games games = gamesRepository.findByIdOptimisticLock(id).orElseThrow(NotFoundGameException::new);
+
+
+        Set<GamesPlatform> delPlatforms = games.getPlatforms();
+        Set<GamesGenre> delGenres = games.getGenres();
+
+        games.clearPlatforms();
+        games.clearGenres();
+
+        gamesGenreRepository.deleteAll(delGenres);
+        gamesPlatformRepository.deleteAll(delPlatforms);
+
+        games.update(dto);
+
+        gameAssociateService.addGamesPlatforms(games, platforms);
+        gameAssociateService.addGamesGenre(games, genres);
+
+
+        return games;
     }
 
     @Transactional

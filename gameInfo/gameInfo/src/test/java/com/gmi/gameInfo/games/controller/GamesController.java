@@ -157,4 +157,16 @@ public class GamesController {
         return ResponseEntity.ok(true);
     }
 
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateGames(
+            @PathVariable Long id,
+            @Valid @RequestBody GamesCreateDto gamesCreateDto
+    ) {
+
+
+
+        return ResponseEntity.ok(null);
+    }
+
 }

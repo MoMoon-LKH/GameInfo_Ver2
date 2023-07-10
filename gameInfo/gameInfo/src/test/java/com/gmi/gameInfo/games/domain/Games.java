@@ -5,6 +5,8 @@ import com.gmi.gameInfo.games.domain.dto.GamesCreateDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OptimisticLockType;
+import org.hibernate.annotations.OptimisticLocking;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -18,6 +20,7 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@OptimisticLocking(type = OptimisticLockType.VERSION)
 public class Games {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,11 +44,14 @@ public class Games {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDate createDate;
 
-    @OneToMany(mappedBy = "games", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "games", fetch = FetchType.LAZY)
     private Set<GamesGenre> genres = new HashSet<>();
 
-    @OneToMany(mappedBy = "games", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "games", fetch = FetchType.LAZY)
     private Set<GamesPlatform> platforms = new HashSet<>();
+
+    @Version
+    private int version;
 
 
     public Games(GamesCreateDto dto) {
@@ -61,6 +67,21 @@ public class Games {
 
     public void associateGenre(GamesGenre gamesGenre) {
         genres.add(gamesGenre);
+    }
+
+    public void clearPlatforms() {
+        this.platforms.clear();
+    }
+
+    public void clearGenres() {
+        this.genres.clear();
+    }
+
+    public void update(GamesCreateDto createDto) {
+        this.name = createDto.getName();
+        this.explanation = createDto.getExplanation();
+        this.mainImage = createDto.getMainImage();
+        this.releaseDate = createDto.getReleaseDate();
     }
 
     public void updateDeleteY() {
