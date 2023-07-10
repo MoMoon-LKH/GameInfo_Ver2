@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -77,7 +78,8 @@ public class NewsService {
 
     @Transactional
     public void updateViews(News news) {
-        news.updateViews();
+        News find = newsRepository.findByIdForViews(news.getId()).orElseThrow(NotFoundNewsException::new);
+        find.updateViews();
     }
 
 

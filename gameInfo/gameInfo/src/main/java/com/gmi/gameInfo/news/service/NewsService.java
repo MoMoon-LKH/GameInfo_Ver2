@@ -77,7 +77,8 @@ public class NewsService {
 
     @Transactional
     public void updateViews(News news) {
-        news.updateViews();
+        News find = newsRepository.findByIdForViews(news.getId()).orElseThrow(NotFoundNewsException::new);
+        find.updateViews();
     }
 
 
