@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -24,20 +26,28 @@ public class GameAssociateService {
 
     @Transactional
     public void addGamesPlatforms(Games games, List<Platform> platforms) {
+        Set<GamesPlatform> newPlatforms = new HashSet<>();
+
         for (Platform platform : platforms) {
             GamesPlatform gamesPlatform = new GamesPlatform(games, platform);
             gamesPlatformRepository.save(gamesPlatform);
-            games.associatePlatform(gamesPlatform);
+            newPlatforms.add(gamesPlatform);
         }
+
+        games.setPlatforms(newPlatforms);
     }
 
     @Transactional
     public void addGamesGenre(Games games, List<Genre> genres) {
+        Set<GamesGenre> newGenres = new HashSet<>();
+
         for (Genre genre : genres) {
             GamesGenre gamesGenre = new GamesGenre(games, genre);
             gamesGenreRepository.save(gamesGenre);
-            games.associateGenre(gamesGenre);
+            newGenres.add(gamesGenre);
         }
+
+        games.setGenres(newGenres);
     }
 
 

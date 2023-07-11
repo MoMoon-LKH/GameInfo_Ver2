@@ -61,20 +61,12 @@ public class Games {
         this.releaseDate = dto.getReleaseDate();
     }
 
-    public void associatePlatform(GamesPlatform gamesPlatform) {
-        platforms.add(gamesPlatform);
+    public void setPlatforms(Set<GamesPlatform> platforms) {
+        this.platforms = platforms;
     }
 
-    public void associateGenre(GamesGenre gamesGenre) {
-        genres.add(gamesGenre);
-    }
-
-    public void clearPlatforms() {
-        this.platforms.clear();
-    }
-
-    public void clearGenres() {
-        this.genres.clear();
+    public void setGenres(Set<GamesGenre> genres) {
+        this.genres = genres;
     }
 
     public void update(GamesCreateDto createDto) {

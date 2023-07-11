@@ -1,6 +1,7 @@
 package com.gmi.gameInfo.games.service;
 
 import com.gmi.gameInfo.games.domain.Games;
+import com.gmi.gameInfo.games.domain.GamesGenre;
 import com.gmi.gameInfo.games.domain.GamesPlatform;
 import com.gmi.gameInfo.games.domain.dto.GamesCreateDto;
 import com.gmi.gameInfo.games.repository.GamesGenreRepository;
@@ -18,14 +19,13 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(SpringExtension.class)
 public class GamesServiceTest {
@@ -39,10 +39,11 @@ public class GamesServiceTest {
     @Mock
     private GamesGenreRepository gamesGenreRepository;
 
+    @Mock
+    private GameAssociateService gameAssociateService;
+
     @InjectMocks
     private GamesService gamesService;
-
-
 
 
     @Test
@@ -63,6 +64,7 @@ public class GamesServiceTest {
         List<Platform> platforms = new ArrayList<>();
 
         given(gamesRepository.save(any())).willReturn(games);
+
 
         //when
         Games save = gamesService.save(games, platforms, genres);
@@ -88,6 +90,19 @@ public class GamesServiceTest {
                 .build();
         Games games = Games.createGames(createDto);
 
+        Genre genre1 = Genre.builder().name("genre1").build();
+        Genre genre2 = Genre.builder().name("genre2").build();
+
+        Platform platform1 = Platform.builder().id(1L).name("platform1").build();
+
+        Set<GamesGenre> gamesGenres = new HashSet<>();
+        gamesGenres.add(new GamesGenre(games, genre1));
+        gamesGenres.add(new GamesGenre(games, genre2));
+
+        Set<GamesPlatform> gamesPlatforms = new HashSet<>();
+        gamesPlatforms.add(new GamesPlatform(games, platform1));
+
+
         List<Genre> genres = new ArrayList<>();
         genres.add(Genre.builder().id(1L).name("genre1").build());
         genres.add(Genre.builder().id(2L).name("genre2").build());
@@ -95,12 +110,16 @@ public class GamesServiceTest {
         List<Platform> platforms = new ArrayList<>();
         platforms.add(Platform.builder().id(1L).name("platform1").build());
 
+        games.setGenres(gamesGenres);
+        games.setPlatforms(gamesPlatforms);
+
         given(gamesRepository.save(any())).willReturn(games);
 
         //when
         Games save = gamesService.save(games, platforms, genres);
 
         //then
+        assertEquals(createDto.getName(), save.getName());
         assertEquals(2, save.getGenres().size());
         assertEquals(1, save.getPlatforms().size());
     }

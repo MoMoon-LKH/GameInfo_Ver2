@@ -203,16 +203,22 @@ public class GamesRepositoryTest {
         }
         gamesRepository.save(games);
 
+        Set<GamesPlatform> gamesPlatforms = new HashSet<>();
+
         for (Platform platform : platforms) {
             GamesPlatform gamesPlatform = new GamesPlatform(games, platform);
-            games.associatePlatform(gamesPlatform);
+            gamesPlatforms.add(gamesPlatform);
         }
+        games.setPlatforms(gamesPlatforms);
+
+
+        Set<GamesGenre> gamesGenres = new HashSet<>();
 
         for (Genre genre : genres) {
             GamesGenre gamesGenre = new GamesGenre(games, genre);
-            games.associateGenre(gamesGenre);
+            gamesGenres.add(gamesGenre);
         }
-
+        games.setGenres(gamesGenres);
 
         Map<String, Object> map = new HashMap<>();
         map.put("game", games);

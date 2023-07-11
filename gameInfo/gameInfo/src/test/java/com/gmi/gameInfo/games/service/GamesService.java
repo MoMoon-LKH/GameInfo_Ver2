@@ -52,14 +52,11 @@ public class GamesService {
 
     @Transactional
     public Games update(Long id, GamesCreateDto dto, List<Platform> platforms, List<Genre> genres) {
-        Games games = gamesRepository.findByIdOptimisticLock(id).orElseThrow(NotFoundGameException::new);
 
+        Games games = gamesRepository.findByIdOptimisticLock(id).orElseThrow(NotFoundGameException::new);
 
         Set<GamesPlatform> delPlatforms = games.getPlatforms();
         Set<GamesGenre> delGenres = games.getGenres();
-
-        games.clearPlatforms();
-        games.clearGenres();
 
         gamesGenreRepository.deleteAll(delGenres);
         gamesPlatformRepository.deleteAll(delPlatforms);

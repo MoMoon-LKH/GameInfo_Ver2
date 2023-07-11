@@ -52,7 +52,7 @@ public class GamesSpringTest {
 
     private List<Genre> genres = new ArrayList<>();
 
-    @BeforeAll
+    @BeforeEach
     void setUp() {
 
         platforms.add(platformService.save(Platform.builder().name("plat1").build()));
@@ -84,14 +84,16 @@ public class GamesSpringTest {
                 .releaseDate(LocalDate.now())
                 .build();
 
+        List<Platform> platformList = new ArrayList<>();
 
         //when
-        Games update = gamesService.update(games.getId(), createDto, platforms, genres);
+        Games update = gamesService.update(games.getId(), createDto, platformList, genres);
         Games find = gamesService.findDetailById(update.getId());
 
         //then
         assertEquals("update", find.getName());
         assertEquals(1, find.getVersion());
+        assertEquals(0, find.getPlatforms().size());
     }
 
     
