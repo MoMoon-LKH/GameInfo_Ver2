@@ -2,6 +2,7 @@ package com.gmi.gameInfo.games.controller;
 
 import com.gmi.gameInfo.exceptionHandler.ErrorResponse;
 import com.gmi.gameInfo.games.domain.Games;
+import com.gmi.gameInfo.games.domain.GamesPlatform;
 import com.gmi.gameInfo.games.domain.dto.GamesCreateDto;
 import com.gmi.gameInfo.games.domain.dto.GamesDto;
 import com.gmi.gameInfo.games.domain.dto.GamesFindDto;
@@ -158,15 +159,27 @@ public class GamesController {
     }
 
 
+    @Operation(summary = "게임 업데이트", description = "게임 상세 정보 업데이트 API \n ADMIN 권한을 가진 사람만 수정이 가능합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "업데이트 성공",
+            content = @Content(schema = @Schema(implementation = GamesDto.class))),
+            @ApiResponse(responseCode = "409", description = "충돌 발생",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateGames(
             @PathVariable Long id,
             @Valid @RequestBody GamesCreateDto gamesCreateDto
     ) {
 
+        List<Platform> platforms = platformService.findAllByIdsIn(gamesCreateDto.getPlatformList());
+        List<Genre> genres = genreService.findAllByIdsIn(gamesCreateDto.getGenreList());
 
+        Games update = gamesService.update(id, gamesCreateDto, platforms, genres);
 
-        return ResponseEntity.ok(null);
+        GamesDto gamesDto = new GamesDto(update);
+
+        return ResponseEntity.ok(gamesDto);
     }
 
 }

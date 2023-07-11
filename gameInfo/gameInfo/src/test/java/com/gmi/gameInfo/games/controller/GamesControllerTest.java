@@ -1,5 +1,6 @@
 package com.gmi.gameInfo.games.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.config.TestConfig;
 import com.gmi.gameInfo.games.domain.Games;
@@ -30,6 +31,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -276,6 +280,42 @@ public class GamesControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
+    }
+
+
+    @Test
+    @WithMockUser
+    @DisplayName("게임 업데이트 - 성공")
+    void update_games_optimistic() throws Exception {
+
+        //given
+        GamesCreateDto updateDto = GamesCreateDto.builder()
+                .name("update")
+                .explanation("explation")
+                .mainImage("/gaems/game")
+                .releaseDate(LocalDate.now())
+                .build();
+
+        Games games = Games.createGames(updateDto);
+        List<Platform> platforms = new ArrayList<>();
+        List<Genre> genres = new ArrayList<>();
+
+        given(platformService.findAllByIdsIn(any())).willReturn(platforms);
+        given(genreService.findAllByIdsIn(any())).willReturn(genres);
+        given(gamesService.update(any(), any(), any(), any())).willReturn(games);
+
+        //when
+        ResultActions perform = mockMvc.perform(put("/api/game/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDto))
+                .with(csrf()));
+
+        //then
+        perform
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(updateDto.getName()));
+
     }
 
 

@@ -17,6 +17,7 @@ import com.gmi.gameInfo.post.exception.NotFoundPostException;
 import com.gmi.gameInfo.post.exception.NotPostOwnerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -215,8 +216,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GameSameNameException.class)
     protected ResponseEntity<?> handleGameSameNameException(GameSameNameException e) {
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(HttpStatus.NOT_FOUND.value())
+                .status(HttpStatus.CONFLICT.value())
                 .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    protected ResponseEntity<?> handleObjectOptimisticLockingFailureException(ObjectOptimisticLockingFailureException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message("다시 시도해주세요")
                 .build();
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }

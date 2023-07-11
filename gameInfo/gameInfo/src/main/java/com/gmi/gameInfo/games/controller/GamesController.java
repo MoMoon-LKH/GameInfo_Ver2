@@ -30,7 +30,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@Api(tags = "Game API", description = "게임 관련 API")
+@Api(tags = "Game", description = "게임 관련 API")
 @RestController
 @RequestMapping("/api/game")
 @RequiredArgsConstructor
@@ -154,6 +154,30 @@ public class GamesController {
         }
 
         return ResponseEntity.ok(true);
+    }
+
+
+    @Operation(summary = "게임 업데이트", description = "게임 상세 정보 업데이트 API \n ADMIN 권한을 가진 사람만 수정이 가능합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "업데이트 성공",
+            content = @Content(schema = @Schema(implementation = GamesDto.class))),
+            @ApiResponse(responseCode = "409", description = "충돌 발생",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateGames(
+            @PathVariable Long id,
+            @Valid @RequestBody GamesCreateDto gamesCreateDto
+    ) {
+
+        List<Platform> platforms = platformService.findAllByIdsIn(gamesCreateDto.getPlatformList());
+        List<Genre> genres = genreService.findAllByIdsIn(gamesCreateDto.getGenreList());
+
+        Games update = gamesService.update(id, gamesCreateDto, platforms, genres);
+
+        GamesDto gamesDto = new GamesDto(update);
+
+        return ResponseEntity.ok(gamesDto);
     }
 
 }

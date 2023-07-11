@@ -72,6 +72,7 @@ public class SecurityConfig{
                 .antMatchers("/api/image/upload").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/game").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/game/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/game/{id}").hasRole("ADMIN")
                 .anyRequest().authenticated()
 
                 .and()
