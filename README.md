@@ -95,7 +95,7 @@ image:
 <br>
 
 ## ERD 설계
-
+<img src="https://github.com/MoMoon-LKH/GameInfo_Ver2/assets/66755342/2de8af63-4219-47f1-885e-035b96d358ae" width="700" />
 <br>
 
 ## 핵심기능
@@ -106,10 +106,23 @@ image:
 <br>
 
 ## Swagger 
-### API 문서 링크
+#### API 문서 링크
 https://www.gameinfo.momoon.kro.kr/swagger-ui/index.html
- 
+<br><br>
 
+
+## 개선 예정사항
+#### 1. news와 post 테이블 통일
+    - news와 post를 나누게된 계기는 news가 하드웨어(platform)에 대한 뉴스도 포함하고 있기 때문
+    - news = 게임 정보 및 각 플랫폼에 대한 정보, post = 각 게임마다의 게시글로 구성
+      그래서 news에서만 platform과의 연관관계가 필요해서 나누게 되었는데
+      코드가 더 복잡해지고 동일한 동작 코드가 생기는걸 확인하여서 바꾸기로 하였습니다.
+    post 쪽에 platform에 대한 연관관계 설정 및 enum 타입 추가로 구분
+
+#### 2. games와 category의 연관관게 설정 예정
+    - 이부분은 아직 설계에서 고민하는 부분입니다
+    - 각 게임마다의 다른 카테고리를 만들 수 있게 제공할 지 고정된 카테고리를 제공하게 할지
+    -> 각 게임마다의 다른 카테고리를 만들 수 있게 제공 
 
 <br>
 
