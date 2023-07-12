@@ -1,6 +1,7 @@
-# Gameinfo Project
-게임에 관한 뉴스 및 정보를 제공하는 커뮤니티 웹 프로젝트
-
+# Gameinfo
+> 게임에 관한 정보를 제공하는 웹사이트 서비스 <br>
+> 2023.03 ~ 개발중 <br>
+> https://www.gameinfo.momoon.kro.kr
 <br>
 
 ## 개발 환경
@@ -78,75 +79,50 @@ image:
 <br>
 
 ## 로그인 방식
-> ### JWT 토큰 방식
-> - 로그인 시 Access Token & Refresh Token 발급
-> 
-> #### Access Token
-> - 프런트에서 LocalStorage에 저장
-> - 토큰이 탈취될 가능성이 있기 때문에 유효시간을 짧게 설정 (5분)
-> 
-> #### Refresh Token
-> - Cookie로 통해 발급
-> - Access Token의 유효시간이 지나게 될 경우
->   토큰 재발급 API을 통해 Access Token 재발급 할 때 필요한 토큰 
-
-<br>
-
-## 구현 기능
-#### 1. 회원
-> - 회원가입
-> - 조회
+### JWT 토큰 방식
+    - 로그인 시 Access Token & Refresh Token 발급
  
-#### 2. 뉴스
-> - 리스트 조회 / 단일 조회 
-> - 작성 / 수정 / 삭제
-> - 좋아요/싫어요 기능
-
-#### 3. 게시글
-> - 리스트 조회 / 단일 조회 
-> - 작성 / 수정 / 삭제  
-
-#### 4. 댓글
-> - 리스트 조회
-> - 작성 / 수정 / 삭제
-
-
-#### 5. 이메일
-> - 인증번호 발송
-> - 인증번호 확인
-
-#### 6. 이미지
-> - 등록
-
-#### 7. 메인화면
-> - 메인화면에 필요한 리스트 조회
-
-#### 8. 권한 확인
-> - 뉴스 
+#### Access Token
+    - 프런트에서 LocalStorage에 저장
+    - 토큰이 탈취될 가능성이 있기 때문에 유효시간을 짧게 설정 (5분)
+    
+#### Refresh Token
+    - Cookie로 통해 발급
+    - Access Token의 유효시간이 지나게 될 경우
+      토큰 재발급 API을 통해 Access Token 재발급 할 때 필요한 토큰 
+    - HttpOnly를 통해 js를 통한 수정을 막은 쿠키
 
 <br>
 
-### Swagger API 문서 링크 
+## ERD 설계
+<img src="https://github.com/MoMoon-LKH/GameInfo_Ver2/assets/66755342/2de8af63-4219-47f1-885e-035b96d358ae" width="700" />
+<br>
+
+## 핵심기능
+<details>
+ <summary>더보기</summary>
+ 펼쳐짐
+</details>
+<br>
+
+## Swagger 
+#### API 문서 링크
 https://www.gameinfo.momoon.kro.kr/swagger-ui/index.html
+<br><br>
 
-<br>
 
-## 구현 예정 기능
-#### 1. 회원
-> - 계속되는 로그인 시도 시 차단 (메일을 통한 인증 필요)
-> - 수정 / 탈퇴
-> - 아이디 및 비밀번호 찾기
+## 개선 예정사항
+#### 1. news와 post 테이블 통일
+    - news와 post를 나누게된 계기는 news가 하드웨어(platform)에 대한 뉴스도 포함하고 있기 때문
+    - news = 게임 정보 및 각 플랫폼에 대한 정보, post = 각 게임마다의 게시글로 구성
+      그래서 news에서만 platform과의 연관관계가 필요해서 나누게 되었는데
+      코드가 더 복잡해지고 동일한 동작 코드가 생기는걸 확인하여서 바꾸기로 하였습니다.
+    post 쪽에 platform에 대한 연관관계 설정 및 enum 타입 추가로 구분
 
-#### 2. 게임
-> - 리스트 조회 / 단일 조회
-> - 생성 / 삭제 
-
-#### 3. 리뷰
-> - 리스트 조회 / 단일 조회
-> - 생성 / 수정 / 삭제
-
-#### 4. 알람
-> - 조회 / 삭제
+#### 2. games와 category의 연관관게 설정 예정
+    - 이부분은 아직 설계에서 고민하는 부분입니다
+    - 각 게임마다의 다른 카테고리를 만들 수 있게 제공할 지 고정된 카테고리를 제공하게 할지
+    -> 각 게임마다의 다른 카테고리를 만들 수 있게 제공 
 
 <br>
 
