@@ -98,16 +98,59 @@ image:
 <img src="https://github.com/MoMoon-LKH/GameInfo_Ver2/assets/66755342/2de8af63-4219-47f1-885e-035b96d358ae" width="700" />
 <br>
 
-## 핵심기능
+## 기능
 <details>
  <summary>더보기</summary>
- 펼쳐짐
+ <div>사용자들에게 게임에 관한 정보를 공유하는 웹사이트</div>
+
+ <div>
+
+  
+## 구현 기능
+#### 1. 회원
+    - 회원가입
+    - 조회
+    - 로그인 / 로그아웃 / 토큰 재발급
+
+
+#### 2. 뉴스
+    - 리스트 조회 / 단일 조회 
+    - 작성 / 수정 / 삭제
+    - 좋아요/싫어요 기능
+
+
+#### 3. 게시글
+    - 리스트 조회 / 단일 조회 
+    - 작성 / 수정 / 삭제
+
+
+#### 4. 댓글
+    - 리스트 조회
+    - 작성 / 수정 / 삭제
+
+
+#### 5. 이메일
+    - 인증번호 발송
+    - 인증번호 확인
+
+    
+#### 6. 이미지
+    - 등록
+
+
+#### 7. 메인화면
+    - 메인화면에 필요한 리스트 조회
+
+
+#### 8. 권한 확인
+    - 뉴스 
+ </div>
 </details>
 <br>
 
 ## Swagger 
 #### API 문서 링크
-https://www.gameinfo.momoon.kro.kr/swagger-ui/index.html
+https://www.gameinfo.momoon.kro.kr/api/docs
 <br><br>
 
 
