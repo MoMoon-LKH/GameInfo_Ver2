@@ -11,15 +11,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class GamesPlatform {
 
-    @EmbeddedId
-    private GamesPlatformId id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @MapsId("gamesId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "games_id")
     private Games games;
 
-    @MapsId("platformId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "platform_id")
     private Platform platform;
@@ -27,6 +25,5 @@ public class GamesPlatform {
     public GamesPlatform(Games games, Platform platform) {
         this.games = games;
         this.platform = platform;
-        this.id = new GamesPlatformId(games.getId(), platform.getId());
     }
 }

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,20 +43,24 @@ public class GamesCustomRepositoryImpl implements GamesCustomRepository{
         }
 
         if (dto.getPlatformIds() != null && dto.getPlatformIds().size() > 0) {
-            builder.and(platform.id.in(dto.getGenreIds()));
+            builder.and(gamesPlatform.platform.id.in(dto.getPlatformIds()));
+
         }
 
         if (dto.getGenreIds() != null && dto.getGenreIds().size() > 0) {
-            builder.and(genre.id.in(dto.getGenreIds()));
+                builder.and(gamesGenre.genre.id.in(dto.getGenreIds()));
         }
 
 
         List<Long> ids = factory.select(
                         games.id
                 ).from(games)
+                .leftJoin(games.platforms, gamesPlatform)
+                .leftJoin(games.genres, gamesGenre)
                 .where(builder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .distinct()
                 .fetch();
 
         return factory.select(
@@ -67,6 +72,7 @@ public class GamesCustomRepositoryImpl implements GamesCustomRepository{
                 .leftJoin(gamesGenre.genre, genre).fetchJoin()
                 .where(games.id.in(ids))
                 .orderBy(games.name.asc())
+                .distinct()
                 .fetch();
     }
 

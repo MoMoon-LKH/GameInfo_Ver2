@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import({TestConfig.class})
+@Transactional
 public class GamesRepositoryTest {
 
     @Autowired
@@ -46,7 +47,6 @@ public class GamesRepositoryTest {
 
     @Test
     @DisplayName("게임 - 저장")
-    @Transactional
     void save() {
 
         //given
@@ -67,7 +67,6 @@ public class GamesRepositoryTest {
     
     @Test
     @DisplayName("게임 - 단일 조회")
-    @Transactional
     void findById() {
     
         //given
@@ -83,7 +82,6 @@ public class GamesRepositoryTest {
     
     @Test
     @DisplayName("게임 - 삭제")
-    @Transactional
     void delete() {
     
         //given
@@ -105,13 +103,15 @@ public class GamesRepositoryTest {
     
         //given
         Pageable pageable = PageRequest.of(0, 10);
-        List<String> platforms = new ArrayList<>();
-        platforms.add("platform1");
+        List<Platform> platforms = new ArrayList<>();
+        Platform platform1 = Platform.builder().name("platform1").build();
+        platforms.add(platformRepository.save(platform1));
 
-        List<String> genres = new ArrayList<>();
-        genres.add("genre1");
+        List<Genre> genres = new ArrayList<>();
+        Genre genre1 = Genre.builder().name("genre1").build();
+        genres.add(genreRepository.save(genre1));
 
-        Map<String, Object> map = createGameAndPlatformAndGenre("pageGames", platforms, genres);
+        Games games = createGame("pageGames", platforms, genres);
 
         //when
 
@@ -131,29 +131,174 @@ public class GamesRepositoryTest {
         assertEquals("genre1", itGenre.next().getGenre().getName());
 
     }
-    
-    
+
+    @Test
+    @DisplayName("게임 - 페이지 리스트 조회 - 검색 조건 name")
+    void findByPageable_name() {
+
+        //given
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Platform> platforms = new ArrayList<>();
+        Platform platform1 = Platform.builder().name("platform1").build();
+        Platform platform2 = Platform.builder().name("platform2").build();
+        platforms.add(platformRepository.save(platform1));
+
+        List<Genre> genres = new ArrayList<>();
+        Genre genre1 = Genre.builder().name("genre1").build();
+        genres.add(genreRepository.save(genre1));
+
+        Games games1 = createGame("games1", platforms, genres);
+
+        platforms.add(platformRepository.save(platform2));
+
+        Games games2 = createGame("games2", platforms, genres);
+
+        //when
+        GamesFindDto gamesFindDto = GamesFindDto.builder()
+                .search("games")
+                .build();
+
+        List<Games> find = gamesRepository.findByPageable(gamesFindDto, pageable);
+
+        //then
+        assertEquals(2, find.size());
+    }
+
+
+    @Test
+    @DisplayName("게임 - 페이지 리스트 조회 - 검색 조건 platformIds")
+    void findByPageable_platformIds() {
+
+        //given
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Platform> platforms = new ArrayList<>();
+        Platform platform1 = Platform.builder().name("platform1").build();
+        Platform platform2 = Platform.builder().name("platform2").build();
+        platforms.add(platformRepository.save(platform1));
+
+        List<Genre> genres = new ArrayList<>();
+        Genre genre1 = Genre.builder().name("genre1").build();
+        genres.add(genreRepository.save(genre1));
+
+        Games games1 = createGame("games1", platforms, genres);
+
+        platforms.add(platformRepository.save(platform2));
+
+        Games games2 = createGame("games2", platforms, genres);
+
+
+        //when
+        List<Long> platformsIds = new ArrayList<>();
+        platformsIds.add(platform2.getId());
+
+        GamesFindDto gamesFindDto = GamesFindDto.builder()
+                .platformIds(platformsIds)
+                .build();
+
+        List<Games> find = gamesRepository.findByPageable(gamesFindDto, pageable);
+
+        //then
+        assertEquals(1, find.size());
+    }
+
+
+    @Test
+    @DisplayName("게임 - 페이지 리스트 조회 - 검색 조건 genreIds")
+    void findByPageable_genreIds() {
+
+        //given
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Platform> platforms = new ArrayList<>();
+        Platform platform1 = Platform.builder().name("platform1").build();
+        platforms.add(platformRepository.save(platform1));
+
+        List<Genre> genres = new ArrayList<>();
+        Genre genre1 = Genre.builder().name("genre1").build();
+        Genre genre2 = Genre.builder().name("genre2").build();
+        genres.add(genreRepository.save(genre1));
+
+        Games games1 = createGame("games1", platforms, genres);
+
+        genres.add(genreRepository.save(genre2));
+
+        Games games2 = createGame("games2", platforms, genres);
+
+        
+        //when
+        List<Long> genreIds = new ArrayList<>();
+        genreIds.add(genre2.getId());
+
+        GamesFindDto gamesFindDto = GamesFindDto.builder()
+                .genreIds(genreIds)
+                .build();
+
+        List<Games> find = gamesRepository.findByPageable(gamesFindDto, pageable);
+
+        //then
+        assertEquals(1, find.size());
+    }
+
+    @Test
+    @DisplayName("")
+    void findByPageable_genreIdsAndPlatformIds() {
+
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Platform> platforms = new ArrayList<>();
+        Platform platform1 = Platform.builder().name("platform1").build();
+        Platform platform2 = Platform.builder().name("platform2").build();
+        platforms.add(platformRepository.save(platform1));
+
+
+        List<Genre> genres = new ArrayList<>();
+        Genre genre1 = Genre.builder().name("genre1").build();
+        Genre genre2 = Genre.builder().name("genre2").build();
+        genres.add(genreRepository.save(genre1));
+
+        Games games1 = createGame("games1", platforms, genres);
+
+        genres.add(genreRepository.save(genre2));
+        platforms.add(platformRepository.save(platform2));
+
+        Games games2 = createGame("games2", platforms, genres);
+
+
+        //when
+        List<Long> genreIds = new ArrayList<>();
+        genreIds.add(genre2.getId());
+        genreIds.add(genre1.getId());
+
+        List<Long> platformIds = new ArrayList<>();
+        platformIds.add(platform2.getId());
+
+        GamesFindDto gamesFindDto = GamesFindDto.builder()
+                .genreIds(genreIds)
+                .platformIds(platformIds)
+                .build();
+
+        List<Games> find = gamesRepository.findByPageable(gamesFindDto, pageable);
+
+        //then
+        assertEquals(1, find.size());
+    }
+
     @Test
     @DisplayName("게임 - 단일 조회 (fetch Join)")
     @Transactional
     void findOneById() {
     
         //given
-        List<String> platformName = new ArrayList<>();
-        platformName.add("platform1");
-        platformName.add("platform2");
+        List<Platform> platforms = new ArrayList<>();
+        Platform platform1 = Platform.builder().name("platform1").build();
+        Platform platform2 = Platform.builder().name("platform2").build();
+        platforms.add(platformRepository.save(platform1));
+        platforms.add(platformRepository.save(platform2));
 
-        Platform platform = Platform.builder()
-                .name("dummy1")
-                .build();
-        platformRepository.save(platform);
+        List<Genre> genres = new ArrayList<>();
+        Genre genre1 = Genre.builder().name("genre1").build();
+        genres.add(genreRepository.save(genre1));
 
-        List<String> genreName = new ArrayList<>();
-        genreName.add("genre1");
+        Games games = createGame("Games", platforms, genres);
 
-        Map<String, Object> map = createGameAndPlatformAndGenre("Games", platformName, genreName);
-
-        Games games = (Games) map.get("game");
 
         //when
         Games find = gamesRepository.findOneDetailById(games.getId()).orElse(null);
@@ -179,27 +324,9 @@ public class GamesRepositoryTest {
     }
 
 
-    private Map<String, Object> createGameAndPlatformAndGenre(String gameName, List<String> pName, List<String> gName) {
+    private Games createGame(String gameName, List<Platform> platforms, List<Genre> genres) {
         Games games = createGameSample(gameName);
-        List<Platform> platforms = new ArrayList<>();
-        List<Genre> genres = new ArrayList<>();
 
-        for (String name : pName) {
-            Platform platform = Platform.builder()
-                    .name(name)
-                    .build();
-            platformRepository.save(platform);
-            platforms.add(platform);
-        }
-
-
-        for (String name : gName) {
-            Genre genre = Genre.builder()
-                    .name(name)
-                    .build();
-            genreRepository.save(genre);
-            genres.add(genre);
-        }
         gamesRepository.save(games);
 
         Set<GamesPlatform> gamesPlatforms = new HashSet<>();
@@ -207,6 +334,7 @@ public class GamesRepositoryTest {
         for (Platform platform : platforms) {
             GamesPlatform gamesPlatform = new GamesPlatform(games, platform);
             gamesPlatforms.add(gamesPlatform);
+            gamesPlatformRepository.save(gamesPlatform);
         }
         games.setPlatforms(gamesPlatforms);
 
@@ -216,15 +344,11 @@ public class GamesRepositoryTest {
         for (Genre genre : genres) {
             GamesGenre gamesGenre = new GamesGenre(games, genre);
             gamesGenres.add(gamesGenre);
+            gamesGenreRepository.save(gamesGenre);
         }
         games.setGenres(gamesGenres);
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("game", games);
-        map.put("genre", genres);
-        map.put("platform", platforms);
-
-        return map;
+        return games;
     }
 
 }

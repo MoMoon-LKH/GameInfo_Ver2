@@ -12,15 +12,13 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GamesGenre {
 
-    @EmbeddedId
-    private GamesGenreId id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @MapsId("gamesId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "games_id")
     private Games games;
 
-    @MapsId("genreId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
@@ -28,7 +26,6 @@ public class GamesGenre {
     public GamesGenre(Games games, Genre genre) {
         this.games = games;
         this.genre = genre;
-        this.id = new GamesGenreId(games.getId(), genre.getId());
     }
 
 

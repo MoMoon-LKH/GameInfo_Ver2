@@ -80,7 +80,6 @@ public class NewsCustomRepositoryImpl implements NewsCustomRepository{
                 );
             }
         }
-        System.out.println(" = " + today);
 
         return factory
                 .select(Projections.bean(NewsListDto.class,
