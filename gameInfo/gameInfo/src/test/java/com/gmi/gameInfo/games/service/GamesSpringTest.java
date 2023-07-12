@@ -111,22 +111,22 @@ public class GamesSpringTest {
 
         //when
         for (int i = 0; i < THREAD_CNT; i++) {
-            try {
                 service.execute(() -> {
-                    gamesService.update(games.getId(), dto, platformList, genreList);
+                    try {
+                        gamesService.update(games.getId(), dto, platformList, genreList);
+                    } finally {
+                        latch.countDown();
+                    }
                 });
 
-            } finally {
-                latch.countDown();
-            }
         }
         latch.await();
 
         Games find = gamesService.findDetailById(games.getId());
 
         //then
-        assertEquals(dto.getName(), find.getName());
         assertEquals(1, find.getVersion());
+        assertEquals(dto.getName(), find.getName());
     }
 
 }
