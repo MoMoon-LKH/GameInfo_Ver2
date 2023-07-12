@@ -27,4 +27,7 @@ public class PostDto {
 
     @ApiModelProperty(value = "이미지 아이디 리스트")
     private List<Long> imageIds;
+
+    @ApiModelProperty(value = "카테고리 아이디", required = true)
+    private Long categoryId;
 }

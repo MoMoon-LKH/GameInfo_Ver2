@@ -9,13 +9,11 @@ import com.gmi.gameInfo.games.repository.GamesPlatformRepository;
 import com.gmi.gameInfo.games.repository.GamesRepository;
 import com.gmi.gameInfo.genre.domain.Genre;
 import com.gmi.gameInfo.platform.domain.Platform;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
@@ -23,9 +21,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(SpringExtension.class)
 public class GamesServiceTest {

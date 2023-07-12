@@ -2,7 +2,6 @@ package com.gmi.gameInfo.platform.service;
 
 import com.gmi.gameInfo.platform.domain.Platform;
 import com.gmi.gameInfo.platform.repository.PlatformRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

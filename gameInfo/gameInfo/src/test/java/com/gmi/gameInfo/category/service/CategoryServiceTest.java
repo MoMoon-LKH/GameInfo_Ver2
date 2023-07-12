@@ -5,14 +5,12 @@ import com.gmi.gameInfo.category.domain.Category;
 import com.gmi.gameInfo.category.domain.dto.CategoryDto;
 import com.gmi.gameInfo.category.exception.NotFoundCategoryException;
 import com.gmi.gameInfo.category.repository.CategoryRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 

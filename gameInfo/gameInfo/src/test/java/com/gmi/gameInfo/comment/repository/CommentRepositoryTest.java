@@ -12,18 +12,14 @@ import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.repository.NewsRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 

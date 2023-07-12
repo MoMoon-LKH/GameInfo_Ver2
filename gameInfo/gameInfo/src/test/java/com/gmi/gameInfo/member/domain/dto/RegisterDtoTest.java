@@ -38,7 +38,7 @@ public class RegisterDtoTest {
                 .name("test")
                 .nickname("nickname")
                 .email("email@naver.com")
-                .phoneNo("01323232323")
+                .phoneNo("010-2323-2323")
                 .birthday(Date.valueOf(LocalDate.of(1996,6,19)))
                 .boolCertifiedEmail(true)
                 .build();
@@ -59,7 +59,7 @@ public class RegisterDtoTest {
                 .name("test")
                 .nickname("nickname")
                 .email("email@naver.com")
-                .phoneNo("01323232323")
+                .phoneNo("010-2323-2323")
                 .birthday(Date.valueOf(LocalDate.of(1996,6,19)))
                 .boolCertifiedEmail(true)
                 .build();
@@ -79,7 +79,7 @@ public class RegisterDtoTest {
                 .name("")
                 .nickname("nickname")
                 .email("email@naver.com")
-                .phoneNo("01323232323")
+                .phoneNo("010-2323-2323")
                 .birthday(Date.valueOf(LocalDate.of(1996,6,19)))
                 .boolCertifiedEmail(true)
                 .build();
@@ -99,7 +99,7 @@ public class RegisterDtoTest {
                 .name("test")
                 .nickname("")
                 .email("email@naver.com")
-                .phoneNo("01323232323")
+                .phoneNo("010-2323-2323")
                 .birthday(Date.valueOf(LocalDate.of(1996,6,19)))
                 .boolCertifiedEmail(true)
                 .build();
@@ -119,7 +119,7 @@ public class RegisterDtoTest {
                 .name("test")
                 .nickname("test")
                 .email("email@naver.com")
-                .phoneNo("01323232323")
+                .phoneNo("010-2323-2323")
                 .boolCertifiedEmail(true)
                 .build();
 
@@ -139,32 +139,12 @@ public class RegisterDtoTest {
                 .nickname("test")
                 .email("email@naver.com")
                 .birthday(Date.valueOf(LocalDate.of(2099,6,19)))
-                .phoneNo("01323232323")
+                .phoneNo("010-2323-2323")
                 .boolCertifiedEmail(true)
                 .build();
 
         // when then
         validateMessage(dto,"잘못된 날짜입니다. 다시 확인해주세요");
-    }
-
-    @Test
-    @DisplayName("phoneNo 빈 문자열 체크")
-    void blankPhoneNo() {
-
-        //given
-        RegisterDto dto = RegisterDto.builder()
-                .loginId("test")
-                .password("test")
-                .name("test")
-                .nickname("test")
-                .email("email@naver.com")
-                .birthday(Date.valueOf(LocalDate.of(1996,6,19)))
-                .phoneNo("")
-                .boolCertifiedEmail(true)
-                .build();
-
-        // when then
-        validateMessage(dto,"핸드폰 번호를 입력해주세요");
     }
 
     @Test
@@ -179,7 +159,7 @@ public class RegisterDtoTest {
                 .nickname("test")
                 .email("")
                 .birthday(Date.valueOf(LocalDate.of(1996,6,19)))
-                .phoneNo("01323232323")
+                .phoneNo("010-2323-2323")
                 .boolCertifiedEmail(true)
                 .build();
 
@@ -199,7 +179,7 @@ public class RegisterDtoTest {
                 .nickname("test")
                 .email("asdf")
                 .birthday(Date.valueOf(LocalDate.of(1996,6,19)))
-                .phoneNo("01323232323")
+                .phoneNo("010-2323-2323")
                 .boolCertifiedEmail(true)
                 .build();
 
@@ -219,7 +199,7 @@ public class RegisterDtoTest {
                 .nickname("test")
                 .email("test@test.colm")
                 .birthday(Date.valueOf(LocalDate.of(1996,6,19)))
-                .phoneNo("01323232323")
+                .phoneNo("010-2323-2323")
                 .boolCertifiedEmail(false)
                 .build();
 

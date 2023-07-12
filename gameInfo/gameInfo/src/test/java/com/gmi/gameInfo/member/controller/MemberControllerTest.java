@@ -1,12 +1,10 @@
 package com.gmi.gameInfo.member.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.exceptionHandler.GlobalExceptionHandler;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.dto.RegisterDto;
 import com.gmi.gameInfo.member.service.MemberService;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

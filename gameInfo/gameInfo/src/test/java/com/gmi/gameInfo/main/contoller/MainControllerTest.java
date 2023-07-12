@@ -2,7 +2,6 @@ package com.gmi.gameInfo.main.contoller;
 
 import com.gmi.gameInfo.main.dto.NewsImageListDto;
 import com.gmi.gameInfo.main.dto.NewsSimpleDto;
-import com.gmi.gameInfo.news.domain.dto.NewsListDto;
 import com.gmi.gameInfo.news.service.NewsService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

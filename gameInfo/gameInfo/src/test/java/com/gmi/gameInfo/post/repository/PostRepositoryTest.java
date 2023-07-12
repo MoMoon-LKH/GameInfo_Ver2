@@ -2,8 +2,8 @@ package com.gmi.gameInfo.post.repository;
 
 import com.gmi.gameInfo.config.TestConfig;
 import com.gmi.gameInfo.member.domain.Member;
-import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.member.repository.MemberRepository;
+import com.gmi.gameInfo.post.domain.dto.PostVo;
 import com.gmi.gameInfo.post.domain.Post;
 import com.gmi.gameInfo.post.domain.dto.PostDto;
 import com.gmi.gameInfo.post.exception.NotFoundPostException;

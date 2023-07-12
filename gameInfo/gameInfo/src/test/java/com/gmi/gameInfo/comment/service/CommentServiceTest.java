@@ -8,7 +8,6 @@ import com.gmi.gameInfo.comment.repository.CommentRepository;
 import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.member.domain.RoleType;
 import com.gmi.gameInfo.news.domain.News;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import javax.inject.Inject;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

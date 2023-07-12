@@ -1,8 +1,6 @@
 package com.gmi.gameInfo.games.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gmi.gameInfo.config.TestConfig;
 import com.gmi.gameInfo.games.domain.Games;
 import com.gmi.gameInfo.games.domain.GamesGenre;
 import com.gmi.gameInfo.games.domain.GamesPlatform;
@@ -12,18 +10,14 @@ import com.gmi.gameInfo.genre.domain.Genre;
 import com.gmi.gameInfo.genre.service.GenreService;
 import com.gmi.gameInfo.platform.domain.Platform;
 import com.gmi.gameInfo.platform.service.PlatformService;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,13 +25,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

@@ -2,26 +2,18 @@ package com.gmi.gameInfo.games.service;
 
 import com.gmi.gameInfo.games.domain.Games;
 import com.gmi.gameInfo.games.domain.dto.GamesCreateDto;
-import com.gmi.gameInfo.games.exception.NotFoundGameException;
 import com.gmi.gameInfo.games.repository.GamesRepository;
 import com.gmi.gameInfo.genre.domain.Genre;
 import com.gmi.gameInfo.genre.service.GenreService;
 import com.gmi.gameInfo.platform.domain.Platform;
 import com.gmi.gameInfo.platform.service.PlatformService;
-import net.bytebuddy.description.method.ParameterList;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;

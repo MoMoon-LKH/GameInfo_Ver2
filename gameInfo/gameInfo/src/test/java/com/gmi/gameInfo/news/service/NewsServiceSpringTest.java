@@ -1,9 +1,7 @@
 package com.gmi.gameInfo.news.service;
 
 
-import com.gmi.gameInfo.member.domain.Member;
 import com.gmi.gameInfo.news.domain.News;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

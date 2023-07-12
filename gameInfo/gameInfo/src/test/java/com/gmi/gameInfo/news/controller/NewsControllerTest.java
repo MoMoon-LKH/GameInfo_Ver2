@@ -1,6 +1,5 @@
 package com.gmi.gameInfo.news.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.image.domain.Images;
 import com.gmi.gameInfo.image.service.ImagesService;
@@ -15,14 +14,11 @@ import com.gmi.gameInfo.news.domain.dto.NewsSearchDto;
 import com.gmi.gameInfo.news.service.NewsService;
 import com.gmi.gameInfo.platform.domain.Platform;
 import com.gmi.gameInfo.platform.service.PlatformService;
-import lombok.With;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;

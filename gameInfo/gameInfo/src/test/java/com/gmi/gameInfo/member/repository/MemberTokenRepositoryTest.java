@@ -3,7 +3,6 @@ package com.gmi.gameInfo.member.repository;
 import com.gmi.gameInfo.config.TestConfig;
 import com.gmi.gameInfo.member.domain.MemberToken;
 import com.gmi.gameInfo.member.exception.NotFoundRefreshTokenException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

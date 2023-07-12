@@ -1,6 +1,5 @@
 package com.gmi.gameInfo.comment.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmi.gameInfo.comment.domain.Comment;
 import com.gmi.gameInfo.comment.domain.dto.CommentCreateDto;
@@ -11,11 +10,8 @@ import com.gmi.gameInfo.member.domain.RoleType;
 import com.gmi.gameInfo.member.service.MemberService;
 import com.gmi.gameInfo.news.domain.News;
 import com.gmi.gameInfo.news.service.NewsService;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,7 +28,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

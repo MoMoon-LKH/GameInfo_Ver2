@@ -9,16 +9,13 @@ import com.gmi.gameInfo.member.exception.DuplicateMemberIdException;
 import com.gmi.gameInfo.member.exception.NotFoundMemberException;
 import com.gmi.gameInfo.member.repository.MemberRepository;
 import com.gmi.gameInfo.member.repository.MemberTokenRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
@@ -27,12 +24,10 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {

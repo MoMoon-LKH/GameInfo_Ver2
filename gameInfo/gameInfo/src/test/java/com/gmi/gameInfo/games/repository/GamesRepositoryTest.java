@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
