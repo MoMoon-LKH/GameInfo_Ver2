@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Api(tags = "Email Controller")
+@Api(tags = "Email", description = "이메일 인증 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/email")

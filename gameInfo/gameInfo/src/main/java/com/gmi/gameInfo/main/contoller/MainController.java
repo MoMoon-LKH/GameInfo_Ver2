@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-@Api(tags = "Main Controller")
+@Api(tags = "Main", description = "메인화면 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")

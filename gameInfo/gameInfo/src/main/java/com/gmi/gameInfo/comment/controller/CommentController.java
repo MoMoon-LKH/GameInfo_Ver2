@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = "Comment Controller")
+@Api(tags = "Comment", description = "댓글 관련 API")
 @RestController
 @RequestMapping("/api/comment")
 @RequiredArgsConstructor

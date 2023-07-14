@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = "IdenticalAuth Controller")
+@Api(tags = "IdenticalAuth", description = "권한확인 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")

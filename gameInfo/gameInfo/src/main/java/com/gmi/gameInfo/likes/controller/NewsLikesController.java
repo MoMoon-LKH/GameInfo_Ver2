@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Api(tags = "NewsLikes Controller")
+@Api(tags = "NewsLikes", description = "뉴스 Like/Dislike API")
 @RestController
 @RequestMapping("/api/news/likes")
 @RequiredArgsConstructor

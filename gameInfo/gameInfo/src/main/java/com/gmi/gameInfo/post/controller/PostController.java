@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "Post Controller")
+@Api(tags = "Post", description = "게시글 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/post")

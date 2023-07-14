@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = "News Controller")
+@Api(tags = "News", description = "뉴스 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/news")

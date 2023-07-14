@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.Date;
 
-@Api(tags = "Images Controller")
+@Api(tags = "Images", description = "이미지 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/image")
